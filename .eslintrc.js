@@ -27,6 +27,9 @@ module.exports = {
       'warn',
       {extensions: ['.jsx', '.js']}
     ],
-    'import/prefer-default-export': 'off'
+    'import/prefer-default-export': 'off',
+    'no-alert': 'off',
+    'react/prop-types': 'off',
+    'react/jsx-props-no-spreading': 'off'
   },
 };
