@@ -1,17 +1,17 @@
-import { Router } from 'react-router-dom';
 import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
 
-import GlobalStyles from './styles/global';
+import GlobalStyle from "./styles/global";
 import Routes from './routes';
-import history from './services/history';
+import AppProvider from './hooks';
 
-function App() {
-  return (
-    <Router history={history}>
+const App = () => (
+  <BrowserRouter>
+    <AppProvider>
       <Routes />
-      <GlobalStyles />
-    </Router>
-  );
-}
+    </AppProvider>
+    <GlobalStyle />
+  </BrowserRouter>
+)
 
 export default App;
