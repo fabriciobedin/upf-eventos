@@ -1,20 +1,8 @@
-import * as firebaseApp from 'firebase/app';
-import firestore from 'firebase/firestore'
-import 'firebase/auth';
+import firebase from 'firebase/app';
+import firebaseConfig from '../config/firebase';
+import firestore from 'firebase/firestore';
 
-const settings = {timestampsInSnapshots: true};
+firebase.initializeApp(firebaseConfig);
 
-const firebase = firebaseApp.initializeApp({
-  apiKey: process.env.REACT_APP_FIREBASE_KEY,
-  authDomain: process.env.REACT_APP_FIREBASE_DOMAIN,
-  databaseURL: process.env.REACT_APP_FIREBASE_DATABASE,
-  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.REACT_APP_FIREBASE_SENDER_ID,
-  appId: process.env.REACT_APP_FIREBASE_APP_ID,
-  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID
-});
-
-firebase.firestore().settings(settings);
 
 export default firebase;

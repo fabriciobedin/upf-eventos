@@ -12,15 +12,16 @@ export const Container = styled.div`
 export const Content = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
   place-content: center;
   width: 100%;
   max-width: 700px;
 `;
 
-const appearFromLeft = keyframes`
+const appearFromRight = keyframes`
   from {
     opacity: 0;
-    transform: translateX(-50px);
+    transform: translateX(50px);
   }
   to {
     opacity: 1;
@@ -33,7 +34,7 @@ export const AnimationContainer = styled.div`
   flex-direction: column;
   align-items: center;
 
-  animation: ${appearFromLeft} 1s;
+  animation: ${appearFromRight} 1s;
 
   img {
     width: 400px;
@@ -61,7 +62,7 @@ export const AnimationContainer = styled.div`
     }
   }
   > a {
-    color: #777;
+    color: #ed6707;
     display: block;
     margin-top: 16px;
     text-decoration: none;
@@ -75,7 +76,7 @@ export const AnimationContainer = styled.div`
     }
 
     &:hover {
-      color: #555;
+      color: #e04113;
     }
   }
 `;
