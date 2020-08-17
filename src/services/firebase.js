@@ -1,5 +1,8 @@
 import * as firebaseApp from 'firebase/app';
+import firestore from 'firebase/firestore'
 import 'firebase/auth';
+
+const settings = {timestampsInSnapshots: true};
 
 const firebase = firebaseApp.initializeApp({
   apiKey: process.env.REACT_APP_FIREBASE_KEY,
@@ -11,5 +14,7 @@ const firebase = firebaseApp.initializeApp({
   appId: process.env.REACT_APP_FIREBASE_APP_ID,
   measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID
 });
+
+firebase.firestore().settings(settings);
 
 export default firebase;
