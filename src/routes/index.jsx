@@ -9,9 +9,9 @@ import Dashborad from '../pages/Dashboard';
 
 const Routes = () => (
   <Switch>
-    <Route path="/" exact component={SignIn} />
-    <Route path="/signup" component={SignUp} />
-    <Route path="/dashboard" component={Dashborad} isPrivate />
+    <Route exact path="/" component={SignIn} />
+    <Route exact path="/signup" component={SignUp} />
+    <Route exact path="/dashboard" component={Dashborad} isPrivate />
   </Switch>
 );
 
