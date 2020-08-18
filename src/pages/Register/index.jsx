@@ -10,7 +10,7 @@ import logo from '../../assets/logo_upf.png';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 
-const SignUp = () => {
+const Register = () => {
   const formRef = useRef(null);
 
   const handleSubmit = useCallback(async data => {
@@ -60,4 +60,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default Register;
