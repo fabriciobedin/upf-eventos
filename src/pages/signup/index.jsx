@@ -31,6 +31,7 @@ const SignUp = () => {
       formRef.current.setErrors(getValidationErrors(err));
     }
   }, []);
+
   return (
     <Container>
       <Content>
