@@ -19,7 +19,6 @@ import firebase from '../../services/firebase';
 function Participantes() {
   const history = useHistory();
   const [participantes, setParticipantes] = useState([]);
-  const participanteRef = firebase.firestore().collection('participantes');
 
   const handleEdit = useCallback(
     idParticipante => {
@@ -33,16 +32,20 @@ function Participantes() {
   }, [history]);
 
   useEffect(() => {
-    participanteRef.get().then(eventos => {
-      eventos.forEach(doc => {
-        const participante = {
-          ...doc.data(),
-          uuid: doc.id
-        };
-        setParticipantes(part => [...part, participante]);
+    firebase
+      .firestore()
+      .collection('participantes')
+      .get()
+      .then(eventos => {
+        eventos.forEach(doc => {
+          const participante = {
+            ...doc.data(),
+            uuid: doc.id
+          };
+          setParticipantes(part => [...part, participante]);
+        });
       });
-    });
-  }, [participanteRef]);
+  }, []);
 
   return (
     <div>
