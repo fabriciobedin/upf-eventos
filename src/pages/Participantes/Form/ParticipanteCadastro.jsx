@@ -17,7 +17,37 @@ function ParticipanteCadastro() {
   const history = useHistory();
   const formRef = useRef(null);
   const { addToast } = useToast();
-  const participanteRef = firebase.firestore().collection(`participantes`);
+  const participanteRef = firebase.firestore().collection('participantes');
+
+  const findByDoc = useCallback(
+    async (codigo, documento) => {
+      return participanteRef
+        .where('codigo', '==', codigo)
+        .where('documento', '==', documento)
+        .get()
+        .then(snapshot => {
+          return snapshot.size;
+        });
+    },
+    [participanteRef]
+  );
+
+  const findByIdEstrangeiro = useCallback(
+    async (codigo, idEstrangeiro) => {
+      return participanteRef
+        .where('codigo', '==', codigo)
+        .where('idEstrangeiro', '==', idEstrangeiro)
+        .get()
+        .then(snapshot => {
+          return snapshot.size;
+        });
+    },
+    [participanteRef]
+  );
+
+  const redirect = useCallback(() => {
+    history.push('/participantes');
+  }, [history]);
 
   const handleSubmit = useCallback(
     async data => {
@@ -62,7 +92,7 @@ function ParticipanteCadastro() {
         }
 
         data.nome = data.nome.toUpperCase();
-        participanteRef.add(data).then(docRef => {
+        participanteRef.add(data).then(() => {
           redirect();
         });
       } catch (err) {
@@ -78,32 +108,8 @@ function ParticipanteCadastro() {
         });
       }
     },
-    [addToast]
+    [addToast, findByDoc, findByIdEstrangeiro, participanteRef, redirect]
   );
-
-  const findByDoc = useCallback(async (codigo, documento) => {
-    return participanteRef
-      .where('codigo', '==', codigo)
-      .where('documento', '==', documento)
-      .get()
-      .then(snapshot => {
-        return snapshot.size;
-      });
-  }, []);
-
-  const findByIdEstrangeiro = useCallback(async (codigo, idEstrangeiro) => {
-    return participanteRef
-      .where('codigo', '==', codigo)
-      .where('idEstrangeiro', '==', idEstrangeiro)
-      .get()
-      .then(snapshot => {
-        return snapshot.size;
-      });
-  });
-
-  const redirect = useCallback(() => {
-    history.push('/participantes');
-  });
 
   return (
     <Container>

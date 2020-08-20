@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import {
   Table,
@@ -19,16 +19,18 @@ import firebase from '../../services/firebase';
 function Participantes() {
   const history = useHistory();
   const [participantes, setParticipantes] = useState([]);
-  const participanteRef = firebase.firestore().collection(`participantes`);
+  const participanteRef = firebase.firestore().collection('participantes');
 
-  const handleEdit = useCallback(idParticipante => {
-    console.log('rend');
-    history.push(`/participantes/${idParticipante}`);
-  });
+  const handleEdit = useCallback(
+    idParticipante => {
+      history.push(`/participantes/${idParticipante}`);
+    },
+    [history]
+  );
 
   const handleAdd = useCallback(() => {
     history.push('/participantes/cadastro');
-  });
+  }, [history]);
 
   useEffect(() => {
     participanteRef.get().then(eventos => {
@@ -37,10 +39,10 @@ function Participantes() {
           ...doc.data(),
           uuid: doc.id
         };
-        setParticipantes(participantes => [...participantes, participante]);
+        setParticipantes(part => [...part, participante]);
       });
     });
-  }, []);
+  }, [participanteRef]);
 
   return (
     <div>
@@ -55,7 +57,7 @@ function Participantes() {
               <TableCell>Participante</TableCell>
               <TableCell>Email</TableCell>
               <TableCell>telefone</TableCell>
-              <TableCell></TableCell>
+              <TableCell />
             </TableRow>
           </TableHead>
           <TableBody>

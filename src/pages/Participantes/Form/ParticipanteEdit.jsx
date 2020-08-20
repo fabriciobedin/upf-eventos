@@ -1,24 +1,21 @@
-import React, { useCallback, useRef, useEffect, useState } from 'react';
+import React, { useCallback, useRef, useEffect } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { Form } from '@unform/web';
 import * as Yup from 'yup';
-
-import Input from '../../../components/Input';
-import Button from '../../../components/Button';
-import getValidationErrors from '../../../utils/getValidationErrors';
-
-import { useToast } from '../../../hooks/toast';
-
 import 'firebase/firestore';
-import firebase from '../../../services/firebase';
 
+import Button from '../../../components/Button';
+import Input from '../../../components/Input';
+import getValidationErrors from '../../../utils/getValidationErrors';
+import firebase from '../../../services/firebase';
+import { useToast } from '../../../hooks/toast';
 import { Container, Content } from './styles';
 
 function ParticipanteEdit() {
   const history = useHistory();
   const formRef = useRef(null);
   const { addToast } = useToast();
-  const participanteRef = firebase.firestore().collection(`participantes`);
+  const participanteRef = firebase.firestore().collection('participantes');
   const { id } = useParams();
 
   useEffect(() => {
@@ -30,7 +27,11 @@ function ParticipanteEdit() {
           formRef.current.setData(docSnapshot.data());
         }
       });
-  }, []);
+  }, [id, participanteRef]);
+
+  const redirect = useCallback(() => {
+    history.push('/participantes');
+  }, [history]);
 
   const handleSubmit = useCallback(
     async data => {
@@ -67,16 +68,11 @@ function ParticipanteEdit() {
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           formRef.current.setErrors(getValidationErrors(err));
-          return;
         }
       }
     },
-    [addToast]
+    [addToast, id, participanteRef, redirect]
   );
-
-  const redirect = useCallback(() => {
-    history.push('/participantes');
-  });
 
   return (
     <Container>
