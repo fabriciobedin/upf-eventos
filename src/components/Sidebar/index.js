@@ -1,7 +1,6 @@
 import React from "react";
 import { List, ListItem, ListItemText } from "@material-ui/core";
 import { Link as RouterLink } from "react-router-dom";
-
 import { Container } from "./styles";
 
 import GroupIcon from "@material-ui/icons/Group";
@@ -12,7 +11,6 @@ function Sidebar() {
     const items = [
         { name: "/app", label: "Home", Icon: HomeIcon },
         { name: "/eventos", label: "Eventos", Icon: EventIcon },
-        // { name: 'participantes', label: 'Participantes Cadastro', Icon: GroupIcon },
         { name: "/participantes", label: "Participantes", Icon: GroupIcon },
     ];
     return (

@@ -2,14 +2,12 @@ import React, { useCallback, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Form } from '@unform/web';
 import * as Yup from 'yup';
+import 'firebase/firestore';
 
 import Input from '../../../components/Input';
 import Button from '../../../components/Button';
 import getValidationErrors from '../../../utils/getValidationErrors';
-
-import 'firebase/firestore';
 import firebase from '../../../services/firebase';
-
 import { Container, Content } from './styles';
 
 function EventoAdd() {
@@ -36,13 +34,10 @@ function EventoAdd() {
           abortEarly: false
         });
 
-        // const documento = await findByDoc(data.codigo, data.documento);
-
         eventoRef.add(data).then(() => {
           redirect();
         });
       } catch (err) {
-        console.log(err);
         if (err instanceof Yup.ValidationError) {
           formRef.current.setErrors(getValidationErrors(err));
         }

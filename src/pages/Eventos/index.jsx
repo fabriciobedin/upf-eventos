@@ -11,8 +11,7 @@ import {
   IconButton,
   Button
 } from '@material-ui/core';
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
+import { Edit, Delete } from '@material-ui/icons';
 import 'firebase/firestore';
 import firebase from '../../services/firebase';
 
@@ -36,8 +35,8 @@ function Eventos() {
       .firestore()
       .collection('eventos')
       .get()
-      .then(eventos => {
-        eventos.forEach(doc => {
+      .then(e => {
+        e.forEach(doc => {
           const evento = {
             ...doc.data(),
             uuid: doc.id
@@ -81,11 +80,11 @@ function Eventos() {
                     size="small"
                     onClick={() => handleEdit(evento.uuid)}
                   >
-                    <EditIcon fontSize="inherit" />
+                    <Edit fontSize="inherit" />
                   </IconButton>
 
                   <IconButton aria-label="delete" size="small">
-                    <DeleteIcon fontSize="inherit" />
+                    <Delete fontSize="inherit" />
                   </IconButton>
                 </TableCell>
               </TableRow>
