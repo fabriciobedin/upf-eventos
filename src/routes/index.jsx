@@ -5,6 +5,9 @@ import Route from './Route';
 import SignIn from '../pages/SignIn';
 import Register from '../pages/Register';
 import Dashborad from '../pages/Dashboard';
+import Eventos from '../pages/Eventos';
+import EventoAdd from '../pages/Eventos/Form/EventoAdd';
+import EventoEdit from '../pages/Eventos/Form/EventoEdit';
 import Participantes from '../pages/Participantes';
 import ParticipanteCadastr from '../pages/Participantes/Form/ParticipanteCadastro';
 import ParticipanteEdit from '../pages/Participantes/Form/ParticipanteEdit';
@@ -14,7 +17,13 @@ const Routes = () => (
     <Route exact path="/" component={SignIn} />
     <Route exact path="/register" component={Register} />
     <Route exact path="/dashboard" component={Dashborad} isPrivate />
+
+    <Route exact path="/eventos" component={Eventos} isPrivate />
+    <Route exact path="/eventos/editar/:id" component={EventoEdit} isPrivate />
+    <Route exact path="/eventos/cadastro/" component={EventoAdd} isPrivate />
+
     <Route exact path="/participantes" component={Participantes} isPrivate />
+
     <Route
       exact
       path="/participantes/cadastro"
