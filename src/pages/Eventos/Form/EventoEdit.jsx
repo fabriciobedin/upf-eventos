@@ -4,7 +4,6 @@ import { Form } from '@unform/web';
 import * as Yup from 'yup';
 import 'firebase/firestore';
 
-import { TextField, Grid } from '@material-ui/core';
 import Button from '../../../components/Button';
 import Input from '../../../components/Input';
 import getValidationErrors from '../../../utils/getValidationErrors';

@@ -17,18 +17,6 @@ function EventoAdd() {
   const formRef = useRef(null);
   const eventoRef = firebase.firestore().collection('eventos');
 
-  const findByDoc = useCallback(
-    async codigo => {
-      return eventoRef
-        .where('codigo', '==', codigo)
-        .get()
-        .then(snapshot => {
-          return snapshot.size;
-        });
-    },
-    [eventoRef]
-  );
-
   const redirect = useCallback(() => {
     history.push('/eventos');
   }, [history]);
