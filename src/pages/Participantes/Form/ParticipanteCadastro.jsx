@@ -11,7 +11,7 @@ import { useToast } from '../../../hooks/toast';
 import 'firebase/firestore';
 import firebase from '../../../services/firebase';
 
-import { Container, Content } from './styles';
+import { Container, Content, ButtonContainer } from './styles';
 import Select from '../../../components/Select';
 
 function ParticipanteCadastro() {
@@ -133,8 +133,10 @@ function ParticipanteCadastro() {
             ))}
           </Select>
           <hr />
-          <Button type="submit">Salvar</Button>
-          <Button onClick={redirect}>Cancelar</Button>
+          <ButtonContainer>
+            <Button type="submit">Salvar</Button>
+            <Button onClick={redirect}>Cancelar</Button>
+          </ButtonContainer>
         </Form>
       </Content>
     </Container>

@@ -9,7 +9,7 @@ import Input from '../../../components/Input';
 import getValidationErrors from '../../../utils/getValidationErrors';
 import firebase from '../../../services/firebase';
 import { useToast } from '../../../hooks/toast';
-import { Container, Content } from './styles';
+import { Container, Content, ButtonContainer } from './styles';
 import Select from '../../../components/Select';
 
 function ParticipanteEdit() {
@@ -101,9 +101,10 @@ function ParticipanteEdit() {
             ))}
           </Select>
           <hr />
-
-          <Button type="submit">Salvar</Button>
-          <Button onClick={redirect}>Cancelar</Button>
+          <ButtonContainer>
+            <Button type="submit">Salvar</Button>
+            <Button onClick={redirect}>Cancelar</Button>
+          </ButtonContainer>
         </Form>
       </Content>
     </Container>
