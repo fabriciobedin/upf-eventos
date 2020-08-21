@@ -6,7 +6,7 @@ import SignIn from '../pages/SignIn';
 import Register from '../pages/Register';
 import Dashborad from '../pages/Dashboard';
 import Participantes from '../pages/Participantes';
-import ParticipanteCadastro from '../pages/Participantes/Form/ParticipanteCadastro';
+import ParticipanteCadastr from '../pages/Participantes/Form/ParticipanteCadastro';
 import ParticipanteEdit from '../pages/Participantes/Form/ParticipanteEdit';
 
 const Routes = () => (
@@ -17,14 +17,14 @@ const Routes = () => (
     <Route exact path="/participantes" component={Participantes} isPrivate />
     <Route
       exact
-      path="/participantes/:id"
-      component={ParticipanteEdit}
+      path="/participantes/cadastro"
+      component={ParticipanteCadastr}
       isPrivate
     />
     <Route
       exact
-      path="/participantes/cadastro"
-      component={ParticipanteCadastro}
+      path="/participantes/:id"
+      component={ParticipanteEdit}
       isPrivate
     />
   </Switch>

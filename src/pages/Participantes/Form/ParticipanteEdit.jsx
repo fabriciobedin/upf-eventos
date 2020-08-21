@@ -10,6 +10,7 @@ import getValidationErrors from '../../../utils/getValidationErrors';
 import firebase from '../../../services/firebase';
 import { useToast } from '../../../hooks/toast';
 import { Container, Content } from './styles';
+import Select from '../../../components/Select';
 
 function ParticipanteEdit() {
   const history = useHistory();
@@ -17,6 +18,12 @@ function ParticipanteEdit() {
   const { addToast } = useToast();
   const participanteRef = firebase.firestore().collection('participantes');
   const { id } = useParams();
+  const tiposParticipantes = [
+    { value: 'aluno', label: 'Aluno' },
+    { value: 'professor', label: 'Professor' },
+    { value: 'funcionario', label: 'Funcionário' },
+    { value: 'externo', label: 'Externo' }
+  ];
 
   useEffect(() => {
     participanteRef
@@ -24,6 +31,7 @@ function ParticipanteEdit() {
       .get()
       .then(docSnapshot => {
         if (docSnapshot.exists) {
+          console.log(docSnapshot.data());
           formRef.current.setData(docSnapshot.data());
         }
       });
@@ -85,13 +93,13 @@ function ParticipanteEdit() {
           <Input name="documento" placeholder="CPF" maxLength="11" />
           <Input name="idEstrangeiro" placeholder="ID estrangeiro" />
           <Input name="email" placeholder="E-mail" />
-          <select name="tipo">
-            <option value="aluno">Aluno</option>
-            <option value="professor">Professor</option>
-            <option value="funcionario">Funcionário</option>
-            <option value="externo">Externo</option>
-          </select>
-
+          <Select name="tipo">
+            {tiposParticipantes.map(tipo => (
+              <option value={tipo.value} key={tipo.value}>
+                {tipo.label}
+              </option>
+            ))}
+          </Select>
           <hr />
 
           <Button type="submit">Salvar</Button>
