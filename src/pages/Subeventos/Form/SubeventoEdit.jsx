@@ -9,6 +9,9 @@ import Button from '../../../components/Button';
 import getValidationErrors from '../../../utils/getValidationErrors';
 import firebase from '../../../services/firebase';
 import { Container, Content } from './Styles';
+import Select from '../../../components/Select';
+
+import Input from '../../../components/Input';
 
 function SubeventosEdit() {
   const [checked] = React.useState(true);
@@ -16,6 +19,12 @@ function SubeventosEdit() {
   const formRef = useRef(null);
   const subeventoRef = firebase.firestore().collection('subeventos');
   const { id } = useParams();
+
+  const turnos = [
+    { value: 'manha', label: 'Manhã' },
+    { value: 'tarde', label: 'Tarde' },
+    { value: 'noite', label: 'Noite' }
+  ];
 
   useEffect(() => {
     subeventoRef
@@ -32,45 +41,50 @@ function SubeventosEdit() {
     history.push('/subeventos');
   }, [history]);
 
-  const handleSubmit = useCallback(async data => {
-    try {
-      formRef.current.setErrors({});
-      const schema = Yup.object().shape({
-        codigo: Yup.string().required('Código obrigatório!'),
-        descricao: Yup.string().required('Descrição obrigatória!'),
-        turno: Yup.string().required('Turno obrigatório!'),
-        data: Yup.string().required('Data obrigatória!')
-      });
-      await schema.validate(data, {
-        abortEarly: false
-      });
-    } catch (err) {
-      if (err instanceof Yup.ValidationError) {
-        formRef.current.setErrors(getValidationErrors(err));
+  const handleSubmit = useCallback(
+    async data => {
+      try {
+        formRef.current.setErrors({});
+        // const schema = Yup.object().shape({
+        //   codigo: Yup.string().required('Código obrigatório!'),
+        //   descricao: Yup.string().required('Descrição obrigatória!'),
+        //   turno: Yup.string().required('Turno obrigatório!'),
+        //   data: Yup.string().required('Data obrigatória!')
+        // });
+        // await schema.validate(data, {
+        //   abortEarly: false
+        // });
+        subeventoRef
+          .doc(id)
+          .update(data)
+          .then(() => {
+            redirect();
+          });
+      } catch (err) {
+        if (err instanceof Yup.ValidationError) {
+          formRef.current.setErrors(getValidationErrors(err));
+        }
       }
-    }
-  }, []);
+    },
+    [id, redirect, subeventoRef]
+  );
 
   return (
     <Container>
-      <h2>Edição de Subevento:</h2>
+      <h2>Cadastro de Subevento:</h2>
       <Content>
         <Form ref={formRef} onSubmit={handleSubmit}>
-          <input name="codigo" type="number" placeholder="Codigo" />
-
-          <input name="descricao" placeholder="Descrição" />
-          <select name="turno">
-            <option value="manha">Manhã</option>
-            <option value="tarde">Tarde</option>
-            <option value="noite">Noite</option>
-          </select>
-
-          <TextField
-            id="date"
-            type="date"
-            name="data"
-            defaultValue={new Date()}
-          />
+          <Input name="codigo" placeholder="Código" type="number" />
+          <Input name="descricao" placeholder="Descrição" />
+          <Select name="tipo">
+            {turnos.map(tipo => (
+              <option value={tipo.value} key={tipo.value}>
+                {tipo.label}
+              </option>
+            ))}
+          </Select>
+          <p>Data Inicial:</p>
+          <Input type="date" name="dataInicial" />
           <FormControlLabel
             control={
               <Checkbox
@@ -81,42 +95,23 @@ function SubeventosEdit() {
             }
             label="Controlar Inicio"
           />
-          <TextField
-            id="horaInicio"
-            name="horaInicio"
-            label="Horario Inicial"
-            type="time"
-            defaultValue="07:30"
-            InputLabelProps={{
-              shrink: true
-            }}
-            inputProps={{
-              step: 300 // 5 min
-            }}
-          />
+          <p>Hora Inicial:</p>
+          <Input type="time" name="horaInicial" />
           <FormControlLabel
             control={
               <Checkbox
-                checked={checked.controlaFinal}
-                name="controlaFinal"
+                checked={checked.controlaInicio}
+                name="controlaFim"
                 color="primary"
               />
             }
             label="Controlar Fim"
           />
-          <TextField
-            id="horaFim"
-            name="horaFim"
-            label="Horario Final"
-            type="time"
-            defaultValue="07:30"
-            InputLabelProps={{
-              shrink: true
-            }}
-            inputProps={{
-              step: 300 // 5 min
-            }}
-          />
+          <p>Hora Final:</p>
+          <Input type="time" name="horaFinal" />
+
+          <hr />
+
           <Button type="submit">Salvar</Button>
           <Button onClick={redirect}>Cancelar</Button>
         </Form>

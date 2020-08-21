@@ -8,6 +8,8 @@ import Button from '../../../components/Button';
 import { Container, Content } from './Styles';
 import { useToast } from '../../../hooks/toast';
 
+import Select from '../../../components/Select';
+
 import 'firebase/firestore';
 import firebase from '../../../services/firebase';
 
@@ -17,6 +19,12 @@ function Subeventos() {
   const formRef = useRef(null);
   const [checked] = React.useState(true);
   const history = useHistory();
+
+  const turnos = [
+    { value: 'manha', label: 'Manhã' },
+    { value: 'tarde', label: 'Tarde' },
+    { value: 'noite', label: 'Noite' }
+  ];
 
   const { addToast } = useToast();
   const subeventoRef = firebase.firestore().collection('subeventos');
@@ -28,33 +36,33 @@ function Subeventos() {
   const handleSubmit = useCallback(
     async data => {
       try {
-        formRef.current.setErrors({});
-        const schema = Yup.object().shape({
-          codigo: Yup.string().required('Código obrigatório!'),
-          descricao: Yup.string().required('Descrição obrigatória!'),
-          turno: Yup.string().required('Turno obrigatório!'),
-          data: Yup.string().required('Data obrigatória!')
-        });
-        await schema.validate(data, {
-          abortEarly: false
-        });
+        // formRef.current.setErrors({});
+        // const schema = Yup.object().shape({
+        //   codigo: Yup.string().required('Código obrigatório!'),
+        //   descricao: Yup.string().required('Descrição obrigatória!'),
+        //   turno: Yup.string().required('Turno obrigatório!'),
+        //   data: Yup.string().required('Data obrigatória!')
+        // });
+        // await schema.validate(data, {
+        //   abortEarly: false
+        // });
 
         subeventoRef.add(data).then(() => {
           redirect();
         });
       } catch (err) {
-        if (err instanceof Yup.ValidationError) {
-          formRef.current.setErrors(getValidationErrors(err));
-          return;
-        }
-        addToast({
-          type: 'error',
-          title: 'Erro na autenticação!',
-          description: 'Por favor, verifique se digitou os dados corretamente.'
-        });
+        // if (err instanceof Yup.ValidationError) {
+        //   formRef.current.setErrors(getValidationErrors(err));
+        //   return;
+        // }
+        // addToast({
+        //   type: 'error',
+        //   title: 'Erro na autenticação!',
+        //   description: 'Por favor, verifique se digitou os dados corretamente.'
+        // });
       }
     },
-    [addToast, subeventoRef, redirect]
+    [subeventoRef, redirect]
   );
 
   return (
@@ -64,11 +72,13 @@ function Subeventos() {
         <Form ref={formRef} onSubmit={handleSubmit}>
           <Input name="codigo" placeholder="Código" type="number" />
           <Input name="descricao" placeholder="Descrição" />
-          <select name="turno">
-            <option value="manha">Manhã</option>
-            <option value="tarde">Tarde</option>
-            <option value="noite">Noite</option>
-          </select>
+          <Select name="tipo">
+            {turnos.map(tipo => (
+              <option value={tipo.value} key={tipo.value}>
+                {tipo.label}
+              </option>
+            ))}
+          </Select>
           <p>Data Inicial:</p>
           <Input type="date" name="dataInicial" />
           <FormControlLabel
