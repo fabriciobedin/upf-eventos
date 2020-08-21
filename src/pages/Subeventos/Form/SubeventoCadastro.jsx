@@ -1,19 +1,15 @@
 import React, { useCallback, useRef } from 'react';
 import { Checkbox, FormControlLabel } from '@material-ui/core';
 import { Form } from '@unform/web';
-import * as Yup from 'yup';
 import { useHistory } from 'react-router-dom';
 import Input from '../../../components/Input';
 import Button from '../../../components/Button';
-import { Container, Content } from './Styles';
-import { useToast } from '../../../hooks/toast';
+import { Container, Content } from './styles';
 
 import Select from '../../../components/Select';
 
 import 'firebase/firestore';
 import firebase from '../../../services/firebase';
-
-import getValidationErrors from '../../../utils/getValidationErrors';
 
 function Subeventos() {
   const formRef = useRef(null);
@@ -26,7 +22,6 @@ function Subeventos() {
     { value: 'noite', label: 'Noite' }
   ];
 
-  const { addToast } = useToast();
   const subeventoRef = firebase.firestore().collection('subeventos');
 
   const redirect = useCallback(() => {
@@ -36,30 +31,11 @@ function Subeventos() {
   const handleSubmit = useCallback(
     async data => {
       try {
-        // formRef.current.setErrors({});
-        // const schema = Yup.object().shape({
-        //   codigo: Yup.string().required('Código obrigatório!'),
-        //   descricao: Yup.string().required('Descrição obrigatória!'),
-        //   turno: Yup.string().required('Turno obrigatório!'),
-        //   data: Yup.string().required('Data obrigatória!')
-        // });
-        // await schema.validate(data, {
-        //   abortEarly: false
-        // });
-
         subeventoRef.add(data).then(() => {
           redirect();
         });
       } catch (err) {
-        // if (err instanceof Yup.ValidationError) {
-        //   formRef.current.setErrors(getValidationErrors(err));
-        //   return;
-        // }
-        // addToast({
-        //   type: 'error',
-        //   title: 'Erro na autenticação!',
-        //   description: 'Por favor, verifique se digitou os dados corretamente.'
-        // });
+        console.log(err);
       }
     },
     [subeventoRef, redirect]

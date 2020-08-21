@@ -4,11 +4,11 @@ import { Form } from '@unform/web';
 import * as Yup from 'yup';
 import 'firebase/firestore';
 
-import { TextField, Checkbox, FormControlLabel } from '@material-ui/core';
-import Button from '../../../components/Button';
+import { Checkbox, FormControlLabel } from '@material-ui/core';
 import getValidationErrors from '../../../utils/getValidationErrors';
 import firebase from '../../../services/firebase';
-import { Container, Content } from './Styles';
+import { Container, Content } from './styles';
+import Button from '../../../components/Button';
 import Select from '../../../components/Select';
 
 import Input from '../../../components/Input';
