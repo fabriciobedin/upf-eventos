@@ -7,10 +7,9 @@ import 'firebase/firestore';
 import { Checkbox, FormControlLabel } from '@material-ui/core';
 import getValidationErrors from '../../../utils/getValidationErrors';
 import firebase from '../../../services/firebase';
-import { Container, Content } from './styles';
+import { Container, Content } from './Styles';
 import Button from '../../../components/Button';
 import Select from '../../../components/Select';
-
 import Input from '../../../components/Input';
 
 function SubeventosEdit() {

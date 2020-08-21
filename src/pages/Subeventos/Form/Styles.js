@@ -12,6 +12,7 @@ export const Content = styled.div`
   width: 100%;
   max-width: 900px;
   margin-top: 30px;
+
   form {
     label {
       flex: 0 0 25%;

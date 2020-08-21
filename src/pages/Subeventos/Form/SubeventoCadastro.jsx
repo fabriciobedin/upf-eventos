@@ -4,7 +4,7 @@ import { Form } from '@unform/web';
 import { useHistory } from 'react-router-dom';
 import Input from '../../../components/Input';
 import Button from '../../../components/Button';
-import { Container, Content } from './styles';
+import { Container, Content } from './Styles';
 
 import Select from '../../../components/Select';
 
