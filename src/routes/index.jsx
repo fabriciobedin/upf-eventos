@@ -9,7 +9,7 @@ import Eventos from '../pages/Eventos';
 import EventoAdd from '../pages/Eventos/Form/EventoAdd';
 import EventoEdit from '../pages/Eventos/Form/EventoEdit';
 import Participantes from '../pages/Participantes';
-import ParticipanteCadastro from '../pages/Participantes/Form/ParticipanteCadastro';
+import ParticipanteCadastr from '../pages/Participantes/Form/ParticipanteCadastro';
 import ParticipanteEdit from '../pages/Participantes/Form/ParticipanteEdit';
 
 const Routes = () => (
@@ -26,14 +26,14 @@ const Routes = () => (
 
     <Route
       exact
-      path="/participantes/:id"
-      component={ParticipanteEdit}
+      path="/participantes/cadastro"
+      component={ParticipanteCadastr}
       isPrivate
     />
     <Route
       exact
-      path="/participantes/cadastro"
-      component={ParticipanteCadastro}
+      path="/participantes/:id"
+      component={ParticipanteEdit}
       isPrivate
     />
   </Switch>

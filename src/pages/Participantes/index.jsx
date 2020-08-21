@@ -28,6 +28,7 @@ function Participantes() {
   );
 
   const handleAdd = useCallback(() => {
+    console.log('add');
     history.push('/participantes/cadastro');
   }, [history]);
 

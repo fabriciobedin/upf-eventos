@@ -1,11 +1,12 @@
-import React from "react";
-import { List, ListItem, ListItemText } from "@material-ui/core";
-import { Link as RouterLink } from "react-router-dom";
-import { Container } from "./styles";
+import React from 'react';
+import { List, ListItem, ListItemText } from '@material-ui/core';
+import { Link as RouterLink } from 'react-router-dom';
 
-import GroupIcon from "@material-ui/icons/Group";
-import EventIcon from "@material-ui/icons/Event";
-import HomeIcon from "@material-ui/icons/Home";
+import { Container, MenuHeader } from './styles';
+
+import GroupIcon from '@material-ui/icons/Group';
+
+import HomeIcon from '@material-ui/icons/Home';
 
 function Sidebar() {
     const items = [
