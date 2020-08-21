@@ -3,7 +3,7 @@ import React from 'react';
 // import { Container } from './styles';
 
 function AuthLayout({ children }) {
-  return <>{children};</>;
+  return <>{children}</>;
 }
 
 export default AuthLayout;
