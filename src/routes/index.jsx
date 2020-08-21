@@ -5,6 +5,8 @@ import Route from './Route';
 import SignIn from '../pages/SignIn';
 import Register from '../pages/Register';
 import Dashborad from '../pages/Dashboard';
+import SubeventosCadastro from '../pages/Subeventos/Form/SubeventoCadastro';
+import SubeventosEdit from '../pages/Subeventos/Form/SubeventoEdit';
 import Eventos from '../pages/Eventos';
 import EventoAdd from '../pages/Eventos/Form/EventoAdd';
 import EventoEdit from '../pages/Eventos/Form/EventoEdit';
@@ -18,6 +20,14 @@ const Routes = () => (
     <Route exact path="/register" component={Register} />
     <Route exact path="/dashboard" component={Dashborad} isPrivate />
 
+    <Route
+      exact
+      path="/subevento/cadastro"
+      component={SubeventosCadastro}
+      isPrivate
+    />
+
+    <Route exact path="/subevento/:id" component={SubeventosEdit} isPrivate />
     <Route exact path="/eventos" component={Eventos} isPrivate />
     <Route exact path="/eventos/editar/:id" component={EventoEdit} isPrivate />
     <Route exact path="/eventos/cadastro/" component={EventoAdd} isPrivate />
