@@ -11,13 +11,21 @@ import { useToast } from '../../../hooks/toast';
 import 'firebase/firestore';
 import firebase from '../../../services/firebase';
 
-import { Container, Content } from './styles';
+import { Container, Content, ButtonContainer } from './styles';
+import Select from '../../../components/Select';
 
 function ParticipanteCadastro() {
   const history = useHistory();
   const formRef = useRef(null);
   const { addToast } = useToast();
   const participanteRef = firebase.firestore().collection('participantes');
+
+  const tiposParticipantes = [
+    { value: 'aluno', label: 'Aluno' },
+    { value: 'professor', label: 'Professor' },
+    { value: 'funcionario', label: 'Funcionário' },
+    { value: 'externo', label: 'Externo' }
+  ];
 
   const findByDoc = useCallback(
     async (codigo, documento) => {
@@ -64,7 +72,6 @@ function ParticipanteCadastro() {
         await schema.validate(data, {
           abortEarly: false
         });
-
         if (data.idEstrangeiro === '' && data.documento === '') {
           addToast({
             type: 'error',
@@ -73,14 +80,11 @@ function ParticipanteCadastro() {
           });
           return;
         }
-
         const documento = await findByDoc(data.codigo, data.documento);
-
         const idEstrangeiro = await findByIdEstrangeiro(
           data.codigo,
           data.documento
         );
-
         if (documento > 0 || idEstrangeiro > 0) {
           addToast({
             type: 'error',
@@ -90,7 +94,6 @@ function ParticipanteCadastro() {
           });
           return;
         }
-
         data.nome = data.nome.toUpperCase();
         participanteRef.add(data).then(() => {
           redirect();
@@ -122,17 +125,18 @@ function ParticipanteCadastro() {
           <Input name="documento" placeholder="CPF" maxLength="11" />
           <Input name="idEstrangeiro" placeholder="ID estrangeiro" />
           <Input name="email" placeholder="E-mail" />
-          <select name="tipo">
-            <option value="aluno">Aluno</option>
-            <option value="professor">Professor</option>
-            <option value="funcionario">Funcionário</option>
-            <option value="externo">Externo</option>
-          </select>
-
+          <Select name="tipo">
+            {tiposParticipantes.map(tipo => (
+              <option value={tipo.value} key={tipo.value}>
+                {tipo.label}
+              </option>
+            ))}
+          </Select>
           <hr />
-
-          <Button type="submit">Salvar</Button>
-          <Button onClick={redirect}>Cancelar</Button>
+          <ButtonContainer>
+            <Button type="submit">Salvar</Button>
+            <Button onClick={redirect}>Cancelar</Button>
+          </ButtonContainer>
         </Form>
       </Content>
     </Container>

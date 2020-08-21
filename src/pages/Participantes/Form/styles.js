@@ -7,11 +7,8 @@ export const Container = styled.div`
 export const Content = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  place-content: center;
-  width: 100%;
-  max-width: 900px;
   margin-top: 30px;
+  max-width: 600px;
 
   form {
     label {
@@ -53,4 +50,7 @@ export const ButtonContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
+  button {
+    margin: 5px;
+  }
 `;
