@@ -5,6 +5,7 @@ import Route from './Route';
 import SignIn from '../pages/SignIn';
 import Register from '../pages/Register';
 import Dashborad from '../pages/Dashboard';
+import Subeventos from '../pages/Subeventos';
 import SubeventosCadastro from '../pages/Subeventos/Form/SubeventoCadastro';
 import SubeventosEdit from '../pages/Subeventos/Form/SubeventoEdit';
 import Eventos from '../pages/Eventos';
@@ -26,6 +27,8 @@ const Routes = () => (
       component={SubeventosCadastro}
       isPrivate
     />
+
+    <Route exact path="/subevento" component={Subeventos} isPrivate />
 
     <Route exact path="/subevento/:id" component={SubeventosEdit} isPrivate />
     <Route exact path="/eventos" component={Eventos} isPrivate />
