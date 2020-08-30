@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import Sidebar from '../../../components/Sidebar';
-// import Content from '../../../components/Content';
 import { Container, ContainerContent } from './styles';
 
 export default function DefaultLayout({ children }) {
@@ -10,7 +9,9 @@ export default function DefaultLayout({ children }) {
     <>
       <Container>
         <Sidebar />
-        <ContainerContent>{children}</ContainerContent>
+        <ContainerContent>
+          {children}
+        </ContainerContent>
       </Container>
     </>
   );

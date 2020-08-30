@@ -31,7 +31,6 @@ function ParticipanteEdit() {
       .get()
       .then(docSnapshot => {
         if (docSnapshot.exists) {
-          console.log(docSnapshot.data());
           formRef.current.setData(docSnapshot.data());
         }
       });

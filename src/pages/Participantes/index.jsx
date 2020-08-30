@@ -37,8 +37,8 @@ function Participantes() {
       .firestore()
       .collection('participantes')
       .get()
-      .then(eventos => {
-        eventos.forEach(doc => {
+      .then(parti => {
+        parti.forEach(doc => {
           const participante = {
             ...doc.data(),
             uuid: doc.id
