@@ -8,8 +8,7 @@ import {
   TableHead,
   TableRow,
   Paper,
-  IconButton,
-  Button
+  IconButton
 } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -43,11 +42,6 @@ function Subeventos() {
     [history]
   );
 
-  const handleAdd = useCallback(() => {
-    console.log('add');
-    history.push('/subevento/cadastro');
-  }, [history]);
-
   useEffect(() => {
     firebase
       .firestore()
@@ -66,16 +60,6 @@ function Subeventos() {
 
   return (
     <div>
-      <div>
-        <Button
-          variant="contained"
-          color="primary"
-          disableElevation
-          onClick={() => handleAdd()}
-        >
-          Novo Subevento
-        </Button>
-      </div>
       <TableContainer component={Paper}>
         <Table aria-label="simple table">
           <TableHead>

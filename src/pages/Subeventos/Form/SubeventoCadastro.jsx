@@ -1,7 +1,7 @@
 import React, { useCallback, useRef } from 'react';
 import { Checkbox, FormControlLabel } from '@material-ui/core';
 import { Form } from '@unform/web';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import * as Yup from 'yup';
 import Input from '../../../components/Input';
 import Button from '../../../components/Button';
@@ -17,6 +17,7 @@ function Subeventos() {
   const formRef = useRef(null);
   const [checked] = React.useState(true);
   const history = useHistory();
+  const { id } = useParams();
 
   const turnos = [
     { value: 'manha', label: 'Manhã' },
@@ -33,6 +34,7 @@ function Subeventos() {
   const handleSubmit = useCallback(
     async data => {
       try {
+        data.idEvento = id;
         formRef.current.setErrors({});
         const schema = Yup.object().shape({
           codigo: Yup.string().required('Código obrigatório!'),
@@ -52,7 +54,7 @@ function Subeventos() {
         }
       }
     },
-    [subeventoRef, redirect]
+    [id, subeventoRef, redirect]
   );
 
   return (

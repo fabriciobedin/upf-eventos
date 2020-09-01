@@ -23,7 +23,7 @@ const Routes = () => (
 
     <Route
       exact
-      path="/subevento/cadastro"
+      path="/subevento/cadastro/:id"
       component={SubeventosCadastro}
       isPrivate
     />

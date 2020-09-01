@@ -31,9 +31,12 @@ function EventoEdit() {
     history.push('/eventos');
   }, [history]);
 
-  const redirectSubevento = useCallback(() => {
-    history.push('/subevento/cadastro');
-  }, [history]);
+  const handleSubevento = useCallback(
+    idEvento => {
+      history.push(`/subevento/cadastro/${idEvento}`);
+    },
+    [history]
+  );
 
   const handleSubmit = useCallback(
     async data => {
@@ -82,7 +85,7 @@ function EventoEdit() {
           <hr />
 
           <Button type="submit">Salvar</Button>
-          <Button onClick={redirectSubevento}>Criar Subevento</Button>
+          <Button onClick={() => handleSubevento(id)}>Criar Subevento</Button>
           <Button onClick={redirect}>Cancelar</Button>
         </Form>
       </Content>
