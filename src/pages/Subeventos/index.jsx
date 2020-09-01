@@ -32,13 +32,13 @@ const StyledTableRow = withStyles(theme => ({
   }
 }))(TableRow);
 
-function Participantes() {
+function Subeventos() {
   const history = useHistory();
-  const [participantes, setParticipantes] = useState([]);
+  const [subeventos, setSubeventos] = useState([]);
 
   const handleEdit = useCallback(
-    idParticipante => {
-      history.push(`/subevento/${idParticipante}`);
+    idSubevento => {
+      history.push(`/subevento/${idSubevento}`);
     },
     [history]
   );
@@ -55,11 +55,11 @@ function Participantes() {
       .get()
       .then(eventos => {
         eventos.forEach(doc => {
-          const participante = {
+          const subevento = {
             ...doc.data(),
             uuid: doc.id
           };
-          setParticipantes(part => [...part, participante]);
+          setSubeventos(sub => [...sub, subevento]);
         });
       });
   }, []);
@@ -90,23 +90,23 @@ function Participantes() {
             </StyledTableRow>
           </TableHead>
           <TableBody>
-            {participantes.map(participante => (
-              <StyledTableRow key={participante.uuid}>
+            {subeventos.map(subevento => (
+              <StyledTableRow key={subevento.uuid}>
                 <StyledTableCell component="th" scope="row">
-                  {participante.codigo}
+                  {subevento.codigo}
                 </StyledTableCell>
-                <StyledTableCell>{participante.descricao}</StyledTableCell>
-                <StyledTableCell>{participante.turno}</StyledTableCell>
+                <StyledTableCell>{subevento.descricao}</StyledTableCell>
+                <StyledTableCell>{subevento.turno}</StyledTableCell>
                 <StyledTableCell align="left" type="date">
-                  {moment(participante.dataInicial).format('D/MM/YYYY')}
+                  {moment(subevento.dataInicial).format('D/MM/YYYY')}
                 </StyledTableCell>
-                <StyledTableCell>{participante.horaInicial}</StyledTableCell>
-                <StyledTableCell>{participante.horaFinal}</StyledTableCell>
+                <StyledTableCell>{subevento.horaInicial}</StyledTableCell>
+                <StyledTableCell>{subevento.horaFinal}</StyledTableCell>
                 <StyledTableCell>
                   <IconButton
                     aria-label="edit"
                     size="small"
-                    onClick={() => handleEdit(participante.uuid)}
+                    onClick={() => handleEdit(subevento.uuid)}
                   >
                     <EditIcon fontSize="inherit" />
                   </IconButton>
@@ -124,4 +124,4 @@ function Participantes() {
   );
 }
 
-export default Participantes;
+export default Subeventos;
