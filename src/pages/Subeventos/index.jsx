@@ -17,11 +17,11 @@ import moment from 'moment';
 import { withStyles } from '@material-ui/core/styles';
 import firebase from '../../services/firebase';
 
-const StyledTableCell = withStyles(theme => ({
+const StyledTableCell = withStyles({
   body: {
     fontSize: 14
   }
-}))(TableCell);
+})(TableCell);
 
 const StyledTableRow = withStyles(theme => ({
   root: {

@@ -28,11 +28,11 @@ function EventoEdit() {
   const { id } = useParams();
   const [subeventos, setSubeventos] = useState([]);
 
-  const StyledTableCell = withStyles(theme => ({
+  const StyledTableCell = withStyles({
     body: {
       fontSize: 14
     }
-  }))(TableCell);
+  })(TableCell);
 
   const StyledTableRow = withStyles(theme => ({
     root: {
@@ -48,8 +48,8 @@ function EventoEdit() {
       .collection('subeventos')
       .where('idEvento', '==', id)
       .get()
-      .then(subeventos => {
-        subeventos.forEach(doc => {
+      .then(subEvento => {
+        subEvento.forEach(doc => {
           const subevento = {
             ...doc.data(),
             uuid: doc.id
