@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
@@ -18,15 +18,34 @@ import {
 } from './styles';
 
 function InscricaoEvento() {
-  const [evento, setEvento] = useState({});
-  const [participantes, setParticipantes] = useState([]);
+  const [eventoState, setEventoState] = useState({});
+  const [participantesState, setParticipantesState] = useState([]);
   const [participantesInscritos, setParticipantesInscritos] = useState([]);
   const { id: idEvento } = useParams();
   const { addToast } = useToast();
+  const dataIniFormatada = useRef(null);
+  const dataFimFormatada = useRef(null);
+
+  const finalizarInscricoes = useCallback(() => {
+    firebase
+      .firestore()
+      .collection('eventos')
+      .doc(idEvento)
+      .update({
+        participantes: participantesInscritos
+      })
+      .then(() => {
+        addToast({
+          type: 'success',
+          title: 'Atenção!',
+          description: 'Participantes inscritos com sucesso.'
+        });
+      });
+  }, [addToast, idEvento, participantesInscritos]);
 
   const addParticipante = useCallback(
     value => {
-      if (participantesInscritos.indexOf(value) > -1) {
+      if (participantesInscritos.find(e => e.uuid === value.uuid)) {
         addToast({
           type: 'error',
           title: 'Atenção!',
@@ -34,7 +53,15 @@ function InscricaoEvento() {
         });
         return;
       }
-      setParticipantesInscritos(part => [...part, value]);
+
+      const snippet = {
+        uuid: value.uuid,
+        codigo: value.codigo,
+        nome: value.nome,
+        email: value.email
+      };
+
+      setParticipantesInscritos(part => [...part, snippet]);
     },
     [addToast, participantesInscritos]
   );
@@ -50,58 +77,85 @@ function InscricaoEvento() {
   );
 
   useEffect(() => {
-    firebase
-      .firestore()
-      .collection('eventos')
-      .doc(idEvento)
-      .get()
-      .then(docSnapshot => {
-        if (docSnapshot.exists) {
-          const eventFound = docSnapshot.data();
-          eventFound.dataIniFormatada = formatDate(eventFound.dataInicial);
-          eventFound.dataFimFormatada = formatDate(eventFound.dataFinal);
-          setEvento(eventFound);
-        }
-      });
+    const buscaEvento = async () => {
+      firebase
+        .firestore()
+        .collection('eventos')
+        .doc(idEvento)
+        .get()
+        .then(docSnapshot => {
+          if (docSnapshot.exists) {
+            const eventFound = docSnapshot.data();
+            if (eventFound.participantes?.length > 0) {
+              setParticipantesInscritos(eventFound.participantes);
+            }
 
-    firebase
-      .firestore()
-      .collection('participantes')
-      .get()
-      .then(eventos => {
-        eventos.forEach(doc => {
-          const participante = {
-            ...doc.data(),
-            uuid: doc.id
-          };
-          setParticipantes(part => [...part, participante]);
+            dataIniFormatada.current = formatDate(eventFound.dataInicial);
+            dataFimFormatada.current = formatDate(eventFound.dataFinal);
+            setEventoState(eventFound);
+          }
         });
-      });
+    };
+    const buscaParticipantes = async () => {
+      firebase
+        .firestore()
+        .collection('participantes')
+        .get()
+        .then(eventos => {
+          eventos.forEach(doc => {
+            const participante = {
+              ...doc.data(),
+              uuid: doc.id
+            };
+            setParticipantesState(part => [...part, participante]);
+          });
+        });
+    };
+
+    buscaParticipantes();
+    buscaEvento();
   }, [idEvento]);
 
   return (
     <>
       <Container>
-        <Title>{evento.titulo}</Title>
-        <p>{evento.descricao}</p>
+        <Title>{eventoState.titulo}</Title>
+        <p>{eventoState.descricao}</p>
 
         <ContainerDatas>
           <Datas>
             <div>Início</div>
-            <span>{evento.dataIniFormatada}</span>
+            <span>{dataIniFormatada.current}</span>
           </Datas>
           <Datas>
             <div>Fim</div>
-            <span>{evento.dataFimFormatada}</span>
+            <span>{dataFimFormatada.current}</span>
           </Datas>
         </ContainerDatas>
       </Container>
 
       <hr />
 
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <Button
+          style={{
+            backgroundColor: '#1BC5BD',
+            borderColor: '#1BC5BD',
+            color: 'white',
+            fontWeight: 500
+          }}
+          variant="outlined"
+          color="primary"
+          onClick={() => finalizarInscricoes()}
+        >
+          Finalizar Inscrições
+        </Button>
+      </div>
+
       <ParticipantesContainer>
         <ListaContainer>
-          {participantes.map(participante => (
+          <h3>Lista Partticipantes</h3>
+          {participantesState.map(participante => (
             <li key={participante.uuid}>
               <strong>{participante.nome}</strong>
               <span> {participante.email} </span>
@@ -117,6 +171,7 @@ function InscricaoEvento() {
           ))}
         </ListaContainer>
         <ListaContainer>
+          <h3>Participantes Inscritos</h3>
           {participantesInscritos.map(
             participanteInscrito =>
               participanteInscrito.uuid && (

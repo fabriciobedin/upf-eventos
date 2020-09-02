@@ -37,18 +37,15 @@ export const Datas = styled.div`
   }
 `;
 
-
-
-
 export const ParticipantesContainer = styled.div`
   display: flex;
   flex: 1;
-  flex-direction:row;
+  flex-direction: row;
   justify-content: space-between;
 `;
 
 export const ListaContainer = styled.div`
-  max-width:50%;
+  max-width: 50%;
   height: 10px;
   li {
     display: flex;
