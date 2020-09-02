@@ -1,10 +1,12 @@
 import React, { useCallback, useRef } from 'react';
 import { Checkbox, FormControlLabel } from '@material-ui/core';
 import { Form } from '@unform/web';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
+import * as Yup from 'yup';
 import Input from '../../../components/Input';
 import Button from '../../../components/Button';
-import { Container, Content } from './Styles';
+import { Container, Content, ButtonContainer } from './Styles';
+import getValidationErrors from '../../../utils/getValidationErrors';
 
 import Select from '../../../components/Select';
 
@@ -15,6 +17,7 @@ function Subeventos() {
   const formRef = useRef(null);
   const [checked] = React.useState(true);
   const history = useHistory();
+  const { id } = useParams();
 
   const turnos = [
     { value: 'manha', label: 'Manhã' },
@@ -31,32 +34,48 @@ function Subeventos() {
   const handleSubmit = useCallback(
     async data => {
       try {
+        data.idEvento = id;
+        formRef.current.setErrors({});
+        const schema = Yup.object().shape({
+          codigo: Yup.string().required('Código obrigatório!'),
+          descricao: Yup.string().required('Descrição obrigatória!'),
+          turno: Yup.string().required('Turno obrigatório'),
+          dataInicial: Yup.string().required('Data inicial obrigatória!')
+        });
+        await schema.validate(data, {
+          abortEarly: false
+        });
         subeventoRef.add(data).then(() => {
           redirect();
         });
       } catch (err) {
-        console.log(err);
+        if (err instanceof Yup.ValidationError) {
+          formRef.current.setErrors(getValidationErrors(err));
+        }
       }
     },
-    [subeventoRef, redirect]
+    [id, subeventoRef, redirect]
   );
 
   return (
     <Container>
-      <h2>Cadastro de Subevento:</h2>
+      <h1>Cadastro de Subevento</h1>
       <Content>
         <Form ref={formRef} onSubmit={handleSubmit}>
           <Input name="codigo" placeholder="Código" type="number" />
           <Input name="descricao" placeholder="Descrição" />
-          <Select name="tipo">
-            {turnos.map(tipo => (
-              <option value={tipo.value} key={tipo.value}>
-                {tipo.label}
+          <br />
+          <p>Data Inicial:</p>
+          <Input type="date" name="dataInicial" />
+          <br />
+          <p>Turno do Subevento:</p>
+          <Select name="turno">
+            {turnos.map(turno => (
+              <option value={turno.value} key={turno.value}>
+                {turno.label}
               </option>
             ))}
           </Select>
-          <p>Data Inicial:</p>
-          <Input type="date" name="dataInicial" />
           <FormControlLabel
             control={
               <Checkbox
@@ -81,11 +100,11 @@ function Subeventos() {
           />
           <p>Hora Final:</p>
           <Input type="time" name="horaFinal" />
-
           <hr />
-
-          <Button type="submit">Salvar</Button>
-          <Button onClick={redirect}>Cancelar</Button>
+          <ButtonContainer>
+            <Button type="submit">Salvar</Button>
+            <Button onClick={redirect}>Cancelar</Button>
+          </ButtonContainer>
         </Form>
       </Content>
     </Container>
