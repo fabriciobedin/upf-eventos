@@ -7,28 +7,29 @@ export const Container = styled.div`
 export const Content = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  place-content: center;
-  width: 100%;
-  max-width: 900px;
   margin-top: 30px;
+  max-width: 600px;
 
   form {
     label {
       flex: 0 0 25%;
     }
+
     input,
     select {
       flex: 0 0 75%;
     }
+
     input[type='number']::-webkit-inner-spin-button,
     input[type='number']::-webkit-outer-spin-button {
       -webkit-appearance: none;
       margin: 0;
     }
+
     h2 {
       margin: 10px 0 20px;
     }
+
     hr {
       margin: 20px 0;
       border: none;
@@ -49,4 +50,7 @@ export const ButtonContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
+  button {
+    margin: 5px;
+  }
 `;
