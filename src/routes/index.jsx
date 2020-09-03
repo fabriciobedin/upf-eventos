@@ -14,6 +14,7 @@ import EventoEdit from '../pages/Eventos/Form/EventoEdit';
 import Participantes from '../pages/Participantes';
 import ParticipanteCadastr from '../pages/Participantes/Form/ParticipanteCadastro';
 import ParticipanteEdit from '../pages/Participantes/Form/ParticipanteEdit';
+import InscricaoEvento from '../pages/InscricaoEvento';
 
 const Routes = () => (
   <Switch>
@@ -33,6 +34,7 @@ const Routes = () => (
     <Route exact path="/subevento/:id" component={SubeventosEdit} isPrivate />
     <Route exact path="/eventos" component={Eventos} isPrivate />
     <Route exact path="/eventos/editar/:id" component={EventoEdit} isPrivate />
+    <Route exact path="/eventos/:id/participantes" component={InscricaoEvento} isPrivate />
     <Route exact path="/eventos/cadastro/" component={EventoAdd} isPrivate />
 
     <Route exact path="/participantes" component={Participantes} isPrivate />

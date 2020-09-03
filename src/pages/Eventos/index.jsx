@@ -11,7 +11,7 @@ import {
   IconButton,
   Button
 } from '@material-ui/core';
-import { Edit, Delete } from '@material-ui/icons';
+import { Edit, Delete, PersonAdd } from '@material-ui/icons';
 import 'firebase/firestore';
 import firebase from '../../services/firebase';
 
@@ -28,6 +28,10 @@ function Eventos() {
 
   const handleAdd = useCallback(() => {
     history.push('/eventos/cadastro');
+  }, [history]);
+
+  const handleAddParticipantes = useCallback(idEvento => {
+    history.push(`/eventos/${idEvento}/participantes`);
   }, [history]);
 
   useEffect(() => {
@@ -86,6 +90,15 @@ function Eventos() {
                   <IconButton aria-label="delete" size="small">
                     <Delete fontSize="inherit" />
                   </IconButton>
+                  <Button
+                    title="Adicionar participantes"
+                    variant="outlined"
+                    size="small"
+                    onClick={() => handleAddParticipantes(evento.uuid)}
+                    startIcon={<PersonAdd />}
+                  >
+                    Participantes
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
