@@ -1,25 +1,22 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Form } from '@unform/web';
 import * as Yup from 'yup';
+import 'firebase/firestore';
 
-import Input from '../../../components/Input';
-import Button from '../../../components/Button';
+import Button from '../../Button';
+import Input from '../../Input';
 import getValidationErrors from '../../../utils/getValidationErrors';
 import { useToast } from '../../../hooks/toast';
-
-import 'firebase/firestore';
-import firebase from '../../../services/firebase';
-
 import { Container, Content, ButtonContainer } from './styles';
-import Select from '../../../components/Select';
+import Select from '../../Select';
 
-function ParticipanteCadastro() {
+import * as ParticipantesService from '../../../services/participantes';
+
+function ParticipanteEdit({ participante, formTitle, idParticipante }) {
   const history = useHistory();
   const formRef = useRef(null);
   const { addToast } = useToast();
-  const participanteRef = firebase.firestore().collection('participantes');
-
   const tiposParticipantes = [
     { value: 'aluno', label: 'Aluno' },
     { value: 'professor', label: 'Professor' },
@@ -27,35 +24,60 @@ function ParticipanteCadastro() {
     { value: 'externo', label: 'Externo' }
   ];
 
-  const findByDoc = useCallback(
-    async (codigo, documento) => {
-      return participanteRef
-        .where('codigo', '==', codigo)
-        .where('documento', '==', documento)
-        .get()
-        .then(snapshot => {
-          return snapshot.size;
-        });
-    },
-    [participanteRef]
-  );
-
-  const findByIdEstrangeiro = useCallback(
-    async (codigo, idEstrangeiro) => {
-      return participanteRef
-        .where('codigo', '==', codigo)
-        .where('idEstrangeiro', '==', idEstrangeiro)
-        .get()
-        .then(snapshot => {
-          return snapshot.size;
-        });
-    },
-    [participanteRef]
-  );
+  useEffect(() => {
+    if (participante) {
+      formRef.current.setData(participante);
+    }
+  }, [participante]);
 
   const redirect = useCallback(() => {
     history.push('/participantes');
   }, [history]);
+
+  const findByDoc = useCallback(async (codigo, documento) => {
+    return ParticipantesService.buscaPorCodigoDocumento(codigo, documento).then(
+      data => data.size
+    );
+  }, []);
+
+  const findByIdEstrangeiro = useCallback(async (codigo, idEstrangeiro) => {
+    return ParticipantesService.buscaPorIdEstrangeiro(
+      codigo,
+      idEstrangeiro
+    ).then(data => data.size);
+  }, []);
+
+  const submitNew = useCallback(
+    async data => {
+      const documento = await findByDoc(data.codigo, data.documento);
+      const idEstrangeiro = await findByIdEstrangeiro(
+        data.codigo,
+        data.documento
+      );
+      if (documento > 0 || idEstrangeiro > 0) {
+        addToast({
+          type: 'error',
+          title: 'Registro já cadastrado!',
+          description:
+            'Atenção, já existe um participante com esse código e documento.'
+        });
+        return;
+      }
+      ParticipantesService.submit(data).then(() => {
+        redirect();
+      });
+    },
+    [addToast, findByDoc, findByIdEstrangeiro, redirect]
+  );
+
+  const submitUpdate = useCallback(
+    async data => {
+      ParticipantesService.submit(data, idParticipante).then(() => {
+        redirect();
+      });
+    },
+    [idParticipante, redirect]
+  );
 
   const handleSubmit = useCallback(
     async data => {
@@ -80,43 +102,24 @@ function ParticipanteCadastro() {
           });
           return;
         }
-        const documento = await findByDoc(data.codigo, data.documento);
-        const idEstrangeiro = await findByIdEstrangeiro(
-          data.codigo,
-          data.documento
-        );
-        if (documento > 0 || idEstrangeiro > 0) {
-          addToast({
-            type: 'error',
-            title: 'Registro já cadastrado!',
-            description:
-              'Atenção, já existe um participante com esse código e documento.'
-          });
+        data.nome = data.nome.toUpperCase();
+        if (participante) {
+          submitUpdate(data);
           return;
         }
-        data.nome = data.nome.toUpperCase();
-        participanteRef.add(data).then(() => {
-          redirect();
-        });
+        submitNew(data);
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           formRef.current.setErrors(getValidationErrors(err));
-          return;
         }
-        addToast({
-          type: 'error',
-          title: 'Erro na autenticação!',
-          description:
-            'Por favor, verifique se digitou suas credenciais corretamente.'
-        });
       }
     },
-    [addToast, findByDoc, findByIdEstrangeiro, participanteRef, redirect]
+    [addToast, participante, submitNew, submitUpdate]
   );
 
   return (
     <Container>
-      <h1>Cadastro de participantes:</h1>
+      <h1>{formTitle}</h1>
       <Content>
         <Form ref={formRef} onSubmit={handleSubmit}>
           <Input name="codigo" placeholder="Código" type="number" />
@@ -134,7 +137,9 @@ function ParticipanteCadastro() {
           </Select>
           <hr />
           <ButtonContainer>
-            <Button type="submit">Salvar</Button>
+            <Button type="submit" onClick={() => handleSubmit()}>
+              Salvar
+            </Button>
             <Button onClick={redirect}>Cancelar</Button>
           </ButtonContainer>
         </Form>
@@ -143,4 +148,4 @@ function ParticipanteCadastro() {
   );
 }
 
-export default ParticipanteCadastro;
+export default ParticipanteEdit;

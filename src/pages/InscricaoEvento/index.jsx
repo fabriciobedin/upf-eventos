@@ -96,6 +96,7 @@ function InscricaoEvento() {
           }
         });
     };
+
     const buscaParticipantes = async () => {
       firebase
         .firestore()
