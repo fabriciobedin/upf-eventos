@@ -11,9 +11,9 @@ import SubeventosEdit from '../pages/Subeventos/Form/SubeventoEdit';
 import Eventos from '../pages/Eventos';
 import EventoAdd from '../pages/Eventos/Form/EventoAdd';
 import EventoEdit from '../pages/Eventos/Form/EventoEdit';
-import Participantes from '../pages/Participantes';
-import ParticipanteCadastr from '../pages/Participantes/Form/ParticipanteCadastro';
-import ParticipanteEdit from '../pages/Participantes/Form/ParticipanteEdit';
+import Participantes from '../pages/Participantes/Listagem';
+import ParticipanteCadastro from '../pages/Participantes/Cadastro';
+import ParticipanteEdit from '../pages/Participantes/Edicao';
 import InscricaoEvento from '../pages/InscricaoEvento';
 
 const Routes = () => (
@@ -21,20 +21,22 @@ const Routes = () => (
     <Route exact path="/" component={SignIn} />
     <Route exact path="/register" component={Register} />
     <Route exact path="/dashboard" component={Dashborad} isPrivate />
-
     <Route
       exact
       path="/subevento/cadastro/:id"
       component={SubeventosCadastro}
       isPrivate
     />
-
     <Route exact path="/subevento" component={Subeventos} isPrivate />
-
     <Route exact path="/subevento/:id" component={SubeventosEdit} isPrivate />
     <Route exact path="/eventos" component={Eventos} isPrivate />
     <Route exact path="/eventos/editar/:id" component={EventoEdit} isPrivate />
-    <Route exact path="/eventos/:id/participantes" component={InscricaoEvento} isPrivate />
+    <Route
+      exact
+      path="/eventos/:id/participantes"
+      component={InscricaoEvento}
+      isPrivate
+    />
     <Route exact path="/eventos/cadastro/" component={EventoAdd} isPrivate />
 
     <Route exact path="/participantes" component={Participantes} isPrivate />
@@ -42,7 +44,7 @@ const Routes = () => (
     <Route
       exact
       path="/participantes/cadastro"
-      component={ParticipanteCadastr}
+      component={ParticipanteCadastro}
       isPrivate
     />
     <Route

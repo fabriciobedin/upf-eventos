@@ -3,10 +3,10 @@ import { useParams } from 'react-router-dom';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import { Button } from '@material-ui/core';
-import 'firebase/firestore';
-import firebase from '../../services/firebase';
 import { formatDate } from '../../utils/formatters';
 import { useToast } from '../../hooks/toast';
+import * as EventosService from '../../services/eventos';
+import * as ParticipantesService from '../../services/participantes';
 
 import {
   Container,
@@ -27,20 +27,15 @@ function InscricaoEvento() {
   const dataFimFormatada = useRef(null);
 
   const finalizarInscricoes = useCallback(() => {
-    firebase
-      .firestore()
-      .collection('eventos')
-      .doc(idEvento)
-      .update({
-        participantes: participantesInscritos
-      })
-      .then(() => {
+    EventosService.realizarInscricao(idEvento, participantesInscritos).then(
+      () => {
         addToast({
           type: 'success',
           title: 'Atenção!',
           description: 'Participantes inscritos com sucesso.'
         });
-      });
+      }
+    );
   }, [addToast, idEvento, participantesInscritos]);
 
   const addParticipante = useCallback(
@@ -77,43 +72,27 @@ function InscricaoEvento() {
   );
 
   useEffect(() => {
-    const buscaEvento = async () => {
-      firebase
-        .firestore()
-        .collection('eventos')
-        .doc(idEvento)
-        .get()
-        .then(docSnapshot => {
-          if (docSnapshot.exists) {
-            const eventFound = docSnapshot.data();
-            if (eventFound.participantes?.length > 0) {
-              setParticipantesInscritos(eventFound.participantes);
-            }
+    EventosService.getEventoById(idEvento).then(docSnapshot => {
+      if (docSnapshot.exists) {
+        const eventFound = docSnapshot.data();
+        if (eventFound.participantes?.length > 0) {
+          setParticipantesInscritos(eventFound.participantes);
+        }
+        dataIniFormatada.current = formatDate(eventFound.dataInicial);
+        dataFimFormatada.current = formatDate(eventFound.dataFinal);
+        setEventoState(eventFound);
+      }
+    });
 
-            dataIniFormatada.current = formatDate(eventFound.dataInicial);
-            dataFimFormatada.current = formatDate(eventFound.dataFinal);
-            setEventoState(eventFound);
-          }
-        });
-    };
-    const buscaParticipantes = async () => {
-      firebase
-        .firestore()
-        .collection('participantes')
-        .get()
-        .then(eventos => {
-          eventos.forEach(doc => {
-            const participante = {
-              ...doc.data(),
-              uuid: doc.id
-            };
-            setParticipantesState(part => [...part, participante]);
-          });
-        });
-    };
-
-    buscaParticipantes();
-    buscaEvento();
+    ParticipantesService.getParticipantes().then(eventos => {
+      eventos.forEach(doc => {
+        const participante = {
+          ...doc.data(),
+          uuid: doc.id
+        };
+        setParticipantesState(part => [...part, participante]);
+      });
+    });
   }, [idEvento]);
 
   return (
