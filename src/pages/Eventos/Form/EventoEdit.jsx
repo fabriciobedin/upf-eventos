@@ -2,8 +2,6 @@ import React, { useCallback, useRef, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { Form } from '@unform/web';
 import * as Yup from 'yup';
-import 'firebase/firestore';
-
 import {
   Table,
   TableBody,
@@ -18,13 +16,16 @@ import moment from 'moment';
 import Button from '../../../components/Button';
 import Input from '../../../components/Input';
 import getValidationErrors from '../../../utils/getValidationErrors';
-import firebase from '../../../services/firebase';
 import { Container, Content } from './styles';
+import {
+  getEventoById,
+  update,
+  getSubEventosByIdEvento
+} from '../../../services/eventos';
 
 function EventoEdit() {
   const history = useHistory();
   const formRef = useRef(null);
-  const eventoRef = firebase.firestore().collection('eventos');
   const { id } = useParams();
   const [subeventos, setSubeventos] = useState([]);
 
@@ -43,32 +44,24 @@ function EventoEdit() {
   }))(TableRow);
 
   useEffect(() => {
-    firebase
-      .firestore()
-      .collection('subeventos')
-      .where('idEvento', '==', id)
-      .get()
-      .then(subEvento => {
-        subEvento.forEach(doc => {
-          const subevento = {
-            ...doc.data(),
-            uuid: doc.id
-          };
-          setSubeventos(sub => [...sub, subevento]);
-        });
+    getSubEventosByIdEvento(id).then(subEvento => {
+      subEvento.forEach(doc => {
+        const subevento = {
+          ...doc.data(),
+          uuid: doc.id
+        };
+        setSubeventos(sub => [...sub, subevento]);
       });
+    });
   }, [id]);
 
   useEffect(() => {
-    eventoRef
-      .doc(id)
-      .get()
-      .then(docSnapshot => {
-        if (docSnapshot.exists) {
-          formRef.current.setData(docSnapshot.data());
-        }
-      });
-  }, [id, eventoRef]);
+    getEventoById(id).then(docSnapshot => {
+      if (docSnapshot.exists) {
+        formRef.current.setData(docSnapshot.data());
+      }
+    });
+  }, [id]);
 
   const redirect = useCallback(() => {
     history.push('/eventos');
@@ -97,19 +90,14 @@ function EventoEdit() {
         });
 
         data.titulo = data.titulo.toUpperCase();
-        eventoRef
-          .doc(id)
-          .update(data)
-          .then(() => {
-            redirect();
-          });
+        update(id, data).then(() => redirect());
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           formRef.current.setErrors(getValidationErrors(err));
         }
       }
     },
-    [id, eventoRef, redirect]
+    [id, redirect]
   );
 
   return (

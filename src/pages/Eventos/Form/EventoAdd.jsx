@@ -2,19 +2,15 @@ import React, { useCallback, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Form } from '@unform/web';
 import * as Yup from 'yup';
-import 'firebase/firestore';
-
 import Input from '../../../components/Input';
 import Button from '../../../components/Button';
 import getValidationErrors from '../../../utils/getValidationErrors';
-import firebase from '../../../services/firebase';
 import { Container, Content } from './styles';
+import { submit } from '../../../services/eventos';
 
 function EventoAdd() {
   const history = useHistory();
   const formRef = useRef(null);
-  const eventoRef = firebase.firestore().collection('eventos');
-
   const redirect = useCallback(() => {
     history.push('/eventos');
   }, [history]);
@@ -34,7 +30,7 @@ function EventoAdd() {
           abortEarly: false
         });
 
-        eventoRef.add(data).then(() => {
+        submit(data).then(() => {
           redirect();
         });
       } catch (err) {
@@ -44,7 +40,7 @@ function EventoAdd() {
       }
     },
 
-    [eventoRef, redirect]
+    [redirect]
   );
 
   return (

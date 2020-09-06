@@ -26,9 +26,10 @@ export const buscaPorIdEstrangeiro = (codigo, idEstrangeiro) => {
     .get();
 };
 
-export const submit = (participante, idParticipante) => {
-  if(idParticipante) {
-    return participantesRef.doc(idParticipante).update(participante);
-  }
+export const submit = (participante ) => {
   return participantesRef.add(participante);
 };
+
+export const update = (idParticipante, participante) => {
+  return participantesRef.doc(idParticipante).update(participante);
+}

@@ -12,8 +12,7 @@ import {
   Button
 } from '@material-ui/core';
 import { Edit, Delete, PersonAdd } from '@material-ui/icons';
-import 'firebase/firestore';
-import firebase from '../../services/firebase';
+import { getEventos } from '../../services/eventos';
 
 function Eventos() {
   const history = useHistory();
@@ -30,24 +29,23 @@ function Eventos() {
     history.push('/eventos/cadastro');
   }, [history]);
 
-  const handleAddParticipantes = useCallback(idEvento => {
-    history.push(`/eventos/${idEvento}/participantes`);
-  }, [history]);
+  const handleAddParticipantes = useCallback(
+    idEvento => {
+      history.push(`/eventos/${idEvento}/participantes`);
+    },
+    [history]
+  );
 
   useEffect(() => {
-    firebase
-      .firestore()
-      .collection('eventos')
-      .get()
-      .then(e => {
-        e.forEach(doc => {
-          const evento = {
-            ...doc.data(),
-            uuid: doc.id
-          };
-          setEventos(part => [...part, evento]);
-        });
+    getEventos().then(e => {
+      e.forEach(doc => {
+        const evento = {
+          ...doc.data(),
+          uuid: doc.id
+        };
+        setEventos(part => [...part, evento]);
       });
+    });
   }, []);
 
   return (

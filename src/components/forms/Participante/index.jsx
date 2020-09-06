@@ -72,7 +72,7 @@ function ParticipanteEdit({ participante, formTitle, idParticipante }) {
 
   const submitUpdate = useCallback(
     async data => {
-      ParticipantesService.submit(data, idParticipante).then(() => {
+      ParticipantesService.update(idParticipante, data).then(() => {
         redirect();
       });
     },
