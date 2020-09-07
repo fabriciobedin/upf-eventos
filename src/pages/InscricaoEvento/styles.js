@@ -47,6 +47,8 @@ export const ParticipantesContainer = styled.div`
 export const ListaContainer = styled.div`
   max-width: 50%;
   height: 10px;
+  width: 350px;
+  max-width: 350px;
   li {
     display: flex;
     flex-direction: column;

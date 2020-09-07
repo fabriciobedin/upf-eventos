@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { Button } from '@material-ui/core';
 
 import { getParticipantes } from '../../../services/participantes';
-import ParticipantesList from '../../../components/tables/Participante';
+import ParticipantesList from '../../../components/exibicao/Participante';
 
 function Participantes() {
   const history = useHistory();

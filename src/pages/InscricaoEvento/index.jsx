@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useCallback, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import { useHistory, useParams } from 'react-router-dom';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import { Button } from '@material-ui/core';
@@ -23,8 +23,11 @@ function InscricaoEvento() {
   const [participantesInscritos, setParticipantesInscritos] = useState([]);
   const { id: idEvento } = useParams();
   const { addToast } = useToast();
-  const dataIniFormatada = useRef(null);
-  const dataFimFormatada = useRef(null);
+  const history = useHistory();
+
+  const redirect = useCallback(() => {
+    history.push('/eventos');
+  }, [history]);
 
   const finalizarInscricoes = useCallback(() => {
     EventosService.realizarInscricao(idEvento, participantesInscritos).then(
@@ -34,9 +37,10 @@ function InscricaoEvento() {
           title: 'Atenção!',
           description: 'Participantes inscritos com sucesso.'
         });
+        redirect();
       }
     );
-  }, [addToast, idEvento, participantesInscritos]);
+  }, [addToast, idEvento, participantesInscritos, redirect]);
 
   const addParticipante = useCallback(
     value => {
@@ -72,28 +76,32 @@ function InscricaoEvento() {
   );
 
   useEffect(() => {
-    EventosService.getEventoById(idEvento).then(docSnapshot => {
-      if (docSnapshot.exists) {
-        const eventFound = docSnapshot.data();
-        if (eventFound.participantes?.length > 0) {
-          setParticipantesInscritos(eventFound.participantes);
-        }
-        dataIniFormatada.current = formatDate(eventFound.dataInicial);
-        dataFimFormatada.current = formatDate(eventFound.dataFinal);
-        setEventoState(eventFound);
+    const getEvento = async () => {
+      const eventoSnapshot = await EventosService.getEventoById(idEvento);
+      const eventFound = eventoSnapshot.data();
+      if (eventFound.participantes?.length > 0) {
+        setParticipantesInscritos(eventFound.participantes);
       }
-    });
+      setEventoState(eventFound);
+    };
 
-    ParticipantesService.getParticipantes().then(eventos => {
-      eventos.forEach(doc => {
-        const participante = {
-          ...doc.data(),
-          uuid: doc.id
-        };
-        setParticipantesState(part => [...part, participante]);
-      });
-    });
+    const getParticipantes = async () => {
+      const participantes = await ParticipantesService.getParticipantes();
+      setParticipantesState(
+        participantes.docs.map(doc => ({ ...doc.data(), uuid: doc.id })) ?? []
+      );
+    };
+
+    getParticipantes();
+    getEvento();
   }, [idEvento]);
+
+  const dataIniFormatada = useMemo(() => formatDate(eventoState.dataInicial), [
+    eventoState
+  ]);
+  const dataFimFormatada = useMemo(() => formatDate(eventoState.dataFinal), [
+    eventoState
+  ]);
 
   return (
     <>
@@ -104,11 +112,11 @@ function InscricaoEvento() {
         <ContainerDatas>
           <Datas>
             <div>Início</div>
-            <span>{dataIniFormatada.current}</span>
+            <span>{dataIniFormatada}</span>
           </Datas>
           <Datas>
             <div>Fim</div>
-            <span>{dataFimFormatada.current}</span>
+            <span>{dataFimFormatada}</span>
           </Datas>
         </ContainerDatas>
       </Container>
@@ -133,7 +141,15 @@ function InscricaoEvento() {
 
       <ParticipantesContainer>
         <ListaContainer>
-          <h3>Lista Partticipantes</h3>
+          <h3>Lista Participantes</h3>
+          {/* <select name="tipo">
+            {participantesState.map(tipo => (
+              <option value={tipo.uuid} key={tipo.uuid}>
+                {tipo.nome}
+              </option>
+            ))}
+          </select> */}
+
           {participantesState.map(participante => (
             <li key={participante.uuid}>
               <strong>{participante.nome}</strong>
