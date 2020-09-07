@@ -9,6 +9,15 @@ export const getEventoById = idEvento => {
   return eventosRef.doc(idEvento).get();
 };
 
+export const getParticipantesByEvento = idEvento => {
+  return eventosRef
+  .doc(idEvento)
+  .collection('participantes')
+  .doc()
+  .get();
+
+}
+
 export const getEventos = () => {
   return eventosRef.get();
 };
