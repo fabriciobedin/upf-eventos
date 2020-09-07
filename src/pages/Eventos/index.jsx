@@ -13,6 +13,7 @@ import {
 } from '@material-ui/core';
 import { Edit, Delete, PersonAdd } from '@material-ui/icons';
 import { getEventos } from '../../services/eventos';
+import EventosList from '../../components/tables/Evento';
 
 function Eventos() {
   const history = useHistory();
@@ -53,8 +54,9 @@ function Eventos() {
       <Button type="button" variant="outlined" onClick={() => handleAdd()}>
         Incluir
       </Button>
+      <EventosList />
 
-      <TableContainer component={Paper}>
+      {/* <TableContainer component={Paper}>
         <Table aria-label="simple table">
           <TableHead>
             <TableRow>
@@ -102,7 +104,7 @@ function Eventos() {
             ))}
           </TableBody>
         </Table>
-      </TableContainer>
+      </TableContainer> */}
     </div>
   );
 }
