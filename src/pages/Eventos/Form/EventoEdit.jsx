@@ -9,7 +9,8 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper
+  Paper,
+  IconButton
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import moment from 'moment';
@@ -17,6 +18,7 @@ import Button from '../../../components/Button';
 import Input from '../../../components/Input';
 import getValidationErrors from '../../../utils/getValidationErrors';
 import { Container, Content } from './styles';
+import { Edit, Delete, PersonAdd } from '@material-ui/icons';
 import {
   getEventoById,
   update,
@@ -42,6 +44,13 @@ function EventoEdit() {
       }
     }
   }))(TableRow);
+
+  const handleAddParticipantes = useCallback(
+    idSubevento => {
+      history.push(`/subevento/${idSubevento}/participantes`);
+    },
+    [history]
+  );
 
   useEffect(() => {
     getSubEventosByIdEvento(id).then(subEvento => {
@@ -70,6 +79,13 @@ function EventoEdit() {
   const handleSubevento = useCallback(
     idEvento => {
       history.push(`/subevento/cadastro/${idEvento}`);
+    },
+    [history]
+  );
+
+  const handleEdit = useCallback(
+    idEvento => {
+      history.push(`/subevento/${idEvento}`);
     },
     [history]
   );
@@ -143,6 +159,26 @@ function EventoEdit() {
                   </StyledTableCell>
                   <StyledTableCell>{subevento.horaInicial}</StyledTableCell>
                   <StyledTableCell>{subevento.horaFinal}</StyledTableCell>
+                  <TableCell>
+                  <IconButton
+                    aria-label="edit"
+                    size="small"
+                    onClick={() => handleEdit(subevento.uuid)}
+                  >
+                    <Edit fontSize="inherit" />
+                  </IconButton>
+
+                  <IconButton aria-label="delete" size="small">
+                    <Delete fontSize="inherit" />
+                  </IconButton>
+                  <IconButton
+                    variant="outlined"
+                    size="small"
+                    onClick={() => handleAddParticipantes(subevento.uuid)}
+                  >
+                    <PersonAdd fontSize="inherit" />
+                  </IconButton>
+                </TableCell>
                 </StyledTableRow>
               ))}
             </TableBody>
