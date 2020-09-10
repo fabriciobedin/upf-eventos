@@ -11,6 +11,7 @@ import { Container, Content } from './Styles';
 import Button from '../../../components/Button';
 import Select from '../../../components/Select';
 import Input from '../../../components/Input';
+import { useToast } from '../../../hooks/toast';
 
 function SubeventosEdit() {
   const [checked] = React.useState(true);
@@ -18,6 +19,7 @@ function SubeventosEdit() {
   const formRef = useRef(null);
   const subeventoRef = firebase.firestore().collection('subeventos');
   const { id } = useParams();
+  const { addToast } = useToast();
 
   const turnos = [
     { value: 'manha', label: 'Manhã' },
@@ -44,19 +46,15 @@ function SubeventosEdit() {
     async data => {
       try {
         formRef.current.setErrors({});
-        // const schema = Yup.object().shape({
-        //   codigo: Yup.string().required('Código obrigatório!'),
-        //   descricao: Yup.string().required('Descrição obrigatória!'),
-        //   turno: Yup.string().required('Turno obrigatório!'),
-        //   data: Yup.string().required('Data obrigatória!')
-        // });
-        // await schema.validate(data, {
-        //   abortEarly: false
-        // });
         subeventoRef
           .doc(id)
           .update(data)
           .then(() => {
+            addToast({
+              type: 'success',
+              title: 'Atenção!',
+              description: 'Subevento alterado com sucesso.'
+            });
             redirect();
           });
       } catch (err) {
@@ -65,7 +63,7 @@ function SubeventosEdit() {
         }
       }
     },
-    [id, redirect, subeventoRef]
+    [addToast, id, redirect, subeventoRef]
   );
 
   return (

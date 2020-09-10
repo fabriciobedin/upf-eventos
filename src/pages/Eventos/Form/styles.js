@@ -54,3 +54,17 @@ export const ButtonContainer = styled.div`
     margin: 5px;
   }
 `;
+
+export const TitleParticipante = styled.div`
+  display:flex;
+  flex:1;
+  padding-top: 10px;
+  button {
+    margin-left: auto;
+    background: #ed6707;
+    color: #FFF;
+    border-radius: 4px;
+    padding: 0 8px;
+    font-weight: 500;
+  }
+`;

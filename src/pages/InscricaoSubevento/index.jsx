@@ -29,15 +29,16 @@ function InscricaoEvento() {
   const subevento = useRef(null);
 
   const finalizarInscricoes = useCallback(() => {
-    SubeventosService.realizarInscricao(idSubevento, participantesInscritos).then(
-      () => {
-        addToast({
-          type: 'success',
-          title: 'Atenção!',
-          description: 'Participantes inscritos com sucesso.'
-        });
-      }
-    );
+    SubeventosService.realizarInscricao(
+      idSubevento,
+      participantesInscritos
+    ).then(() => {
+      addToast({
+        type: 'success',
+        title: 'Atenção!',
+        description: 'Participantes inscritos com sucesso.'
+      });
+    });
   }, [addToast, idSubevento, participantesInscritos]);
 
   const addParticipante = useCallback(
@@ -106,7 +107,7 @@ function InscricaoEvento() {
         <p>{eventoState.descricao}</p>
 
         <ContainerDatas>
-        <Datas>
+          <Datas>
             <div>Subevento</div>
             <span>{subevento.current}</span>
           </Datas>

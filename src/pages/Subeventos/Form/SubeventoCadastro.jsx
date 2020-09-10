@@ -12,8 +12,11 @@ import Select from '../../../components/Select';
 
 import 'firebase/firestore';
 import firebase from '../../../services/firebase';
+import { useToast } from '../../../hooks/toast';
 
 function Subeventos() {
+  const { addToast } = useToast();
+
   const formRef = useRef(null);
   const [checked] = React.useState(true);
   const history = useHistory();
@@ -46,6 +49,11 @@ function Subeventos() {
           abortEarly: false
         });
         subeventoRef.add(data).then(() => {
+          addToast({
+            type: 'success',
+            title: 'Atenção!',
+            description: 'Subevento cadastrado com sucesso.'
+          });
           redirect();
         });
       } catch (err) {
@@ -54,7 +62,7 @@ function Subeventos() {
         }
       }
     },
-    [id, subeventoRef, redirect]
+    [id, subeventoRef, addToast, redirect]
   );
 
   return (

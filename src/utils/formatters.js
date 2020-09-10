@@ -1,7 +1,7 @@
-import { format } from 'date-fns';
+import moment from 'moment';
 
 function formatDate(data) {
-  return data ? format(new Date(data), 'dd/MM/yyyy') : '';
+  return data ? moment(data).format('DD/MM/YYYY') : '';
 }
 
 export { formatDate };

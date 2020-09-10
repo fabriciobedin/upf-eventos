@@ -1,8 +1,8 @@
 import React from 'react';
-import Participante from '../../../components/forms/Participante';
+import ParticipanteForm from '../Form';
 
 function ParticipanteCadastro() {
-  return <Participante formTitle="Inclusão de participante" />;
+  return <ParticipanteForm formTitle="Inclusão de participante" />;
 }
 
 export default ParticipanteCadastro;

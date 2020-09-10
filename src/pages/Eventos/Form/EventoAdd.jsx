@@ -7,10 +7,13 @@ import Button from '../../../components/Button';
 import getValidationErrors from '../../../utils/getValidationErrors';
 import { Container, Content } from './styles';
 import { submit } from '../../../services/eventos';
+import { useToast } from '../../../hooks/toast';
 
 function EventoAdd() {
   const history = useHistory();
   const formRef = useRef(null);
+  const { addToast } = useToast();
+
   const redirect = useCallback(() => {
     history.push('/eventos');
   }, [history]);
@@ -31,6 +34,10 @@ function EventoAdd() {
         });
 
         submit(data).then(() => {
+          addToast({
+            type: 'success',
+            description: 'Evento registrado com sucesso.'
+          });
           redirect();
         });
       } catch (err) {
@@ -40,7 +47,7 @@ function EventoAdd() {
       }
     },
 
-    [redirect]
+    [addToast, redirect]
   );
 
   return (

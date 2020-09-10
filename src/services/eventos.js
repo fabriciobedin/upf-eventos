@@ -15,7 +15,6 @@ export const getParticipantesByEvento = idEvento => {
   .collection('participantes')
   .doc()
   .get();
-
 }
 
 export const getEventos = () => {
@@ -31,8 +30,8 @@ export const submit = evento => {
 }
 
 export const update = (idEvento, evento) => {
+  console.log('update');
   return eventosRef.doc(idEvento).update(evento);
-
 }
 
 export const realizarInscricao = (idEvento, participantes) => {
