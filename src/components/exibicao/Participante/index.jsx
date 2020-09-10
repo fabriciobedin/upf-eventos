@@ -14,7 +14,7 @@ import {
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 
-function ParticipantesList({ participantes }) {
+function ParticipantesList({ participantes, hidePhone, hideButtons }) {
   const history = useHistory();
   const handleEdit = useCallback(
     idParticipante => {
@@ -31,8 +31,8 @@ function ParticipantesList({ participantes }) {
             <TableCell>Código</TableCell>
             <TableCell>Participante</TableCell>
             <TableCell>Email</TableCell>
-            <TableCell>telefone</TableCell>
-            <TableCell />
+            {!hidePhone && <TableCell>telefone</TableCell>}
+            {!hideButtons && <TableCell />}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -43,20 +43,22 @@ function ParticipantesList({ participantes }) {
               </TableCell>
               <TableCell>{participante.nome}</TableCell>
               <TableCell>{participante.email}</TableCell>
-              <TableCell>{participante.telefone}</TableCell>
-              <TableCell>
-                <IconButton
-                  aria-label="edit"
-                  size="small"
-                  onClick={() => handleEdit(participante.uuid)}
-                >
-                  <EditIcon fontSize="inherit" />
-                </IconButton>
+              {!hidePhone && <TableCell>{participante.telefone}</TableCell>}
+              {!hideButtons && (
+                <TableCell>
+                  <IconButton
+                    aria-label="edit"
+                    size="small"
+                    onClick={() => handleEdit(participante.uuid)}
+                  >
+                    <EditIcon fontSize="inherit" />
+                  </IconButton>
 
-                <IconButton aria-label="delete" size="small">
-                  <DeleteIcon fontSize="inherit" />
-                </IconButton>
-              </TableCell>
+                  <IconButton aria-label="delete" size="small">
+                    <DeleteIcon fontSize="inherit" />
+                  </IconButton>
+                </TableCell>
+              )}
             </TableRow>
           ))}
         </TableBody>

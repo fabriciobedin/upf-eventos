@@ -42,11 +42,21 @@ export const Content = styled.div`
   }
 `;
 
-export const Row = styled.div`
+export const RowFilter = styled.div`
   display: flex;
   flex-wrap: wrap;
-  margin-bottom: 15px;
   align-items: center;
+  flex: 1;
+  margin: 10px;
+
+  > div {
+    display: flex;
+    margin: 15px;
+    button {
+      margin-left: auto;
+      background: greenyellow;
+    }
+  }
 `;
 
 export const ButtonContainer = styled.div`

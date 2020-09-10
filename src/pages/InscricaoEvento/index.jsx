@@ -123,19 +123,25 @@ function InscricaoEvento() {
 
       <hr />
 
-      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+      <div
+        style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: 5 }}
+      >
         <Button
           style={{
             backgroundColor: '#1BC5BD',
             borderColor: '#1BC5BD',
             color: 'white',
-            fontWeight: 500
+            fontWeight: 500,
+            marginRight: 5
           }}
           variant="outlined"
           color="primary"
           onClick={() => finalizarInscricoes()}
         >
           Finalizar Inscrições
+        </Button>
+        <Button type="button" variant="outlined" onClick={() => redirect()}>
+          Cancelar
         </Button>
       </div>
 

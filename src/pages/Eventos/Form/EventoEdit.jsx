@@ -14,22 +14,34 @@ import {
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import moment from 'moment';
+import { Edit, Delete, PersonAdd } from '@material-ui/icons';
 import Button from '../../../components/Button';
 import Input from '../../../components/Input';
 import getValidationErrors from '../../../utils/getValidationErrors';
-import { Container, Content } from './styles';
-import { Edit, Delete, PersonAdd } from '@material-ui/icons';
+import { Container, Content, TitleParticipante } from './styles';
 import {
   getEventoById,
   update,
   getSubEventosByIdEvento
 } from '../../../services/eventos';
+import ParticipantesList from '../../../components/exibicao/Participante';
+import { useToast } from '../../../hooks/toast';
 
-function EventoEdit() {
+const schema = Yup.object().shape({
+  codigo: Yup.string().required('Código obrigatório!'),
+  titulo: Yup.string().required('Título obrigatório!'),
+  descricao: Yup.string().required('Descrição obrigatória!'),
+  dataInicial: Yup.string().required('Data inicial obrigatória!'),
+  dataFinal: Yup.string().required('Data Final obrigatória!')
+});
+
+function EventoForm() {
   const history = useHistory();
   const formRef = useRef(null);
-  const { id } = useParams();
   const [subeventos, setSubeventos] = useState([]);
+  const [evento, setEvento] = useState({});
+  const { addToast } = useToast();
+  const { id } = useParams();
 
   const StyledTableCell = withStyles({
     body: {
@@ -46,8 +58,8 @@ function EventoEdit() {
   }))(TableRow);
 
   const handleAddParticipantes = useCallback(
-    idSubevento => {
-      history.push(`/subevento/${idSubevento}/participantes`);
+    idEvento => {
+      history.push(`/subevento/${idEvento}/participantes`);
     },
     [history]
   );
@@ -68,6 +80,7 @@ function EventoEdit() {
     getEventoById(id).then(docSnapshot => {
       if (docSnapshot.exists) {
         formRef.current.setData(docSnapshot.data());
+        setEvento(docSnapshot.data());
       }
     });
   }, [id]);
@@ -90,30 +103,34 @@ function EventoEdit() {
     [history]
   );
 
+  const handleAddParticipantesEvento = useCallback(() => {
+    history.push(`/eventos/${id}/participantes`);
+  }, [history, id]);
+
   const handleSubmit = useCallback(
     async data => {
       try {
         formRef.current.setErrors({});
-        const schema = Yup.object().shape({
-          codigo: Yup.string().required('Código obrigatório!'),
-          titulo: Yup.string().required('Título obrigatório!'),
-          descricao: Yup.string().required('Descrição obrigatória!'),
-          dataInicial: Yup.string().required('Data inicial obrigatória!'),
-          dataFinal: Yup.string().required('Data Final obrigatória!')
-        });
+
         await schema.validate(data, {
           abortEarly: false
         });
 
         data.titulo = data.titulo.toUpperCase();
-        update(id, data).then(() => redirect());
+        update(id, data).then(() => {
+          addToast({
+            type: 'success',
+            description: 'Evento alterado com sucesso.'
+          });
+          redirect();
+        });
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           formRef.current.setErrors(getValidationErrors(err));
         }
       }
     },
-    [id, redirect]
+    [addToast, id, redirect]
   );
 
   return (
@@ -129,10 +146,12 @@ function EventoEdit() {
           <p>Data Final:</p>
           <Input type="date" name="dataFinal" placeholder="Data" />
 
-          <hr />
+          <Button type="submit">Salvar</Button>
+          <Button onClick={redirect}>Cancelar</Button>
         </Form>
 
-        <h1>Subeventos:</h1>
+        <hr />
+        <h3>Subeventos:</h3>
         <TableContainer component={Paper}>
           <Table aria-label="simple table">
             <TableHead>
@@ -160,38 +179,49 @@ function EventoEdit() {
                   <StyledTableCell>{subevento.horaInicial}</StyledTableCell>
                   <StyledTableCell>{subevento.horaFinal}</StyledTableCell>
                   <TableCell>
-                  <IconButton
-                    aria-label="edit"
-                    size="small"
-                    onClick={() => handleEdit(subevento.uuid)}
-                  >
-                    <Edit fontSize="inherit" />
-                  </IconButton>
+                    <IconButton
+                      aria-label="edit"
+                      size="small"
+                      onClick={() => handleEdit(subevento.uuid)}
+                    >
+                      <Edit fontSize="inherit" />
+                    </IconButton>
 
-                  <IconButton aria-label="delete" size="small">
-                    <Delete fontSize="inherit" />
-                  </IconButton>
-                  <IconButton
-                    variant="outlined"
-                    size="small"
-                    onClick={() => handleAddParticipantes(subevento.uuid)}
-                  >
-                    <PersonAdd fontSize="inherit" />
-                  </IconButton>
-                </TableCell>
+                    <IconButton aria-label="delete" size="small">
+                      <Delete fontSize="inherit" />
+                    </IconButton>
+                    <IconButton
+                      variant="outlined"
+                      size="small"
+                      onClick={() => handleAddParticipantes(subevento.uuid)}
+                    >
+                      <PersonAdd fontSize="inherit" />
+                    </IconButton>
+                  </TableCell>
                 </StyledTableRow>
               ))}
             </TableBody>
           </Table>
         </TableContainer>
+
         <hr />
 
-        <Button type="submit">Salvar</Button>
+        <TitleParticipante>
+          <h3>Participantes:</h3>
+          <button type="button" onClick={() => handleAddParticipantesEvento()}>
+            Inscrever participantes
+          </button>
+        </TitleParticipante>
+        <ParticipantesList
+          participantes={evento.participantes || []}
+          hidePhone
+          hideButtons
+        />
+
         <Button onClick={() => handleSubevento(id)}>Criar Subevento</Button>
-        <Button onClick={redirect}>Cancelar</Button>
       </Content>
     </Container>
   );
 }
 
-export default EventoEdit;
+export default EventoForm;

@@ -4,16 +4,25 @@ import { Form } from '@unform/web';
 import * as Yup from 'yup';
 import 'firebase/firestore';
 
-import Button from '../../Button';
-import Input from '../../Input';
-import getValidationErrors from '../../../utils/getValidationErrors';
+import Button from '../../../components/Button';
+import Input from '../../../components/Input';
+import Select from '../../../components/Select';
+import getValidationErrors from '../../../hooks';
 import { useToast } from '../../../hooks/toast';
 import { Container, Content, ButtonContainer } from './styles';
-import Select from '../../Select';
 
 import * as ParticipantesService from '../../../services/participantes';
 
-function ParticipanteEdit({ participante, formTitle, idParticipante }) {
+const schema = Yup.object().shape({
+  codigo: Yup.string().required('Código obrigatório!'),
+  nome: Yup.string().required('Nome obrigatório!'),
+  telefone: Yup.string().required('Telefone obrigatório!'),
+  email: Yup.string()
+    .required('Email obrigatório!')
+    .email('Digite um email válido!')
+});
+
+function ParticipanteForm({ participante, formTitle, idParticipante }) {
   const history = useHistory();
   const formRef = useRef(null);
   const { addToast } = useToast();
@@ -64,6 +73,10 @@ function ParticipanteEdit({ participante, formTitle, idParticipante }) {
         return;
       }
       ParticipantesService.submit(data).then(() => {
+        addToast({
+          type: 'success',
+          description: 'Participante cadastrado com sucesso.'
+        });
         redirect();
       });
     },
@@ -72,25 +85,21 @@ function ParticipanteEdit({ participante, formTitle, idParticipante }) {
 
   const submitUpdate = useCallback(
     async data => {
-      ParticipantesService.update(idParticipante, data).then(() => {
+      ParticipantesService.submit(data, idParticipante).then(() => {
+        addToast({
+          type: 'success',
+          description: 'Participante alterado com sucesso.'
+        });
         redirect();
       });
     },
-    [idParticipante, redirect]
+    [addToast, idParticipante, redirect]
   );
 
   const handleSubmit = useCallback(
     async data => {
       try {
         formRef.current.setErrors({});
-        const schema = Yup.object().shape({
-          codigo: Yup.string().required('Código obrigatório!'),
-          nome: Yup.string().required('Nome obrigatório!'),
-          telefone: Yup.string().required('Telefone obrigatório!'),
-          email: Yup.string()
-            .required('Email obrigatório!')
-            .email('Digite um email válido!')
-        });
         await schema.validate(data, {
           abortEarly: false
         });
@@ -148,4 +157,4 @@ function ParticipanteEdit({ participante, formTitle, idParticipante }) {
   );
 }
 
-export default ParticipanteEdit;
+export default ParticipanteForm;

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import Participante from '../../../components/forms/Participante';
+import ParticipanteForm from '../Form';
 import { getParticipanteById } from '../../../services/participantes';
 
 function ParticipanteEdit() {
@@ -14,7 +14,7 @@ function ParticipanteEdit() {
   }, [id]);
 
   return (
-    <Participante
+    <ParticipanteForm
       participante={participante}
       formTitle="Edição de participante"
       idParticipante={id}
