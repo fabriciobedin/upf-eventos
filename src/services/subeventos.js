@@ -4,6 +4,10 @@ import 'firebase/firestore';
 const db = firebase.firestore();
 const subEventosRef = db.collection('subeventos');
 
+export const getSubEventos = () => {
+  return subEventosRef.get();
+};
+
 export const getSubeventoById = idSubevento => {
   return subEventosRef.doc(idSubevento).get();
 };

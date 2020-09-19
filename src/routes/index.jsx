@@ -5,7 +5,7 @@ import Route from './Route';
 import SignIn from '../pages/SignIn';
 import Register from '../pages/Register';
 import Dashborad from '../pages/Dashboard';
-import Subeventos from '../pages/Subeventos';
+import Subeventos from '../pages/Subeventos/Listagem';
 import SubeventosCadastro from '../pages/Subeventos/Form/SubeventoCadastro';
 import SubeventosEdit from '../pages/Subeventos/Form/SubeventoEdit';
 import Eventos from '../pages/Eventos';
