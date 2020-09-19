@@ -5,22 +5,22 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 
 import MUIDataTable from 'mui-datatables';
-
-import { getParticipantes } from '../../../services/participantes';
+import { getSubEventos } from '../../../services/subeventos';
+import { formatDate } from '../../../utils/formatters';
 
 import options from '../../../utils/tableOptions';
 
-function Participantes() {
+function SubEventos() {
   const history = useHistory();
-  const [participantes, setParticipantes] = useState([]);
+  const [subeventos, setSubeventos] = useState([]);
   const tableOptions = {
     ...options,
     selectableRows: 'none'
   };
 
   const handleEdit = useCallback(
-    idParticipante => {
-      history.push(`/participantes/${idParticipante}`);
+    idSubevento => {
+      history.push(`/subevento/${idSubevento}`);
     },
     [history]
   );
@@ -35,23 +35,39 @@ function Participantes() {
         }
       },
       {
-        label: 'Nome',
-        name: 'nome',
+        label: 'Descrição',
+        name: 'descricao',
         options: {
           filter: true
         }
       },
       {
-        label: 'E-mail',
-        name: 'email',
+        label: 'Turno',
+        name: 'turno',
         options: {
           filter: true,
           sort: false
         }
       },
       {
-        label: 'Telefone',
-        name: 'telefone',
+        label: 'Data',
+        name: 'dataInicial',
+        options: {
+          filter: true,
+          sort: false
+        }
+      },
+      {
+        label: 'Hora inicial',
+        name: 'horaInicial',
+        options: {
+          filter: true,
+          sort: false
+        }
+      },
+      {
+        label: 'Hora final',
+        name: 'horaFinal',
         options: {
           filter: true,
           sort: false
@@ -88,10 +104,15 @@ function Participantes() {
   }, [history]);
 
   useEffect(() => {
-    getParticipantes().then(docSnapshot => {
-      setParticipantes(
-        docSnapshot.docs.map(doc => ({ ...doc.data(), uuid: doc.id }))
-      );
+    getSubEventos().then(eventos => {
+      eventos.forEach(doc => {
+        const subevento = {
+          ...doc.data(),
+          dataInicial: formatDate(doc.data().dataInicial),
+          uuid: doc.id
+        };
+        setSubeventos(sub => [...sub, subevento]);
+      });
     });
   }, []);
 
@@ -102,8 +123,8 @@ function Participantes() {
       </Button>
 
       <MUIDataTable
-        title="Participantes"
-        data={participantes}
+        title="Subeventos"
+        data={subeventos}
         columns={columns}
         options={tableOptions}
       />
@@ -111,4 +132,4 @@ function Participantes() {
   );
 }
 
-export default Participantes;
+export default SubEventos;

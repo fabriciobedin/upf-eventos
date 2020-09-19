@@ -3,6 +3,7 @@ import 'firebase/firestore';
 
 const db = firebase.firestore();
 const participantesRef = db.collection('participantes');
+const timestamp = firebase.firestore.FieldValue.serverTimestamp();
 
 export const getParticipanteById = idParticipante => {
   return participantesRef.doc(idParticipante).get();
@@ -10,6 +11,10 @@ export const getParticipanteById = idParticipante => {
 
 export const getParticipantes = () => {
   return participantesRef.get();
+};
+
+export const getParticipantesPaginado = () => {
+  return participantesRef.orderBy('createdAt');
 };
 
 export const buscaPorCodigoDocumento = (codigo, documento) => {
@@ -28,7 +33,9 @@ export const buscaPorIdEstrangeiro = (codigo, idEstrangeiro) => {
 
 export const submit = (participante, id) => {
   if(id) {
+    participante.updatedAt = timestamp;
     return participantesRef.doc(id).update(participante);
   }
+  participante.createdAt = timestamp;
   return participantesRef.add(participante);
 };
