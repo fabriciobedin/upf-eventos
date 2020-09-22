@@ -148,13 +148,13 @@ function InscricaoEvento() {
       <ParticipantesContainer>
         <ListaContainer>
           <h3>Lista Participantes</h3>
-          {/* <select name="tipo">
+          <select name="tipo">
             {participantesState.map(tipo => (
               <option value={tipo.uuid} key={tipo.uuid}>
                 {tipo.nome}
               </option>
             ))}
-          </select> */}
+          </select>
 
           {participantesState.map(participante => (
             <li key={participante.uuid}>

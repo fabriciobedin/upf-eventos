@@ -55,10 +55,10 @@ export const ButtonContainer = styled.div`
   }
 `;
 
-export const TitleParticipante = styled.div`
+export const SubtitleContainer = styled.div`
   display:flex;
   flex:1;
-  padding-top: 10px;
+  padding-top: 30px;
   button {
     margin-left: auto;
     background: #ed6707;

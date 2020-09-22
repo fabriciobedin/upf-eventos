@@ -18,7 +18,7 @@ import { Edit, Delete, PersonAdd } from '@material-ui/icons';
 import Button from '../../../components/Button';
 import Input from '../../../components/Input';
 import getValidationErrors from '../../../utils/getValidationErrors';
-import { Container, Content, TitleParticipante } from './styles';
+import { Container, Content, SubtitleContainer } from './styles';
 import {
   getEventoById,
   update,
@@ -150,8 +150,12 @@ function EventoForm() {
           <Button onClick={redirect}>Cancelar</Button>
         </Form>
 
-        <hr />
-        <h3>Subeventos:</h3>
+        <SubtitleContainer>
+          <h3>Subeventos:</h3>
+          <button type="button" onClick={() => handleSubevento(id)}>
+            Criar Subeventos
+          </button>
+        </SubtitleContainer>
         <TableContainer component={Paper}>
           <Table aria-label="simple table">
             <TableHead>
@@ -204,21 +208,17 @@ function EventoForm() {
           </Table>
         </TableContainer>
 
-        <hr />
-
-        <TitleParticipante>
+        <SubtitleContainer>
           <h3>Participantes:</h3>
           <button type="button" onClick={() => handleAddParticipantesEvento()}>
             Inscrever participantes
           </button>
-        </TitleParticipante>
+        </SubtitleContainer>
         <ParticipantesList
           participantes={evento.participantes || []}
           hidePhone
           hideButtons
         />
-
-        <Button onClick={() => handleSubevento(id)}>Criar Subevento</Button>
       </Content>
     </Container>
   );

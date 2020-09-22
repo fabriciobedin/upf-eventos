@@ -8,7 +8,7 @@ import Dashborad from '../pages/Dashboard';
 import Subeventos from '../pages/Subeventos/Listagem';
 import SubeventosCadastro from '../pages/Subeventos/Form/SubeventoCadastro';
 import SubeventosEdit from '../pages/Subeventos/Form/SubeventoEdit';
-import Eventos from '../pages/Eventos';
+import EventosList from '../pages/Eventos/Listagem';
 import EventoAdd from '../pages/Eventos/Form/EventoAdd';
 import EventoEdit from '../pages/Eventos/Form/EventoEdit';
 import Participantes from '../pages/Participantes/Listagem';
@@ -36,7 +36,7 @@ const Routes = () => (
     />
     <Route exact path="/subevento" component={Subeventos} isPrivate />
     <Route exact path="/subevento/:id" component={SubeventosEdit} isPrivate />
-    <Route exact path="/eventos" component={Eventos} isPrivate />
+    <Route exact path="/eventos" component={EventosList} isPrivate />
     <Route exact path="/eventos/editar/:id" component={EventoEdit} isPrivate />
     <Route
       exact
