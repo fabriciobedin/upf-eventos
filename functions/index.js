@@ -49,9 +49,11 @@ exports.enviarCracha = functions.https.onRequest(async (req, res) => {
   participante = await buscarParticipante(participanteId);
   evento = await buscarEvento(eventoId);
 
-  await criarPdf(participante,evento);
+  codigo = await criarPdf(participante,evento);
 
   functions.logger.log('Arquivo gerado, enviando email ');
+
+  await sleep(3000);
 
   var nodemailer = require('nodemailer');
   var remetente = nodemailer.createTransport({
@@ -65,7 +67,7 @@ exports.enviarCracha = functions.https.onRequest(async (req, res) => {
       to: participante.email,
       subject: 'Cracha para o evento - '+participante.nome,
       text: 'Olá '+participante.nome+' segue em anexo o crachá referente ao evento',
-      attachments: [{'filename': 'Cracha.pdf', 'path': 'https://storage.googleapis.com/upf-eventos.appspot.com/teste.pdf'}]
+      attachments: [{'filename': 'Cracha.pdf', 'path': 'https://storage.googleapis.com/upf-eventos.appspot.com/'+codigo+'.pdf'}]
       };
 
        //res.json({result: `Email enviado com sucesso`});
@@ -212,4 +214,8 @@ async function buscarEvento(eventoId)
     return data;
   })
   return data;
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
