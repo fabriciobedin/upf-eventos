@@ -16,6 +16,7 @@ import ParticipanteCadastro from '../pages/Participantes/Cadastro';
 import ParticipanteEdit from '../pages/Participantes/Edicao';
 import InscricaoEvento from '../pages/InscricaoEvento';
 import InscricaoSubevento from '../pages/InscricaoSubevento';
+import Usuarios from '../pages/Usuarios/Listagem';
 
 const Routes = () => (
   <Switch>
@@ -60,6 +61,7 @@ const Routes = () => (
       component={ParticipanteEdit}
       isPrivate
     />
+    <Route exact path="/usuarios" component={Usuarios} isPrivate />
   </Switch>
 );
 
