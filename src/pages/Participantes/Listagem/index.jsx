@@ -3,15 +3,14 @@ import { useHistory } from 'react-router-dom';
 import { Button, IconButton } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-
 import MUIDataTable from 'mui-datatables';
-
-import { getParticipantes } from '../../../services/participantes';
-
+import { useConfirm } from 'material-ui-confirm';
+import { getParticipantes, remove } from '../../../services/participantes';
 import options from '../../../utils/tableOptions';
 
 function Participantes() {
   const history = useHistory();
+  const confirmation = useConfirm();
   const [participantes, setParticipantes] = useState([]);
   const tableOptions = {
     ...options,
@@ -24,6 +23,25 @@ function Participantes() {
     },
     [history]
   );
+
+  const handleDelete = useCallback(idParticipante => {
+    confirmation({
+      description: 'Você confirma a exclusão do participante?',
+      title: 'Exclusão de participante',
+      confirmationButtonProps: {
+        variant: 'contained',
+        color: 'secondary',
+        startIcon: <DeleteIcon />
+      },
+      confirmationText: 'Confirmar',
+      cancellationText: 'Cancelar',
+      dialogProps: { disableBackdropClick: true }
+    })
+    .then(() => {
+      remove(idParticipante).then(() => {});
+    })
+    .catch(() => {});
+  }, []);
 
   const columns = useMemo(
     () => [
@@ -72,7 +90,11 @@ function Participantes() {
               >
                 <EditIcon fontSize="inherit" />
               </IconButton>
-              <IconButton aria-label="delete" size="small">
+              <IconButton
+                aria-label="delete"
+                size="small"
+                onClick={() => handleDelete(value)}
+              >
                 <DeleteIcon fontSize="inherit" />
               </IconButton>
             </>
@@ -80,7 +102,7 @@ function Participantes() {
         }
       }
     ],
-    [handleEdit]
+    [handleDelete, handleEdit]
   );
 
   const handleAdd = useCallback(() => {
