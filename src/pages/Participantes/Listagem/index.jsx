@@ -7,6 +7,7 @@ import MUIDataTable from 'mui-datatables';
 import { useConfirm } from 'material-ui-confirm';
 import { getParticipantes, remove } from '../../../services/participantes';
 import options from '../../../utils/tableOptions';
+import { deleteOptions } from '../../../utils/confirmationOptions';
 
 function Participantes() {
   const history = useHistory();
@@ -24,24 +25,16 @@ function Participantes() {
     [history]
   );
 
-  const handleDelete = useCallback(idParticipante => {
-    confirmation({
-      description: 'Você confirma a exclusão do participante?',
-      title: 'Exclusão de participante',
-      confirmationButtonProps: {
-        variant: 'contained',
-        color: 'secondary',
-        startIcon: <DeleteIcon />
-      },
-      confirmationText: 'Confirmar',
-      cancellationText: 'Cancelar',
-      dialogProps: { disableBackdropClick: true }
-    })
-    .then(() => {
-      remove(idParticipante).then(() => {});
-    })
-    .catch(() => {});
-  }, []);
+  const handleDelete = useCallback(
+    idParticipante => {
+      confirmation(deleteOptions)
+        .then(() => {
+          remove(idParticipante).then(() => {});
+        })
+        .catch(() => {});
+    },
+    [confirmation]
+  );
 
   const columns = useMemo(
     () => [
