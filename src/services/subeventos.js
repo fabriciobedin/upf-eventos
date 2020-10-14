@@ -25,6 +25,10 @@ export const update = (idSubevento, subevento) => {
 
 }
 
+export const remove = (idSubevento) => {
+  return subEventosRef.doc(idSubevento).delete();
+};
+
 export const realizarInscricao = (idSubevento, participantes) => {
   return subEventosRef.doc(idSubevento).update({
     participantes: participantes

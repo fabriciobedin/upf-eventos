@@ -2,6 +2,9 @@ import React, { useCallback, useRef, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { Form } from '@unform/web';
 import * as Yup from 'yup';
+import { useConfirm } from 'material-ui-confirm';
+import { remove  } from '../../../services/subeventos';
+import { deleteOptions } from '../../../utils/confirmationOptions';
 import {
   Table,
   TableBody,
@@ -42,6 +45,7 @@ function EventoForm() {
   const [evento, setEvento] = useState({});
   const { addToast } = useToast();
   const { id } = useParams();
+  const confirmation = useConfirm();
 
   const StyledTableCell = withStyles({
     body: {
@@ -94,6 +98,17 @@ function EventoForm() {
       history.push(`/subevento/cadastro/${idEvento}`);
     },
     [history]
+  );
+
+  const handleDeleteSubevento = useCallback(
+    idSubevento => {
+      confirmation(deleteOptions)
+        .then(() => {
+          remove(idSubevento).then(() => {});
+        })
+        .catch(() => {});
+    },
+    [confirmation]
   );
 
   const handleEdit = useCallback(
@@ -191,7 +206,7 @@ function EventoForm() {
                       <Edit fontSize="inherit" />
                     </IconButton>
 
-                    <IconButton aria-label="delete" size="small">
+                    <IconButton aria-label="delete" size="small" onClick={() => handleDeleteSubevento(subevento.uuid)}>
                       <Delete fontSize="inherit" />
                     </IconButton>
                     <IconButton
