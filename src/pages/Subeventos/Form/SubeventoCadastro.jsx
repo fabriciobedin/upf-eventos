@@ -10,9 +10,8 @@ import getValidationErrors from '../../../utils/getValidationErrors';
 
 import Select from '../../../components/Select';
 
-import 'firebase/firestore';
-import firebase from '../../../services/firebase';
 import { useToast } from '../../../hooks/toast';
+import { submit } from '../../../services/subeventos';
 
 function Subeventos() {
   const { addToast } = useToast();
@@ -20,7 +19,7 @@ function Subeventos() {
   const formRef = useRef(null);
   const [checked] = React.useState(true);
   const history = useHistory();
-  const { id } = useParams();
+  const { idEvento } = useParams();
 
   const turnos = [
     { value: 'manha', label: 'Manhã' },
@@ -28,16 +27,14 @@ function Subeventos() {
     { value: 'noite', label: 'Noite' }
   ];
 
-  const subeventoRef = firebase.firestore().collection('subeventos');
-
   const redirect = useCallback(() => {
-    history.push('/subevento');
+    history.goBack();
   }, [history]);
 
   const handleSubmit = useCallback(
     async data => {
       try {
-        data.idEvento = id;
+        data.idEvento = idEvento;
         formRef.current.setErrors({});
         const schema = Yup.object().shape({
           codigo: Yup.string().required('Código obrigatório!'),
@@ -48,7 +45,8 @@ function Subeventos() {
         await schema.validate(data, {
           abortEarly: false
         });
-        subeventoRef.add(data).then(() => {
+
+        submit(idEvento, data).then(() => {
           addToast({
             type: 'success',
             title: 'Atenção!',
@@ -62,7 +60,7 @@ function Subeventos() {
         }
       }
     },
-    [id, subeventoRef, addToast, redirect]
+    [idEvento, addToast, redirect]
   );
 
   return (

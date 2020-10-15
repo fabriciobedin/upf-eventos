@@ -16,7 +16,7 @@ function Sidebar() {
     { name: '/app', label: 'Home', Icon: Home },
     { name: '/eventos', label: 'Eventos', Icon: Event },
     { name: '/participantes', label: 'Participantes', Icon: Group },
-    { name: '/subevento', label: 'Subeventos', Icon: EventNoteOutlined },
+    // { name: '/subevento', label: 'Subeventos', Icon: EventNoteOutlined },
     { name: '/usuarios', label: 'Usuários', Icon: Person }
   ];
   return (

@@ -8,8 +8,6 @@ import options from '../../../utils/tableOptions';
 import { getEventos } from '../../../services/eventos';
 import { formatDate } from '../../../utils/formatters';
 
-// import { Container } from './styles';
-
 function EventosList() {
   const [eventos, setEventos] = useState([]);
   const history = useHistory();
@@ -24,7 +22,7 @@ function EventosList() {
 
   const handleEdit = useCallback(
     idEvento => {
-      history.push(`/eventos/editar/${idEvento}`);
+      history.push(`/eventos/${idEvento}`);
     },
     [history]
   );

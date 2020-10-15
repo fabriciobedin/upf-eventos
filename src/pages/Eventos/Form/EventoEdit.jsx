@@ -19,13 +19,10 @@ import Button from '../../../components/Button';
 import Input from '../../../components/Input';
 import getValidationErrors from '../../../utils/getValidationErrors';
 import { Container, Content, SubtitleContainer } from './styles';
-import {
-  getEventoById,
-  update,
-  getSubEventosByIdEvento
-} from '../../../services/eventos';
+import { getEventoById, update } from '../../../services/eventos';
 import ParticipantesList from '../../../components/exibicao/Participante';
 import { useToast } from '../../../hooks/toast';
+import { getSubEventos } from '../../../services/subeventos';
 
 const schema = Yup.object().shape({
   codigo: Yup.string().required('Código obrigatório!'),
@@ -65,7 +62,7 @@ function EventoForm() {
   );
 
   useEffect(() => {
-    getSubEventosByIdEvento(id).then(subEvento => {
+    getSubEventos(id).then(subEvento => {
       subEvento.forEach(doc => {
         const subevento = {
           ...doc.data(),
@@ -89,16 +86,13 @@ function EventoForm() {
     history.push('/eventos');
   }, [history]);
 
-  const handleSubevento = useCallback(
-    idEvento => {
-      history.push(`/subevento/cadastro/${idEvento}`);
-    },
-    [history]
-  );
+  const handleSubevento = useCallback(() => {
+    history.push(`/eventos/${id}/subeventos/cadastro`);
+  }, [history]);
 
-  const handleEdit = useCallback(
-    idEvento => {
-      history.push(`/subevento/${idEvento}`);
+  const handleEditSubevento = useCallback(
+    subEventoId => {
+      history.push(`/eventos/${id}/subeventos/${subEventoId}`);
     },
     [history]
   );
@@ -152,7 +146,7 @@ function EventoForm() {
 
         <SubtitleContainer>
           <h3>Subeventos:</h3>
-          <button type="button" onClick={() => handleSubevento(id)}>
+          <button type="button" onClick={() => handleSubevento()}>
             Criar Subeventos
           </button>
         </SubtitleContainer>
@@ -186,7 +180,7 @@ function EventoForm() {
                     <IconButton
                       aria-label="edit"
                       size="small"
-                      onClick={() => handleEdit(subevento.uuid)}
+                      onClick={() => handleEditSubevento(subevento.uuid)}
                     >
                       <Edit fontSize="inherit" />
                     </IconButton>

@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { Form } from '@unform/web';
 import * as Yup from 'yup';
 import 'firebase/firestore';
@@ -12,6 +12,7 @@ import { useToast } from '../../../hooks/toast';
 import { Container, Content, ButtonContainer } from './styles';
 
 import * as ParticipantesService from '../../../services/participantes';
+import * as EventosService from '../../../services/eventos';
 
 const schema = Yup.object().shape({
   codigo: Yup.string().required('Código obrigatório!'),
@@ -26,6 +27,7 @@ function ParticipanteForm({ participante, formTitle, idParticipante }) {
   const history = useHistory();
   const formRef = useRef(null);
   const { addToast } = useToast();
+  const { idEvento } = useParams();
   const tiposParticipantes = [
     { value: 'aluno', label: 'Aluno' },
     { value: 'professor', label: 'Professor' },
@@ -72,7 +74,7 @@ function ParticipanteForm({ participante, formTitle, idParticipante }) {
         });
         return;
       }
-      ParticipantesService.submit(data).then(() => {
+      EventosService.submitParticipante(idEvento, data).then(() => {
         addToast({
           type: 'success',
           description: 'Participante cadastrado com sucesso.'
@@ -85,7 +87,7 @@ function ParticipanteForm({ participante, formTitle, idParticipante }) {
 
   const submitUpdate = useCallback(
     async data => {
-      ParticipantesService.submit(data, idParticipante).then(() => {
+      EventosService.submitParticipante(idEvento, data, idParticipante).then(() => {
         addToast({
           type: 'success',
           description: 'Participante alterado com sucesso.'

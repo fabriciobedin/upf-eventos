@@ -44,23 +44,23 @@ function InscricaoEvento() {
 
   const addParticipante = useCallback(
     value => {
-      if (participantesInscritos.find(e => e.uuid === value.uuid)) {
-        addToast({
-          type: 'error',
-          title: 'Atenção!',
-          description: 'Participante já inscrito.'
-        });
-        return;
-      }
+      // if (participantesInscritos.find(e => e.uuid === value.uuid)) {
+      //   addToast({
+      //     type: 'error',
+      //     title: 'Atenção!',
+      //     description: 'Participante já inscrito.'
+      //   });
+      //   return;
+      // }
 
       const snippet = {
-        uuid: value.uuid,
         codigo: value.codigo,
         nome: value.nome,
-        email: value.email
       };
 
       setParticipantesInscritos(part => [...part, snippet]);
+      EventosService.adicionarOrganizador(idEvento, snippet)
+
     },
     [addToast, participantesInscritos]
   );

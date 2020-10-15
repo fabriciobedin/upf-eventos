@@ -23,12 +23,12 @@ const Routes = () => (
     <Route exact path="/" component={SignIn} />
     <Route exact path="/register" component={Register} />
     <Route exact path="/dashboard" component={Dashborad} isPrivate />
-    <Route
+    {/* <Route
       exact
       path="/subevento/cadastro/:id"
       component={SubeventosCadastro}
       isPrivate
-    />
+    /> */}
     <Route
       exact
       path="/subevento/:id/participantes"
@@ -36,16 +36,35 @@ const Routes = () => (
       isPrivate
     />
     <Route exact path="/subevento" component={Subeventos} isPrivate />
-    <Route exact path="/subevento/:id" component={SubeventosEdit} isPrivate />
     <Route exact path="/eventos" component={EventosList} isPrivate />
-    <Route exact path="/eventos/editar/:id" component={EventoEdit} isPrivate />
+    <Route exact path="/eventos/cadastro" component={EventoAdd} isPrivate />
+    <Route exact path="/eventos/:id" component={EventoEdit} isPrivate />
     <Route
       exact
-      path="/eventos/:id/participantes"
-      component={InscricaoEvento}
+      path="/eventos/:idEvento/subeventos/cadastro"
+      component={SubeventosCadastro}
       isPrivate
     />
-    <Route exact path="/eventos/cadastro/" component={EventoAdd} isPrivate />
+    <Route
+      exact
+      path="/eventos/:idEvento/subeventos/:idSubevento"
+      component={SubeventosEdit}
+      isPrivate
+    />
+    <Route
+      exact
+      path="/eventos/:idEvento/participantes"
+      // component={InscricaoEvento}
+      component={ParticipanteCadastro}
+      isPrivate
+    />
+    <Route
+      exact
+      path="/eventos/:idEvento/participantes/:idParticipante"
+      // component={InscricaoEvento}
+      component={ParticipanteEdit}
+      isPrivate
+    />
 
     <Route exact path="/participantes" component={Participantes} isPrivate />
 

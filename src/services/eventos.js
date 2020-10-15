@@ -2,8 +2,11 @@ import firebase from './firebase';
 import 'firebase/firestore';
 
 const db = firebase.firestore();
-const eventosRef = db.collection('eventos');
 const subEventosRef = db.collection('subeventos');
+export const eventosRef = db.collection('Eventos');
+
+const { user } = localStorage.getItem('@upf-eventos:user');
+
 
 export const getEventoById = idEvento => {
   return eventosRef.doc(idEvento).get();
@@ -18,11 +21,15 @@ export const getParticipantesByEvento = idEvento => {
 }
 
 export const getEventos = () => {
-  return eventosRef.get();
-};
 
-export const getSubEventosByIdEvento = (idEvento) => {
-  return subEventosRef.where('idEvento', '==', idEvento).get();
+
+  // verificar se usuário é admin ou organizador
+  // if(true) {
+  //   implementar consulta passando organizador
+  //   return eventosRef.where('organizadores', "array-contains-any", [{}]).get();
+  // }
+
+  return eventosRef.get();
 };
 
 export const submit = evento => {
@@ -30,7 +37,6 @@ export const submit = evento => {
 }
 
 export const update = (idEvento, evento) => {
-  console.log('update');
   return eventosRef.doc(idEvento).update(evento);
 }
 
@@ -38,4 +44,18 @@ export const realizarInscricao = (idEvento, participantes) => {
   return eventosRef.doc(idEvento).update({
     participantes: participantes
   });
+};
+
+export const adicionarOrganizador = (idEvento, organizador) => {
+  return eventosRef.doc(idEvento).update({
+    organizadores: firebase.firestore.FieldValue.arrayUnion(organizador)
+  });
+};
+
+
+export const submitParticipante = (idEvento, participante, idParticipante) => {
+  if (idParticipante) {
+    return eventosRef.doc(idEvento).collection('Participantes').doc(idParticipante).update(participante);
+  }
+  return eventosRef.doc(idEvento).collection('Participantes').add(participante);
 };
