@@ -43,3 +43,29 @@
 [debug] [2020-09-05T16:10:11.348Z] [functions] Stopping Functions Emulator
 [debug] [2020-09-05T16:10:11.356Z] DEBUG: [worker-~diagnostic~-400127b4-4bbd-4b9f-80cd-0a42099681a4]: exited
 [debug] [2020-09-05T16:10:11.356Z] DEBUG: [worker-~diagnostic~-400127b4-4bbd-4b9f-80cd-0a42099681a4]: FINISHED
+[debug] [2020-10-15T14:24:29.746Z] ----------------------------------------------------------------------
+[debug] [2020-10-15T14:24:29.747Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Appelsoft\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init functions
+[debug] [2020-10-15T14:24:29.748Z] CLI Version:   8.9.2
+[debug] [2020-10-15T14:24:29.748Z] Platform:      win32
+[debug] [2020-10-15T14:24:29.748Z] Node Version:  v12.13.0
+[debug] [2020-10-15T14:24:29.748Z] Time:          Thu Oct 15 2020 11:24:29 GMT-0300 (GMT-03:00)
+[debug] [2020-10-15T14:24:29.749Z] ----------------------------------------------------------------------
+[debug] [2020-10-15T14:24:29.749Z] 
+[debug] [2020-10-15T14:24:29.753Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2020-10-15T14:24:29.754Z] > authorizing via signed-in user
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\xampp\htdocs\React JS\UPF Eventos
+
+Before we get started, keep in mind:
+
+  * You are currently outside your home directory
+  * You are initializing in an existing Firebase project directory
+
