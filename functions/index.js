@@ -9,19 +9,19 @@ admin.initializeApp();
 
 exports.addParticipante = functions.https.onRequest(async (req, res) => {
   // Grab the text parameter.
-  const original = req.query.text;
+  const nome = req.query.nome;
+  const email = req.query.email;
+  const eventoId = req.query.eventoId;
 
   eventosRef = admin.firestore().collection('Eventos');
 
 
-  dados = await eventosRef.doc('51unWAHESNYoFJWLN1xI')
+  dados = await eventosRef.doc(eventoId)
   .collection('Participantes')
-  .add({"nome":original,"email":"igvilneck@gmail.com","codigo":1234});
+  .add({"nome":nome,"email":email});
   
-  res.json({"dado":'adicionado com sucesso'})
+  res.json({"dado":'Participante adicionado com sucesso'})
 
-
-//  res.json({result: `Participante with ID: ${writeResult.id} added.`});
 });
 
 exports.onCreateParticipante = functions.firestore
