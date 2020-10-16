@@ -905,3 +905,13 @@ Oct 15, 2020 2:30:56 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channe
 INFO: Detected non-HTTP/2 connection.
 Oct 15, 2020 2:30:56 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
+Oct 15, 2020 2:31:27 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+Oct 15, 2020 2:32:13 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+Oct 15, 2020 2:32:59 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+Oct 15, 2020 2:33:45 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+Oct 15, 2020 2:34:31 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
