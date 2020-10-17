@@ -7,8 +7,6 @@ const eventosRef = db.collection('Eventos');
 const timestamp = firebase.firestore.FieldValue.serverTimestamp();
 
 export const getParticipanteById = (idEvento, idParticipante) => {
-  console.log('idEvento', idEvento)
-  console.log('idParticipante', idParticipante)
   return eventosRef
     .doc(idEvento)
     .collection('Participantes')
@@ -47,6 +45,10 @@ export const submit = (participante, id) => {
   return participantesRef.add(participante);
 };
 
-export const remove = participanteId => {
-  return participantesRef.doc(participanteId).delete();
+export const remove = (idEvento, participanteId) => {
+  return eventosRef
+    .doc(idEvento)
+    .collection('Participantes')
+    .doc(participanteId)
+    .delete();
 };

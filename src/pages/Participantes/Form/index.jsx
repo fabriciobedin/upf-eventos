@@ -37,12 +37,13 @@ function ParticipanteForm({ participante, formTitle, idParticipante }) {
 
   useEffect(() => {
     if (participante) {
+      console.log(participante);
       formRef.current.setData(participante);
     }
   }, [participante]);
 
   const redirect = useCallback(() => {
-    history.push('/participantes');
+    history.goBack();
   }, [history]);
 
   const findByDoc = useCallback(async (codigo, documento) => {
@@ -82,20 +83,22 @@ function ParticipanteForm({ participante, formTitle, idParticipante }) {
         redirect();
       });
     },
-    [addToast, findByDoc, findByIdEstrangeiro, redirect]
+    [addToast, findByDoc, findByIdEstrangeiro, idEvento, redirect]
   );
 
   const submitUpdate = useCallback(
     async data => {
-      EventosService.submitParticipante(idEvento, data, idParticipante).then(() => {
-        addToast({
-          type: 'success',
-          description: 'Participante alterado com sucesso.'
-        });
-        redirect();
-      });
+      EventosService.submitParticipante(idEvento, data, idParticipante).then(
+        () => {
+          addToast({
+            type: 'success',
+            description: 'Participante alterado com sucesso.'
+          });
+          redirect();
+        }
+      );
     },
-    [addToast, idParticipante, redirect]
+    [addToast, idEvento, idParticipante, redirect]
   );
 
   const handleSubmit = useCallback(

@@ -5,7 +5,6 @@ import Route from './Route';
 import SignIn from '../pages/SignIn';
 import Register from '../pages/Register';
 import Dashborad from '../pages/Dashboard';
-import Subeventos from '../pages/Subeventos/Listagem';
 import SubeventosCadastro from '../pages/Subeventos/Form/SubeventoCadastro';
 import SubeventosEdit from '../pages/Subeventos/Form/SubeventoEdit';
 import EventosList from '../pages/Eventos/Listagem';
@@ -14,7 +13,6 @@ import EventoEdit from '../pages/Eventos/Form/EventoEdit';
 import Participantes from '../pages/Participantes/Listagem';
 import ParticipanteCadastro from '../pages/Participantes/Cadastro';
 import ParticipanteEdit from '../pages/Participantes/Edicao';
-// import InscricaoEvento from '../pages/InscricaoEvento';
 import InscricaoSubevento from '../pages/InscricaoSubevento';
 import Usuarios from '../pages/Usuarios/Listagem';
 
@@ -23,19 +21,6 @@ const Routes = () => (
     <Route exact path="/" component={SignIn} />
     <Route exact path="/register" component={Register} />
     <Route exact path="/dashboard" component={Dashborad} isPrivate />
-    {/* <Route
-      exact
-      path="/subevento/cadastro/:id"
-      component={SubeventosCadastro}
-      isPrivate
-    /> */}
-    {/* <Route
-      exact
-      path="/subevento/:id/participantes"
-      component={InscricaoSubevento}
-      isPrivate
-    /> */}
-    <Route exact path="/subevento" component={Subeventos} isPrivate />
     <Route exact path="/eventos" component={EventosList} isPrivate />
     <Route exact path="/eventos/cadastro" component={EventoAdd} isPrivate />
     <Route exact path="/eventos/:idEvento" component={EventoEdit} isPrivate />
@@ -60,14 +45,12 @@ const Routes = () => (
     <Route
       exact
       path="/eventos/:idEvento/participantes"
-      // component={InscricaoEvento}
       component={ParticipanteCadastro}
       isPrivate
     />
     <Route
       exact
       path="/eventos/:idEvento/participantes/:idParticipante"
-      // component={InscricaoEvento}
       component={ParticipanteEdit}
       isPrivate
     />

@@ -24,12 +24,8 @@ import {
   Content,
   SubtitleContainer
 } from './styles';
-import {
-  getEventoById,
-  getParticipantesByEvento,
-  update
-} from '../../../services/eventos';
-import ParticipantesList from '../../../components/exibicao/Participante';
+import { getEventoById, update } from '../../../services/eventos';
+import Participantes from '../../Participantes/Listagem';
 import { useToast } from '../../../hooks/toast';
 import { getSubEventos } from '../../../services/subeventos';
 import TextArea from '../../../components/TextArea';
@@ -46,8 +42,6 @@ function EventoForm() {
   const history = useHistory();
   const formRef = useRef(null);
   const [subeventos, setSubeventos] = useState([]);
-  const [evento, setEvento] = useState({});
-  const [participantes, setParticipantes] = useState([]);
   const { addToast } = useToast();
   const { idEvento } = useParams();
 
@@ -78,7 +72,6 @@ function EventoForm() {
     getEventoById(idEvento).then(docSnapshot => {
       if (docSnapshot.exists) {
         formRef.current.setData(docSnapshot.data());
-        setEvento(docSnapshot.data());
       }
     });
     getSubEventos(idEvento).then(subEvento => {
@@ -88,15 +81,6 @@ function EventoForm() {
           uuid: doc.id
         };
         setSubeventos(sub => [...sub, subevento]);
-      });
-    });
-    getParticipantesByEvento(idEvento).then(participantesSnapshot => {
-      participantesSnapshot.forEach(doc => {
-        const participante = {
-          ...doc.data(),
-          uuid: doc.id
-        };
-        setParticipantes(part => [...part, participante]);
       });
     });
   }, [idEvento]);
@@ -165,9 +149,7 @@ function EventoForm() {
           </ButtonContainer>
         </Form>
       </Content>
-
       <hr style={{ marginTop: 10, marginBottom: 10 }} />
-
       <SubtitleContainer>
         <h3>Subeventos:</h3>
         <button type="button" onClick={() => handleSubevento()}>
@@ -178,7 +160,6 @@ function EventoForm() {
         <Table aria-label="simple table">
           <TableHead>
             <StyledTableRow>
-              {/* <StyledTableCell>Código</StyledTableCell> */}
               <StyledTableCell>Descrição</StyledTableCell>
               <StyledTableCell>Turno</StyledTableCell>
               <StyledTableCell>Data</StyledTableCell>
@@ -228,10 +209,7 @@ function EventoForm() {
           Inscrever participantes
         </button>
       </SubtitleContainer>
-      <ParticipantesList
-        participantes={participantes || []} // hidePhone
-        // hideButtons
-      />
+      <Participantes idEvento={idEvento} />
     </Container>
   );
 }

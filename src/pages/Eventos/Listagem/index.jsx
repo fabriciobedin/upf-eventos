@@ -120,8 +120,13 @@ function EventosList() {
 
   return (
     <>
-      <Button type="button" variant="outlined" onClick={() => handleAdd()}>
-        Incluir
+      <Button
+        type="button"
+        variant="outlined"
+        onClick={() => handleAdd()}
+        style={{ marginBottom: 10 }}
+      >
+        Cadastrar Evento
       </Button>
 
       <MUIDataTable

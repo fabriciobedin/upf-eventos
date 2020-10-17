@@ -11,7 +11,7 @@ function ParticipanteEdit() {
     getParticipanteById(idEvento, idParticipante).then(docSnap => {
       setParticipante(docSnap.data());
     });
-  }, [idParticipante]);
+  }, [idEvento, idParticipante]);
 
   return (
     <ParticipanteForm
