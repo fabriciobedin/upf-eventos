@@ -5,19 +5,19 @@ import { getParticipanteById } from '../../../services/participantes';
 
 function ParticipanteEdit() {
   const [participante, setParticipante] = useState({});
-  const { id } = useParams();
+  const { idEvento, idParticipante } = useParams();
 
   useEffect(() => {
-    getParticipanteById(id).then(docSnap => {
+    getParticipanteById(idEvento, idParticipante).then(docSnap => {
       setParticipante(docSnap.data());
     });
-  }, [id]);
+  }, [idEvento, idParticipante]);
 
   return (
     <ParticipanteForm
       participante={participante}
       formTitle="Edição de participante"
-      idParticipante={id}
+      idParticipante={idParticipante}
     />
   );
 }

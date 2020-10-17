@@ -8,17 +8,17 @@ export const Content = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: 30px;
-  max-width: 600px;
+  max-width: 1024px;
 
   form {
-    label {
+    /* label {
       flex: 0 0 25%;
     }
 
     input,
     select {
       flex: 0 0 75%;
-    }
+    } */
 
     input[type='number']::-webkit-inner-spin-button,
     input[type='number']::-webkit-outer-spin-button {

@@ -3,10 +3,15 @@ import 'firebase/firestore';
 
 const db = firebase.firestore();
 const participantesRef = db.collection('participantes');
+const eventosRef = db.collection('Eventos');
 const timestamp = firebase.firestore.FieldValue.serverTimestamp();
 
-export const getParticipanteById = idParticipante => {
-  return participantesRef.doc(idParticipante).get();
+export const getParticipanteById = (idEvento, idParticipante) => {
+  return eventosRef
+    .doc(idEvento)
+    .collection('Participantes')
+    .doc(idParticipante)
+    .get();
 };
 
 export const getParticipantes = () => {
@@ -32,10 +37,18 @@ export const buscaPorIdEstrangeiro = (codigo, idEstrangeiro) => {
 };
 
 export const submit = (participante, id) => {
-  if(id) {
+  if (id) {
     participante.updatedAt = timestamp;
     return participantesRef.doc(id).update(participante);
   }
   participante.createdAt = timestamp;
   return participantesRef.add(participante);
+};
+
+export const remove = (idEvento, participanteId) => {
+  return eventosRef
+    .doc(idEvento)
+    .collection('Participantes')
+    .doc(participanteId)
+    .delete();
 };

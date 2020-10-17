@@ -1,17 +1,18 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Button, IconButton } from '@material-ui/core';
+import { IconButton } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-
 import MUIDataTable from 'mui-datatables';
-
-import { getParticipantes } from '../../../services/participantes';
-
+import { useConfirm } from 'material-ui-confirm';
+import { remove } from '../../../services/participantes';
 import options from '../../../utils/tableOptions';
+import { deleteOptions } from '../../../utils/confirmationOptions';
+import { getParticipantesByEvento } from '../../../services/eventos';
 
-function Participantes() {
+function Participantes({ idEvento }) {
   const history = useHistory();
+  const confirmation = useConfirm();
   const [participantes, setParticipantes] = useState([]);
   const tableOptions = {
     ...options,
@@ -20,10 +21,35 @@ function Participantes() {
 
   const handleEdit = useCallback(
     idParticipante => {
-      history.push(`/participantes/${idParticipante}`);
+      history.push(`/eventos/${idEvento}/participantes/${idParticipante}`);
     },
-    [history]
+    [history, idEvento]
   );
+
+  const handleDelete = useCallback(
+    idParticipante => {
+      confirmation(deleteOptions)
+        .then(() => {
+          remove(idEvento, idParticipante).then(() => {});
+        })
+        .catch(() => {});
+    },
+    [confirmation, idEvento]
+  );
+
+  useEffect(() => {
+    const unsubscribe = getParticipantesByEvento(idEvento).onSnapshot(
+      participantesSnapshot => {
+        setParticipantes(
+          participantesSnapshot.docs.map(doc => ({
+            ...doc.data(),
+            uuid: doc.id
+          }))
+        );
+      }
+    );
+    return () => unsubscribe();
+  }, [idEvento]);
 
   const columns = useMemo(
     () => [
@@ -72,7 +98,11 @@ function Participantes() {
               >
                 <EditIcon fontSize="inherit" />
               </IconButton>
-              <IconButton aria-label="delete" size="small">
+              <IconButton
+                aria-label="delete"
+                size="small"
+                onClick={() => handleDelete(value)}
+              >
                 <DeleteIcon fontSize="inherit" />
               </IconButton>
             </>
@@ -80,34 +110,16 @@ function Participantes() {
         }
       }
     ],
-    [handleEdit]
+    [handleDelete, handleEdit]
   );
 
-  const handleAdd = useCallback(() => {
-    history.push('/participantes/cadastro');
-  }, [history]);
-
-  useEffect(() => {
-    getParticipantes().then(docSnapshot => {
-      setParticipantes(
-        docSnapshot.docs.map(doc => ({ ...doc.data(), uuid: doc.id }))
-      );
-    });
-  }, []);
-
   return (
-    <>
-      <Button type="button" variant="outlined" onClick={() => handleAdd()}>
-        Incluir
-      </Button>
-
-      <MUIDataTable
-        title="Participantes"
-        data={participantes}
-        columns={columns}
-        options={tableOptions}
-      />
-    </>
+    <MUIDataTable
+      title="Participantes"
+      data={participantes}
+      columns={columns}
+      options={tableOptions}
+    />
   );
 }
 

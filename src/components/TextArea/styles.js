@@ -6,8 +6,7 @@ export const Container = styled.div`
   background: #eee;
   border-radius: 10px;
   padding: 12px;
-  /* width: 100%; */
-
+  width: 100%;
   border: 2px solid #eee;
   color: #777;
 
@@ -37,15 +36,12 @@ export const Container = styled.div`
       color: #ed6707;
     `}
 
-  select {
+  textarea {
+    flex: 1;
     background: transparent;
     border: 0;
     color: #777;
-    border-radius: 4px;
-    height: 35px;
-    padding: 0 5px;
-    font-size: 15px;
-    width: 100%;
+    height: 100px;
 
     &::placeholder {
       color: #777;

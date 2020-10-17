@@ -1,6 +1,10 @@
 const options = {
   download: false,
-  // selectableRows: 'none',
+  filterType: 'dropdown',
+  responsive: 'standard',
+  fixedHeader: true,
+  fixedSelectColumn: true,
+  tableBodyHeight: window.innerWidth > 1366 ? '700px' : '450px',
   textLabels: {
     body: {
       noMatch: 'Nenhum registro encontrado',

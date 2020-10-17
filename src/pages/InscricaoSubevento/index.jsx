@@ -1,12 +1,13 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import { Button } from '@material-ui/core';
 import { formatDate } from '../../utils/formatters';
 import { useToast } from '../../hooks/toast';
 import * as SubeventosService from '../../services/subeventos';
-import * as ParticipantesService from '../../services/participantes';
+// import * as ParticipantesService from '../../services/participantes';
+import * as ServiceEventos from '../../services/eventos';
 
 import {
   Container,
@@ -21,25 +22,27 @@ function InscricaoEvento() {
   const [eventoState, setEventoState] = useState({});
   const [participantesState, setParticipantesState] = useState([]);
   const [participantesInscritos, setParticipantesInscritos] = useState([]);
-  const { id: idSubevento } = useParams();
+  const { idEvento, idSubevento } = useParams();
   const { addToast } = useToast();
   const dataIniFormatada = useRef(null);
   const horaIni = useRef(null);
   const horaFim = useRef(null);
   const subevento = useRef(null);
+  const history = useHistory();
 
   const finalizarInscricoes = useCallback(() => {
-    SubeventosService.realizarInscricao(
-      idSubevento,
-      participantesInscritos
-    ).then(() => {
-      addToast({
-        type: 'success',
-        title: 'Atenção!',
-        description: 'Participantes inscritos com sucesso.'
-      });
-    });
-  }, [addToast, idSubevento, participantesInscritos]);
+    history.goBack();
+    // SubeventosService.realizarInscricao(
+    //   idSubevento,
+    //   participantesInscritos
+    // ).then(() => {
+    //   addToast({
+    //     type: 'success',
+    //     title: 'Atenção!',
+    //     description: 'Participantes inscritos com sucesso.'
+    //   });
+    // });
+  }, [history]);
 
   const addParticipante = useCallback(
     value => {
@@ -75,21 +78,23 @@ function InscricaoEvento() {
   );
 
   useEffect(() => {
-    SubeventosService.getSubeventoById(idSubevento).then(docSnapshot => {
-      if (docSnapshot.exists) {
-        const subeventFound = docSnapshot.data();
-        if (subeventFound.participantes?.length > 0) {
-          setParticipantesInscritos(subeventFound.participantes);
+    SubeventosService.getSubeventoById(idEvento, idSubevento).then(
+      docSnapshot => {
+        if (docSnapshot.exists) {
+          const subeventFound = docSnapshot.data();
+          if (subeventFound.participantes?.length > 0) {
+            setParticipantesInscritos(subeventFound.participantes);
+          }
+          dataIniFormatada.current = formatDate(subeventFound.dataInicial);
+          horaIni.current = subeventFound.horaInicial;
+          horaFim.current = subeventFound.horaFinal;
+          subevento.current = subeventFound.descricao;
+          setEventoState(subeventFound);
         }
-        dataIniFormatada.current = formatDate(subeventFound.dataInicial);
-        horaIni.current = subeventFound.horaInicial;
-        horaFim.current = subeventFound.horaFinal;
-        subevento.current = subeventFound.descricao;
-        setEventoState(subeventFound);
       }
-    });
+    );
 
-    ParticipantesService.getParticipantes().then(eventos => {
+    ServiceEventos.getParticipantesByEvento(idEvento).then(eventos => {
       eventos.forEach(doc => {
         const participante = {
           ...doc.data(),
@@ -98,7 +103,7 @@ function InscricaoEvento() {
         setParticipantesState(part => [...part, participante]);
       });
     });
-  }, [idSubevento]);
+  }, [idEvento, idSubevento]);
 
   return (
     <>
@@ -107,10 +112,6 @@ function InscricaoEvento() {
         <p>{eventoState.descricao}</p>
 
         <ContainerDatas>
-          <Datas>
-            <div>Subevento</div>
-            <span>{subevento.current}</span>
-          </Datas>
           <Datas>
             <div>Início</div>
             <span>{dataIniFormatada.current}</span>

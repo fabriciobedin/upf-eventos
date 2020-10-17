@@ -1,4 +1,4 @@
-import { Button, IconButton } from '@material-ui/core';
+import { Button, IconButton, Tooltip } from '@material-ui/core';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import EditIcon from '@material-ui/icons/Edit';
@@ -7,8 +7,6 @@ import MUIDataTable from 'mui-datatables';
 import options from '../../../utils/tableOptions';
 import { getEventos } from '../../../services/eventos';
 import { formatDate } from '../../../utils/formatters';
-
-// import { Container } from './styles';
 
 function EventosList() {
   const [eventos, setEventos] = useState([]);
@@ -24,7 +22,7 @@ function EventosList() {
 
   const handleEdit = useCallback(
     idEvento => {
-      history.push(`/eventos/editar/${idEvento}`);
+      history.push(`/eventos/${idEvento}`);
     },
     [history]
   );
@@ -42,7 +40,10 @@ function EventosList() {
         label: 'Descrição',
         name: 'descricao',
         options: {
-          filter: true
+          filter: true,
+          setCellProps: () => ({
+            style: { maxWidth: window.innerWidth > 1366 ? 900 : 600 }
+          })
         }
       },
       {
@@ -75,18 +76,25 @@ function EventosList() {
         options: {
           filter: false,
           sort: false,
+          setCellProps: () => ({
+            style: { minWidth: 80 }
+          }),
           customBodyRender: value => (
             <>
-              <IconButton
-                aria-label="edit"
-                size="small"
-                onClick={() => handleEdit(value)}
-              >
-                <EditIcon fontSize="inherit" />
-              </IconButton>
-              <IconButton aria-label="delete" size="small">
-                <DeleteIcon fontSize="inherit" />
-              </IconButton>
+              <Tooltip title="Editar">
+                <IconButton
+                  aria-label="edit"
+                  size="small"
+                  onClick={() => handleEdit(value)}
+                >
+                  <EditIcon fontSize="inherit" />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Remover">
+                <IconButton about="teste" aria-label="delete" size="small">
+                  <DeleteIcon fontSize="inherit" />
+                </IconButton>
+              </Tooltip>
             </>
           )
         }
@@ -112,8 +120,13 @@ function EventosList() {
 
   return (
     <>
-      <Button type="button" variant="outlined" onClick={() => handleAdd()}>
-        Incluir
+      <Button
+        type="button"
+        variant="outlined"
+        onClick={() => handleAdd()}
+        style={{ marginBottom: 10 }}
+      >
+        Cadastrar Evento
       </Button>
 
       <MUIDataTable
