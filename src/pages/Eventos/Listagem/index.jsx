@@ -1,4 +1,4 @@
-import { Button, IconButton } from '@material-ui/core';
+import { Button, IconButton, Tooltip } from '@material-ui/core';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import EditIcon from '@material-ui/icons/Edit';
@@ -75,16 +75,20 @@ function EventosList() {
           sort: false,
           customBodyRender: value => (
             <>
-              <IconButton
-                aria-label="edit"
-                size="small"
-                onClick={() => handleEdit(value)}
-              >
-                <EditIcon fontSize="inherit" />
-              </IconButton>
-              <IconButton aria-label="delete" size="small">
-                <DeleteIcon fontSize="inherit" />
-              </IconButton>
+              <Tooltip title="Editar">
+                <IconButton
+                  aria-label="edit"
+                  size="small"
+                  onClick={() => handleEdit(value)}
+                >
+                  <EditIcon fontSize="inherit" />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Remover">
+                <IconButton about="teste" aria-label="delete" size="small">
+                  <DeleteIcon fontSize="inherit" />
+                </IconButton>
+              </Tooltip>
             </>
           )
         }
