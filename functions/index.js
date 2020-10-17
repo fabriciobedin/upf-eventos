@@ -7,47 +7,49 @@ const admin = require('firebase-admin');
 const storage  = require('firebase-admin');
 admin.initializeApp();
 
-
-// Take the text parameter passed to this HTTP endpoint and insert it into
-// Cloud Firestore under the path /messages/:documentId/original
-exports.addMessage = functions.https.onRequest(async (req, res) => {
+exports.addParticipante = functions.https.onRequest(async (req, res) => {
   // Grab the text parameter.
-  const original = req.query.text;
-  // Push the new message into Cloud Firestore using the Firebase Admin SDK.
-  const writeResult = await admin.firestore().collection('messages').add({original: original});
-  // Send back a message that we've succesfully written the message
-  res.json({result: `Message with ID: ${writeResult.id} added.`});
-});
-// Listens for new messages added to /messages/:documentId/original and creates an
-// uppercase version of the message to /messages/:documentId/uppercase
-exports.makeUppercase = functions.firestore.document('/messages/{documentId}')
-    .onCreate((snap, context) => {
-      // Grab the current value of what was written to Cloud Firestore.
-      const original = snap.data().original;
+  const nome = req.query.nome;
+  const email = req.query.email;
+  const eventoId = req.query.eventoId;
 
-      // Access the parameter `{documentId}` with `context.params`
-      functions.logger.log('Uppercasing', context.params.documentId, original);
+  eventosRef = admin.firestore().collection('Eventos');
 
-      const uppercase = original.toUpperCase();
 
-      // You must return a Promise when performing asynchronous tasks inside a Functions such as
-      // writing to Cloud Firestore.
-      // Setting an 'uppercase' field in Cloud Firestore document returns a Promise.
-      return snap.ref.set({uppercase}, {merge: true});
+  dados = await eventosRef.doc(eventoId)
+  .collection('Participantes')
+  .add({"nome":nome,"email":email});
+  
+  res.json({"dado":'Participante adicionado com sucesso'})
+
 });
 
+exports.onCreateParticipante = functions.firestore
+    .document('/Eventos/{eventoId}/Participantes/{participanteId}')
+    .onCreate(async (snap, context) => {
 
+      const eventoId = context.params.eventoId
+      const participanteId = context.params.participanteId
 
+      const participante = snap.data();
+      participante.uuid = participanteId;
 
-// Take the text parameter passed to this HTTP endpoint and insert it into
+      console.log(participante);
+      if(participante.email && participante.nome && participante.uuid)
+      {
+      evento = await buscarEvento(eventoId);
+      evento.uuid = eventoId;
+      console.log(evento)
+      await enviarCracha(evento,participante)
+      }
+
+      return participante;
+      // perform desired operations ...
+    });
+
 // Cloud Firestore under the path /messages/:documentId/original
-exports.enviarCracha = functions.https.onRequest(async (req, res) => {
-
-  const participanteId = req.query.participanteId; // busca o parametro participanteId da url
-  const eventoId = req.query.eventoId; // busca o parametro participanteId da url
-
-  participante = await buscarParticipante(participanteId);
-  evento = await buscarEvento(eventoId);
+async function enviarCracha(evento,participante)
+{
 
   codigo = await criarPdf(participante,evento);
 
@@ -81,18 +83,18 @@ exports.enviarCracha = functions.https.onRequest(async (req, res) => {
      });
 
 
-  });
+  };
 
   async function criarPdf(participante,evento)
   {
     functions.logger.log('Criando Pdf para o participante '+participante.nome);
-    functions.logger.log('Evento '+evento.codigo);
+    functions.logger.log('Evento '+evento.uuid);
 
     const {Storage} = require('@google-cloud/storage');
     const storage = new Storage();
     const bucket = storage.bucket('upf-eventos.appspot.com');
-    let codigo = evento.codigo+'|'+participante.codigo;
-    const myPdfFile = bucket.file(codigo+'.pdf'); //TODO: gerar nome de acordo com o participante
+    let codigo = evento.uuid+'|'+participante.uuid;
+    const myPdfFile = bucket.file(codigo+'.pdf');
 
     var PDFDocument = require('pdfkit');
     doc = new PDFDocument();
@@ -207,7 +209,7 @@ async function buscarEvento(eventoId)
 {
   functions.logger.log('Buscando Evento '+eventoId);
 
-  const promise = admin.firestore().doc('eventos/'+eventoId).get();
+  const promise = admin.firestore().doc('Eventos/'+eventoId).get();
 
   let data = await promise.then(snapshot =>{
     const data = snapshot.data()
