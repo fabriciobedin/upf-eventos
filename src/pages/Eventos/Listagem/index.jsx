@@ -11,7 +11,6 @@ import { formatDate } from '../../../utils/formatters';
 function EventosList() {
   const [eventos, setEventos] = useState([]);
   const history = useHistory();
-  // const windowWidth = window.innerWidth;
   const tableOptions = {
     ...options,
     selectableRows: 'none'
@@ -43,7 +42,7 @@ function EventosList() {
         options: {
           filter: true,
           setCellProps: () => ({
-            style: { maxWidth: '60%' }
+            style: { maxWidth: window.innerWidth > 1366 ? 900 : 600 }
           })
         }
       },
