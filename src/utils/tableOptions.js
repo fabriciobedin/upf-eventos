@@ -1,6 +1,9 @@
 const options = {
   download: false,
-  // selectableRows: 'none',
+  filterType: 'dropdown',
+  responsive: 'standard',
+  fixedHeader: true,
+  fixedSelectColumn: true,
   textLabels: {
     body: {
       noMatch: 'Nenhum registro encontrado',

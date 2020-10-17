@@ -11,8 +11,10 @@ import { formatDate } from '../../../utils/formatters';
 function EventosList() {
   const [eventos, setEventos] = useState([]);
   const history = useHistory();
+  const windowWidth = window.innerWidth;
   const tableOptions = {
     ...options,
+    tableBodyHeight: windowWidth > 1366 ? '700px' : '450px',
     selectableRows: 'none'
   };
 
@@ -40,7 +42,10 @@ function EventosList() {
         label: 'Descrição',
         name: 'descricao',
         options: {
-          filter: true
+          filter: true,
+          setCellProps: () => ({
+            style: { maxWidth: '60%' }
+          })
         }
       },
       {
@@ -73,6 +78,9 @@ function EventosList() {
         options: {
           filter: false,
           sort: false,
+          setCellProps: () => ({
+            style: { minWidth: 80 }
+          }),
           customBodyRender: value => (
             <>
               <Tooltip title="Editar">
@@ -109,8 +117,9 @@ function EventosList() {
         })) ?? []
       );
     };
+    console.log(windowWidth);
     fetch();
-  }, []);
+  }, [windowWidth]);
 
   return (
     <>
