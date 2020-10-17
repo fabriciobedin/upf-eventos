@@ -2,10 +2,9 @@ import firebase from './firebase';
 import 'firebase/firestore';
 
 const db = firebase.firestore();
-const subEventosRef = db.collection('subeventos');
 export const eventosRef = db.collection('Eventos');
 
-const { user } = localStorage.getItem('@upf-eventos:user');
+const { user } = !!localStorage.getItem('@upf-eventos:user') ? JSON.parse(localStorage.getItem('@upf-eventos:user')) : undefined;
 
 export const getEventoById = idEvento => {
   return eventosRef.doc(idEvento).get();
@@ -16,11 +15,10 @@ export const getParticipantesByEvento = idEvento => {
 };
 
 export const getEventos = () => {
-  // verificar se usuário é admin ou organizador
-  // if(true) {
-  //   implementar consulta passando organizador
-  //   return eventosRef.where('organizadores', "array-contains-any", [{}]).get();
-  // }
+  console.log(user)
+  if(!user?.isAdmin) {
+    return eventosRef.where('organizadores', "array-contains", user.uid).get();
+  }
 
   return eventosRef.get();
 };
