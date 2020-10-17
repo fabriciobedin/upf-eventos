@@ -18,11 +18,21 @@ import { Edit, Delete, PersonAdd } from '@material-ui/icons';
 import Button from '../../../components/Button';
 import Input from '../../../components/Input';
 import getValidationErrors from '../../../utils/getValidationErrors';
-import { Container, Content, SubtitleContainer } from './styles';
-import { getEventoById, update } from '../../../services/eventos';
+import {
+  ButtonContainer,
+  Container,
+  Content,
+  SubtitleContainer
+} from './styles';
+import {
+  getEventoById,
+  getParticipantesByEvento,
+  update
+} from '../../../services/eventos';
 import ParticipantesList from '../../../components/exibicao/Participante';
 import { useToast } from '../../../hooks/toast';
 import { getSubEventos } from '../../../services/subeventos';
+import TextArea from '../../../components/TextArea';
 
 const schema = Yup.object().shape({
   codigo: Yup.string().required('Código obrigatório!'),
@@ -37,8 +47,9 @@ function EventoForm() {
   const formRef = useRef(null);
   const [subeventos, setSubeventos] = useState([]);
   const [evento, setEvento] = useState({});
+  const [participantes, setParticipantes] = useState([]);
   const { addToast } = useToast();
-  const { id } = useParams();
+  const { idEvento } = useParams();
 
   const StyledTableCell = withStyles({
     body: {
@@ -55,14 +66,22 @@ function EventoForm() {
   }))(TableRow);
 
   const handleAddParticipantes = useCallback(
-    idEvento => {
-      history.push(`/subevento/${idEvento}/participantes`);
+    idSubevento => {
+      history.push(
+        `/eventos/${idEvento}/subeventos/${idSubevento}/participantes/cadastro`
+      );
     },
-    [history]
+    [history, idEvento]
   );
 
   useEffect(() => {
-    getSubEventos(id).then(subEvento => {
+    getEventoById(idEvento).then(docSnapshot => {
+      if (docSnapshot.exists) {
+        formRef.current.setData(docSnapshot.data());
+        setEvento(docSnapshot.data());
+      }
+    });
+    getSubEventos(idEvento).then(subEvento => {
       subEvento.forEach(doc => {
         const subevento = {
           ...doc.data(),
@@ -71,35 +90,35 @@ function EventoForm() {
         setSubeventos(sub => [...sub, subevento]);
       });
     });
-  }, [id]);
-
-  useEffect(() => {
-    getEventoById(id).then(docSnapshot => {
-      if (docSnapshot.exists) {
-        formRef.current.setData(docSnapshot.data());
-        setEvento(docSnapshot.data());
-      }
+    getParticipantesByEvento(idEvento).then(participantesSnapshot => {
+      participantesSnapshot.forEach(doc => {
+        const participante = {
+          ...doc.data(),
+          uuid: doc.id
+        };
+        setParticipantes(part => [...part, participante]);
+      });
     });
-  }, [id]);
+  }, [idEvento]);
 
   const redirect = useCallback(() => {
     history.push('/eventos');
   }, [history]);
 
   const handleSubevento = useCallback(() => {
-    history.push(`/eventos/${id}/subeventos/cadastro`);
-  }, [history]);
+    history.push(`/eventos/${idEvento}/subeventos/cadastro`);
+  }, [history, idEvento]);
 
   const handleEditSubevento = useCallback(
     subEventoId => {
-      history.push(`/eventos/${id}/subeventos/${subEventoId}`);
+      history.push(`/eventos/${idEvento}/subeventos/${subEventoId}`);
     },
-    [history]
+    [history, idEvento]
   );
 
   const handleAddParticipantesEvento = useCallback(() => {
-    history.push(`/eventos/${id}/participantes`);
-  }, [history, id]);
+    history.push(`/eventos/${idEvento}/participantes`);
+  }, [history, idEvento]);
 
   const handleSubmit = useCallback(
     async data => {
@@ -111,7 +130,7 @@ function EventoForm() {
         });
 
         data.titulo = data.titulo.toUpperCase();
-        update(id, data).then(() => {
+        update(idEvento, data).then(() => {
           addToast({
             type: 'success',
             description: 'Evento alterado com sucesso.'
@@ -124,7 +143,7 @@ function EventoForm() {
         }
       }
     },
-    [addToast, id, redirect]
+    [addToast, idEvento, redirect]
   );
 
   return (
@@ -134,86 +153,85 @@ function EventoForm() {
         <Form ref={formRef} onSubmit={handleSubmit}>
           <Input name="codigo" placeholder="Código" type="number" />
           <Input name="titulo" placeholder="Título" />
-          <Input name="descricao" placeholder="Descricao" />
+          <TextArea name="descricao" placeholder="Descricao" />
           <p>Data Inicial:</p>
           <Input type="date" name="dataInicial" placeholder="Data" />
           <p>Data Final:</p>
           <Input type="date" name="dataFinal" placeholder="Data" />
 
-          <Button type="submit">Salvar</Button>
-          <Button onClick={redirect}>Cancelar</Button>
+          <ButtonContainer>
+            <Button type="submit">Salvar</Button>
+            <Button onClick={redirect}>Cancelar</Button>
+          </ButtonContainer>
         </Form>
-
-        <SubtitleContainer>
-          <h3>Subeventos:</h3>
-          <button type="button" onClick={() => handleSubevento()}>
-            Criar Subeventos
-          </button>
-        </SubtitleContainer>
-        <TableContainer component={Paper}>
-          <Table aria-label="simple table">
-            <TableHead>
-              <StyledTableRow>
-                <StyledTableCell>Código</StyledTableCell>
-                <StyledTableCell>Descrição</StyledTableCell>
-                <StyledTableCell>Turno</StyledTableCell>
-                <StyledTableCell>Data</StyledTableCell>
-                <StyledTableCell>Hora Inicial</StyledTableCell>
-                <StyledTableCell>Hora Final</StyledTableCell>
-                <TableCell />
-              </StyledTableRow>
-            </TableHead>
-            <TableBody>
-              {subeventos.map(subevento => (
-                <StyledTableRow key={subevento.uuid}>
-                  <StyledTableCell component="th" scope="row">
-                    {subevento.codigo}
-                  </StyledTableCell>
-                  <StyledTableCell>{subevento.descricao}</StyledTableCell>
-                  <StyledTableCell>{subevento.turno}</StyledTableCell>
-                  <StyledTableCell align="left" type="date">
-                    {moment(subevento.dataInicial).format('D/MM/YYYY')}
-                  </StyledTableCell>
-                  <StyledTableCell>{subevento.horaInicial}</StyledTableCell>
-                  <StyledTableCell>{subevento.horaFinal}</StyledTableCell>
-                  <TableCell>
-                    <IconButton
-                      aria-label="edit"
-                      size="small"
-                      onClick={() => handleEditSubevento(subevento.uuid)}
-                    >
-                      <Edit fontSize="inherit" />
-                    </IconButton>
-
-                    <IconButton aria-label="delete" size="small">
-                      <Delete fontSize="inherit" />
-                    </IconButton>
-                    <IconButton
-                      variant="outlined"
-                      size="small"
-                      onClick={() => handleAddParticipantes(subevento.uuid)}
-                    >
-                      <PersonAdd fontSize="inherit" />
-                    </IconButton>
-                  </TableCell>
-                </StyledTableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-
-        <SubtitleContainer>
-          <h3>Participantes:</h3>
-          <button type="button" onClick={() => handleAddParticipantesEvento()}>
-            Inscrever participantes
-          </button>
-        </SubtitleContainer>
-        <ParticipantesList
-          participantes={evento.participantes || []}
-          hidePhone
-          hideButtons
-        />
       </Content>
+
+      <hr style={{ marginTop: 10, marginBottom: 10 }} />
+
+      <SubtitleContainer>
+        <h3>Subeventos:</h3>
+        <button type="button" onClick={() => handleSubevento()}>
+          Criar Subeventos
+        </button>
+      </SubtitleContainer>
+      <TableContainer component={Paper}>
+        <Table aria-label="simple table">
+          <TableHead>
+            <StyledTableRow>
+              {/* <StyledTableCell>Código</StyledTableCell> */}
+              <StyledTableCell>Descrição</StyledTableCell>
+              <StyledTableCell>Turno</StyledTableCell>
+              <StyledTableCell>Data</StyledTableCell>
+              <StyledTableCell>Hora Inicial</StyledTableCell>
+              <StyledTableCell>Hora Final</StyledTableCell>
+              <TableCell />
+            </StyledTableRow>
+          </TableHead>
+          <TableBody>
+            {subeventos.map(subevento => (
+              <StyledTableRow key={subevento.uuid}>
+                <StyledTableCell>{subevento.descricao}</StyledTableCell>
+                <StyledTableCell>{subevento.turno}</StyledTableCell>
+                <StyledTableCell align="left" type="date">
+                  {moment(subevento.dataInicial).format('D/MM/YYYY')}
+                </StyledTableCell>
+                <StyledTableCell>{subevento.horaInicial}</StyledTableCell>
+                <StyledTableCell>{subevento.horaFinal}</StyledTableCell>
+                <TableCell style={{ minWidth: 110, textAlign: 'center' }}>
+                  <IconButton
+                    aria-label="edit"
+                    size="small"
+                    onClick={() => handleEditSubevento(subevento.uuid)}
+                  >
+                    <Edit fontSize="inherit" />
+                  </IconButton>
+
+                  <IconButton aria-label="delete" size="small">
+                    <Delete fontSize="inherit" />
+                  </IconButton>
+                  <IconButton
+                    variant="outlined"
+                    size="small"
+                    onClick={() => handleAddParticipantes(subevento.uuid)}
+                  >
+                    <PersonAdd fontSize="inherit" />
+                  </IconButton>
+                </TableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <SubtitleContainer>
+        <h3>Participantes do evento:</h3>
+        <button type="button" onClick={() => handleAddParticipantesEvento()}>
+          Inscrever participantes
+        </button>
+      </SubtitleContainer>
+      <ParticipantesList
+        participantes={participantes || []} // hidePhone
+        // hideButtons
+      />
     </Container>
   );
 }

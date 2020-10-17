@@ -11,6 +11,8 @@ import Select from '../../../components/Select';
 import Input from '../../../components/Input';
 import { useToast } from '../../../hooks/toast';
 import { getSubeventoById, update } from '../../../services/subeventos';
+import TextArea from '../../../components/TextArea';
+import { ButtonContainer } from '../../Eventos/Form/styles';
 
 function SubeventosEdit() {
   const [checked] = React.useState(true);
@@ -41,7 +43,6 @@ function SubeventosEdit() {
     async data => {
       try {
         formRef.current.setErrors({});
-        console.log('aqui edicao')
         update(idEvento, idSubevento, data).then(() => {
           addToast({
             type: 'success',
@@ -61,11 +62,11 @@ function SubeventosEdit() {
 
   return (
     <Container>
-      <h2>Cadastro de Subevento:</h2>
+      <h2>Edição de Subevento:</h2>
       <Content>
         <Form ref={formRef} onSubmit={handleSubmit}>
           <Input name="codigo" placeholder="Código" type="number" />
-          <Input name="descricao" placeholder="Descrição" />
+          <TextArea name="descricao" placeholder="Descrição" />
           <Select name="tipo">
             {turnos.map(tipo => (
               <option value={tipo.value} key={tipo.value}>
@@ -102,8 +103,10 @@ function SubeventosEdit() {
 
           <hr />
 
-          <Button type="submit">Salvar</Button>
-          <Button onClick={redirect}>Cancelar</Button>
+          <ButtonContainer>
+            <Button type="submit">Salvar</Button>
+            <Button onClick={redirect}>Cancelar</Button>
+          </ButtonContainer>
         </Form>
       </Content>
     </Container>

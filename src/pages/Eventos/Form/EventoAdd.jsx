@@ -5,9 +5,10 @@ import * as Yup from 'yup';
 import Input from '../../../components/Input';
 import Button from '../../../components/Button';
 import getValidationErrors from '../../../utils/getValidationErrors';
-import { Container, Content } from './styles';
+import { ButtonContainer, Container, Content } from './styles';
 import { submit } from '../../../services/eventos';
 import { useToast } from '../../../hooks/toast';
+import TextArea from '../../../components/TextArea';
 
 function EventoAdd() {
   const history = useHistory();
@@ -57,17 +58,17 @@ function EventoAdd() {
         <Form ref={formRef} onSubmit={handleSubmit}>
           <Input name="codigo" placeholder="Código" type="number" />
           <Input name="titulo" placeholder="Título" />
-          <Input name="descricao" placeholder="Descrição" />
+          <TextArea name="descricao" placeholder="Descricao" />
           <p>Data Inicial:</p>
           <Input type="date" name="dataInicial" />
           <p>Data Final:</p>
           <Input type="date" name="dataFinal" />
           <hr />
 
-          <Button onClick={handleSubmit} type="submit">
-            Salvar
-          </Button>
-          <Button onClick={redirect}>Cancelar</Button>
+          <ButtonContainer>
+            <Button type="submit">Salvar</Button>
+            <Button onClick={redirect}>Cancelar</Button>
+          </ButtonContainer>
         </Form>
       </Content>
     </Container>

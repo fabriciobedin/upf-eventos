@@ -14,7 +14,7 @@ import EventoEdit from '../pages/Eventos/Form/EventoEdit';
 import Participantes from '../pages/Participantes/Listagem';
 import ParticipanteCadastro from '../pages/Participantes/Cadastro';
 import ParticipanteEdit from '../pages/Participantes/Edicao';
-import InscricaoEvento from '../pages/InscricaoEvento';
+// import InscricaoEvento from '../pages/InscricaoEvento';
 import InscricaoSubevento from '../pages/InscricaoSubevento';
 import Usuarios from '../pages/Usuarios/Listagem';
 
@@ -29,16 +29,16 @@ const Routes = () => (
       component={SubeventosCadastro}
       isPrivate
     /> */}
-    <Route
+    {/* <Route
       exact
       path="/subevento/:id/participantes"
       component={InscricaoSubevento}
       isPrivate
-    />
+    /> */}
     <Route exact path="/subevento" component={Subeventos} isPrivate />
     <Route exact path="/eventos" component={EventosList} isPrivate />
     <Route exact path="/eventos/cadastro" component={EventoAdd} isPrivate />
-    <Route exact path="/eventos/:id" component={EventoEdit} isPrivate />
+    <Route exact path="/eventos/:idEvento" component={EventoEdit} isPrivate />
     <Route
       exact
       path="/eventos/:idEvento/subeventos/cadastro"
@@ -49,6 +49,12 @@ const Routes = () => (
       exact
       path="/eventos/:idEvento/subeventos/:idSubevento"
       component={SubeventosEdit}
+      isPrivate
+    />
+    <Route
+      exact
+      path="/eventos/:idEvento/subeventos/:idSubevento/participantes/cadastro"
+      component={InscricaoSubevento}
       isPrivate
     />
     <Route

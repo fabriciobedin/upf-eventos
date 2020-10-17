@@ -12,6 +12,7 @@ import Select from '../../../components/Select';
 
 import { useToast } from '../../../hooks/toast';
 import { submit } from '../../../services/subeventos';
+import TextArea from '../../../components/TextArea';
 
 function Subeventos() {
   const { addToast } = useToast();
@@ -69,7 +70,7 @@ function Subeventos() {
       <Content>
         <Form ref={formRef} onSubmit={handleSubmit}>
           <Input name="codigo" placeholder="Código" type="number" />
-          <Input name="descricao" placeholder="Descrição" />
+          <TextArea name="descricao" placeholder="Descrição" />
           <br />
           <p>Data Inicial:</p>
           <Input type="date" name="dataInicial" />

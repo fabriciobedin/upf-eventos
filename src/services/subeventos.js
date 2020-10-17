@@ -23,13 +23,11 @@ export const submit = (idEvento, subevento) => {
 };
 
 export const update = (idEvento, idSubevento, subevento) => {
-  console.log('update subevento')
   return eventosRef
     .doc(idEvento)
     .collection(SUBEVENTOS)
     .doc(idSubevento)
     .update(subevento);
-  // return subEventosRef.doc(idSubevento).update(subevento);
 };
 
 export const realizarInscricao = (idSubevento, participantes) => {

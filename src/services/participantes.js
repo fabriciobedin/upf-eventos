@@ -3,10 +3,12 @@ import 'firebase/firestore';
 
 const db = firebase.firestore();
 const participantesRef = db.collection('participantes');
-const eventosRef = db.collection('eventos');
+const eventosRef = db.collection('Eventos');
 const timestamp = firebase.firestore.FieldValue.serverTimestamp();
 
 export const getParticipanteById = (idEvento, idParticipante) => {
+  console.log('idEvento', idEvento)
+  console.log('idParticipante', idParticipante)
   return eventosRef
     .doc(idEvento)
     .collection('Participantes')

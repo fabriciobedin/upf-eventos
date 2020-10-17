@@ -13,10 +13,10 @@ export const getEventoById = idEvento => {
 };
 
 export const getParticipantesByEvento = idEvento => {
+  console.log(idEvento);
   return eventosRef
   .doc(idEvento)
-  .collection('participantes')
-  .doc()
+  .collection('Participantes')
   .get();
 }
 
