@@ -11,10 +11,9 @@ import { formatDate } from '../../../utils/formatters';
 function EventosList() {
   const [eventos, setEventos] = useState([]);
   const history = useHistory();
-  const windowWidth = window.innerWidth;
+  // const windowWidth = window.innerWidth;
   const tableOptions = {
     ...options,
-    tableBodyHeight: windowWidth > 1366 ? '700px' : '450px',
     selectableRows: 'none'
   };
 
@@ -117,9 +116,8 @@ function EventosList() {
         })) ?? []
       );
     };
-    console.log(windowWidth);
     fetch();
-  }, [windowWidth]);
+  }, []);
 
   return (
     <>
