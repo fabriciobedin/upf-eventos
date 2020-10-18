@@ -95,7 +95,7 @@ export default class EventoImportacao extends Component {
       subevento.participantes.forEach(participante => {
         console.log(participante)
         const participantesRef = retornoSubEvento.collection('Participantes')
-        const retornoParticipante = participantesRef.add(participante)
+        participantesRef.add(participante)
       });
     });
 
