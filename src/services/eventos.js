@@ -16,9 +16,9 @@ export const getParticipantesByEvento = idEvento => {
 
 export const getEventos = () => {
   console.log(user)
-  if(!user?.isAdmin) {
-    return eventosRef.where('organizadores', "array-contains", user.uid).get();
-  }
+  //if(!user?.isAdmin) {
+ //   return eventosRef.where('organizadores', "array-contains", user.uid).get();
+  //}
 
   return eventosRef.get();
 };

@@ -20,6 +20,10 @@ function EventosList() {
     history.push('/eventos/cadastro');
   }, [history]);
 
+  const handleImport = useCallback(() => {
+    history.push('/eventos/importacao');
+  }, [history]);
+
   const handleEdit = useCallback(
     idEvento => {
       history.push(`/eventos/${idEvento}`);
@@ -127,6 +131,14 @@ function EventosList() {
         style={{ marginBottom: 10 }}
       >
         Cadastrar Evento
+      </Button>
+      <Button
+        type="button"
+        variant="outlined"
+        onClick={() => handleImport()}
+        style={{ marginBottom: 10 }}
+      >
+        Importar Evento
       </Button>
 
       <MUIDataTable
