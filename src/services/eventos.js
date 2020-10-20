@@ -4,8 +4,6 @@ import 'firebase/firestore';
 const db = firebase.firestore();
 export const eventosRef = db.collection('Eventos');
 
-const { user } = !!localStorage.getItem('@upf-eventos:user') ? JSON.parse(localStorage.getItem('@upf-eventos:user')) : undefined;
-
 export const getEventoById = idEvento => {
   return eventosRef.doc(idEvento).get();
 };
@@ -14,16 +12,16 @@ export const getParticipantesByEvento = idEvento => {
   return eventosRef.doc(idEvento).collection('Participantes');
 };
 
-export const getEventos = () => {
-  console.log(user)
-  if(!user?.nivelAcesso) {
-    return eventosRef.where('organizadores', "array-contains", user.uid).get();
+export const getEventos = async () => {
+  const user = await getUsuarioLogado();
+  if (user && !user?.nivelAcesso) {
+    return eventosRef.where('organizadores', 'array-contains', user.uid).get();
   }
   return eventosRef.get();
-
 };
 
-export const submit = evento => {
+export const submit = async evento => {
+  const user = await getUsuarioLogado();
   evento.organizadores = [user.uid];
   return eventosRef.add(evento);
 };
@@ -53,4 +51,9 @@ export const submitParticipante = (idEvento, participante, idParticipante) => {
       .update(participante);
   }
   return eventosRef.doc(idEvento).collection('Participantes').add(participante);
+};
+
+const getUsuarioLogado = () => {
+  const { user } = !!localStorage.getItem('@upf-eventos:user') ? JSON.parse(localStorage.getItem('@upf-eventos:user')) : {};  
+  return user;
 };
