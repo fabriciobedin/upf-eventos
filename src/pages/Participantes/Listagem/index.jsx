@@ -5,11 +5,9 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import MUIDataTable from 'mui-datatables';
 import { useConfirm } from 'material-ui-confirm';
-// import { remove, possuiFrequencia } from '../../../services/participantes';
 import * as ParticipantesService from '../../../services/participantes';
 import options from '../../../utils/tableOptions';
 import { deleteOptions } from '../../../utils/confirmationOptions';
-import { getParticipantesByEvento } from '../../../services/eventos';
 import { useToast } from '../../../hooks/toast';
 import NoRecords from '../../../components/NoRecords';
 
@@ -59,7 +57,7 @@ function Participantes({ idEvento }) {
   );
 
   useEffect(() => {
-    const unsubscribe = getParticipantesByEvento(idEvento).onSnapshot(
+    const unsubscribe = ParticipantesService.getParticipantesByEvento(idEvento).onSnapshot(
       participantesSnapshot => {
         setParticipantes(
           participantesSnapshot.docs.map(doc => ({
@@ -99,6 +97,14 @@ function Participantes({ idEvento }) {
       {
         label: 'Telefone',
         name: 'telefone',
+        options: {
+          filter: true,
+          sort: false
+        }
+      },
+      {
+        label: 'Tipo',
+        name: 'tipo',
         options: {
           filter: true,
           sort: false

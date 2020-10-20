@@ -8,13 +8,12 @@ export const getEventoById = idEvento => {
   return eventosRef.doc(idEvento).get();
 };
 
-export const getParticipantesByEvento = idEvento => {
-  return eventosRef.doc(idEvento).collection('Participantes');
-};
-
 export const getEventos = async () => {
   const user = await getUsuarioLogado();
-  if (user && !user?.nivelAcesso) {
+
+
+  if (user && user?.nivelAcesso==='2') {
+    // if (user && !user?.nivelAcesso) {
     return eventosRef.where('organizadores', 'array-contains', user.uid).get();
   }
   return eventosRef.get();
@@ -40,17 +39,6 @@ export const adicionarOrganizador = (idEvento, organizador) => {
   return eventosRef.doc(idEvento).update({
     organizadores: firebase.firestore.FieldValue.arrayUnion(organizador)
   });
-};
-
-export const submitParticipante = (idEvento, participante, idParticipante) => {
-  if (idParticipante) {
-    return eventosRef
-      .doc(idEvento)
-      .collection('Participantes')
-      .doc(idParticipante)
-      .update(participante);
-  }
-  return eventosRef.doc(idEvento).collection('Participantes').add(participante);
 };
 
 const getUsuarioLogado = () => {
