@@ -54,6 +54,6 @@ export const submitParticipante = (idEvento, participante, idParticipante) => {
 };
 
 const getUsuarioLogado = () => {
-  const { user } = !!localStorage.getItem('@upf-eventos:user') ? JSON.parse(localStorage.getItem('@upf-eventos:user')) : {};  
+  const { user } = !!localStorage.getItem('@upf-eventos:user') ? JSON.parse(localStorage.getItem('@upf-eventos:user')) : {};
   return user;
 };
