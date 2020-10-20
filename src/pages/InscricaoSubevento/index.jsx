@@ -18,7 +18,7 @@ import {
   ListaContainer
 } from './styles';
 
-function InscricaoEvento() {
+function InscricaoSubevento() {
   const [eventoState, setEventoState] = useState({});
   const [participantesState, setParticipantesState] = useState([]);
   const [participantesInscritos, setParticipantesInscritos] = useState([]);
@@ -32,21 +32,11 @@ function InscricaoEvento() {
 
   const finalizarInscricoes = useCallback(() => {
     history.goBack();
-    // SubeventosService.realizarInscricao(
-    //   idSubevento,
-    //   participantesInscritos
-    // ).then(() => {
-    //   addToast({
-    //     type: 'success',
-    //     title: 'Atenção!',
-    //     description: 'Participantes inscritos com sucesso.'
-    //   });
-    // });
   }, [history]);
 
   const addParticipante = useCallback(
     value => {
-      if (participantesInscritos.find(e => e.uuid === value.uuid)) {
+      if (participantesInscritos.find(e => e.uid === value.uid)) {
         addToast({
           type: 'error',
           title: 'Atenção!',
@@ -56,21 +46,31 @@ function InscricaoEvento() {
       }
 
       const snippet = {
-        uuid: value.uuid,
+        uid: value.uid,
         codigo: value.codigo,
         nome: value.nome,
-        email: value.email
+        email: value.email,
+        status: 'inscrito'
       };
+
+      SubeventosService.realizarInscricao(idEvento, idSubevento, snippet).then(
+        () => {
+          addToast({
+            type: 'success',
+            description: 'Participante inscrito com sucesso.'
+          });
+        }
+      );
 
       setParticipantesInscritos(part => [...part, snippet]);
     },
-    [addToast, participantesInscritos]
+    [addToast, idEvento, idSubevento, participantesInscritos]
   );
 
   const removeParticipante = useCallback(
     participanteId => {
       const newParticipantesList = participantesInscritos.filter(
-        item => item.uuid !== participanteId
+        item => item.uid !== participanteId
       );
       setParticipantesInscritos(newParticipantesList);
     },
@@ -94,15 +94,16 @@ function InscricaoEvento() {
       }
     );
 
-    ServiceEventos.getParticipantesByEvento(idEvento).then(eventos => {
-      eventos.forEach(doc => {
-        const participante = {
-          ...doc.data(),
-          uuid: doc.id
-        };
-        setParticipantesState(part => [...part, participante]);
-      });
-    });
+    ServiceEventos.getParticipantesByEvento(idEvento).onSnapshot(
+      participantesSnapshot => {
+        setParticipantesState(
+          participantesSnapshot.docs.map(doc => ({
+            ...doc.data(),
+            uid: doc.id
+          }))
+        );
+      }
+    );
   }, [idEvento, idSubevento]);
 
   return (
@@ -149,7 +150,7 @@ function InscricaoEvento() {
         <ListaContainer>
           <h3>Lista Participantes</h3>
           {participantesState.map(participante => (
-            <li key={participante.uuid}>
+            <li key={participante.uid}>
               <strong>{participante.nome}</strong>
               <span> {participante.email} </span>
               <Button
@@ -167,17 +168,15 @@ function InscricaoEvento() {
           <h3>Participantes Inscritos</h3>
           {participantesInscritos.map(
             participanteInscrito =>
-              participanteInscrito.uuid && (
-                <li key={participanteInscrito.uuid}>
+              participanteInscrito.uid && (
+                <li key={participanteInscrito.uid}>
                   <strong>{participanteInscrito.nome}</strong>
                   <span> {participanteInscrito.email} </span>
                   <Button
                     variant="outlined"
                     startIcon={<ArrowBackIcon>Remover</ArrowBackIcon>}
                     color="secondary"
-                    onClick={() =>
-                      removeParticipante(participanteInscrito.uuid)
-                    }
+                    onClick={() => removeParticipante(participanteInscrito.uid)}
                   >
                     Remover
                   </Button>
@@ -190,4 +189,4 @@ function InscricaoEvento() {
   );
 }
 
-export default InscricaoEvento;
+export default InscricaoSubevento;

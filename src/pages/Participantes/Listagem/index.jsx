@@ -5,15 +5,19 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import MUIDataTable from 'mui-datatables';
 import { useConfirm } from 'material-ui-confirm';
-import { remove } from '../../../services/participantes';
+// import { remove, possuiFrequencia } from '../../../services/participantes';
+import * as ParticipantesService from '../../../services/participantes';
 import options from '../../../utils/tableOptions';
 import { deleteOptions } from '../../../utils/confirmationOptions';
 import { getParticipantesByEvento } from '../../../services/eventos';
+import { useToast } from '../../../hooks/toast';
+import NoRecords from '../../../components/NoRecords';
 
 function Participantes({ idEvento }) {
   const history = useHistory();
   const confirmation = useConfirm();
   const [participantes, setParticipantes] = useState([]);
+  const { addToast } = useToast();
   const tableOptions = {
     ...options,
     selectableRows: 'none'
@@ -26,15 +30,32 @@ function Participantes({ idEvento }) {
     [history, idEvento]
   );
 
+  const verificaFrequencia = useCallback(async idParticipante => {
+    return ParticipantesService.possuiFrequencia(idParticipante).then(data => {
+      return data.size;
+    });
+  }, []);
+
   const handleDelete = useCallback(
-    idParticipante => {
+    async idParticipante => {
+      const frequencia = await verificaFrequencia(idParticipante);
+      if (frequencia > 0) {
+        window.scrollTo({ top: 0, behavior: 'auto' });
+        addToast({
+          type: 'error',
+          title: 'Atenão!',
+          description:
+            'Participante possui registro de frequência. Não será possível remove-lo.'
+        });
+        return;
+      }
       confirmation(deleteOptions)
         .then(() => {
-          remove(idEvento, idParticipante).then(() => {});
+          ParticipantesService.remove(idEvento, idParticipante).then(() => {});
         })
         .catch(() => {});
     },
-    [confirmation, idEvento]
+    [addToast, confirmation, idEvento, verificaFrequencia]
   );
 
   useEffect(() => {
@@ -113,14 +134,18 @@ function Participantes({ idEvento }) {
     [handleDelete, handleEdit]
   );
 
-  return (
-    <MUIDataTable
-      title="Participantes"
-      data={participantes}
-      columns={columns}
-      options={tableOptions}
-    />
-  );
+  if (participantes.length > 0) {
+    return (
+      <MUIDataTable
+        title="Participantes"
+        data={participantes}
+        columns={columns}
+        options={tableOptions}
+      />
+    );
+  }
+
+  return <NoRecords />;
 }
 
 export default Participantes;

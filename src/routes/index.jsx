@@ -14,8 +14,8 @@ import EventoImportacao from '../pages/Eventos/Importacao/EventoImportacao';
 import Participantes from '../pages/Participantes/Listagem';
 import ParticipanteCadastro from '../pages/Participantes/Cadastro';
 import ParticipanteEdit from '../pages/Participantes/Edicao';
-import InscricaoSubevento from '../pages/InscricaoSubevento';
 import Usuarios from '../pages/Usuarios/Listagem';
+import InscricaoSubevento from '../pages/InscricaoSubevento';
 
 const Routes = () => (
   <Switch>
@@ -24,7 +24,12 @@ const Routes = () => (
     <Route exact path="/dashboard" component={Dashborad} isPrivate />
     <Route exact path="/eventos" component={EventosList} isPrivate />
     <Route exact path="/eventos/cadastro" component={EventoAdd} isPrivate />
-    <Route exact path="/eventos/importacao" component={EventoImportacao} isPrivate />
+    <Route
+      exact
+      path="/eventos/importacao"
+      component={EventoImportacao}
+      isPrivate
+    />
     <Route exact path="/eventos/:idEvento" component={EventoEdit} isPrivate />
     <Route
       exact

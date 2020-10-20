@@ -6,6 +6,8 @@ const participantesRef = db.collection('participantes');
 const eventosRef = db.collection('Eventos');
 const timestamp = firebase.firestore.FieldValue.serverTimestamp();
 
+const STATUS_CONFIRMADO = 'confirmado';
+
 export const getParticipanteById = (idEvento, idParticipante) => {
   return eventosRef
     .doc(idEvento)
@@ -43,6 +45,17 @@ export const submit = (participante, id) => {
   }
   participante.createdAt = timestamp;
   return participantesRef.add(participante);
+};
+
+export const possuiFrequencia = particpanteId => {
+  return (
+    db
+      .collectionGroup('SubeventoParticipantes')
+      .where('participanteId', '==', particpanteId)
+      .where('status', '!=', STATUS_CONFIRMADO)
+      .limit(1)
+      .get()
+  );
 };
 
 export const remove = (idEvento, participanteId) => {

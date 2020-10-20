@@ -16,14 +16,15 @@ export const getParticipantesByEvento = idEvento => {
 
 export const getEventos = () => {
   console.log(user)
-  //if(!user?.isAdmin) {
- //   return eventosRef.where('organizadores', "array-contains", user.uid).get();
-  //}
-
+  if(!user?.nivelAcesso) {
+    return eventosRef.where('organizadores', "array-contains", user.uid).get();
+  }
   return eventosRef.get();
+
 };
 
 export const submit = evento => {
+  evento.organizadores = [user.uid];
   return eventosRef.add(evento);
 };
 
