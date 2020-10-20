@@ -6,11 +6,11 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 import MUIDataTable from 'mui-datatables';
 import { PersonAdd } from '@material-ui/icons';
-import { getSubEventos } from '../../../services/subeventos';
 import { formatDate } from '../../../utils/formatters';
 
 import options from '../../../utils/tableOptions';
 import NoRecords from '../../../components/NoRecords';
+import { getSubEventos } from '../../../services/subeventos';
 
 function Subeventos({ idEvento }) {
   const history = useHistory();

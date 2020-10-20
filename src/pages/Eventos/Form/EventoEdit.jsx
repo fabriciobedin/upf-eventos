@@ -12,10 +12,10 @@ import {
   SubtitleContainer
 } from './styles';
 import { getEventoById, update } from '../../../services/eventos';
-import Participantes from '../../Participantes/Listagem';
 import { useToast } from '../../../hooks/toast';
 import TextArea from '../../../components/TextArea';
 import Subeventos from '../../Subeventos/Listagem';
+import Participantes from '../../Participantes/Listagem';
 
 const schema = Yup.object().shape({
   codigo: Yup.string().required('Código obrigatório!'),
@@ -104,53 +104,6 @@ function EventoForm() {
         </button>
       </SubtitleContainer>
       <Subeventos idEvento={idEvento} />
-      {/* <TableContainer component={Paper}>
-        <Table aria-label="simple table">
-          <TableHead>
-            <StyledTableRow>
-              <StyledTableCell>Descrição</StyledTableCell>
-              <StyledTableCell>Turno</StyledTableCell>
-              <StyledTableCell>Data</StyledTableCell>
-              <StyledTableCell>Hora Inicial</StyledTableCell>
-              <StyledTableCell>Hora Final</StyledTableCell>
-              <TableCell />
-            </StyledTableRow>
-          </TableHead>
-          <TableBody>
-            {subeventos.map(subevento => (
-              <StyledTableRow key={subevento.uuid}>
-                <StyledTableCell>{subevento.descricao}</StyledTableCell>
-                <StyledTableCell>{subevento.turno}</StyledTableCell>
-                <StyledTableCell align="left" type="date">
-                  {moment(subevento.dataInicial).format('D/MM/YYYY')}
-                </StyledTableCell>
-                <StyledTableCell>{subevento.horaInicial}</StyledTableCell>
-                <StyledTableCell>{subevento.horaFinal}</StyledTableCell>
-                <TableCell style={{ minWidth: 110, textAlign: 'center' }}>
-                  <IconButton
-                    aria-label="edit"
-                    size="small"
-                    onClick={() => handleEditSubevento(subevento.uuid)}
-                  >
-                    <Edit fontSize="inherit" />
-                  </IconButton>
-
-                  <IconButton aria-label="delete" size="small">
-                    <Delete fontSize="inherit" />
-                  </IconButton>
-                  <IconButton
-                    variant="outlined"
-                    size="small"
-                    onClick={() => handleAddParticipantes(subevento.uuid)}
-                  >
-                    <PersonAdd fontSize="inherit" />
-                  </IconButton>
-                </TableCell>
-              </StyledTableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer> */}
       <SubtitleContainer>
         <h3>Participantes do evento:</h3>
         <button type="button" onClick={() => handleAddParticipantesEvento()}>

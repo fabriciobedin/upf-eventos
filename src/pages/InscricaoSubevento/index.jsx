@@ -18,7 +18,7 @@ import {
   ListaContainer
 } from './styles';
 
-function InscricaoEvento() {
+function InscricaoSubevento() {
   const [eventoState, setEventoState] = useState({});
   const [participantesState, setParticipantesState] = useState([]);
   const [participantesInscritos, setParticipantesInscritos] = useState([]);
@@ -189,4 +189,4 @@ function InscricaoEvento() {
   );
 }
 
-export default InscricaoEvento;
+export default InscricaoSubevento;
