@@ -17,6 +17,14 @@ export const getParticipantesByEvento = idEvento => {
   .get();
 }
 
+export const getOrganizadoresByEvento = idEvento => {
+  return eventosRef
+  .doc(idEvento)
+  .collection('organizadores')
+  .doc()
+  .get();
+}
+
 export const getEventos = () => {
   return eventosRef.get();
 };

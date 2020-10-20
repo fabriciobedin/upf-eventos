@@ -17,8 +17,7 @@ function Sidebar() {
     { name: '/eventos', label: 'Eventos', Icon: Event },
     { name: '/participantes', label: 'Participantes', Icon: Group },
     { name: '/subevento', label: 'Subeventos', Icon: EventNoteOutlined },
-    { name: '/usuarios', label: 'Usuários', Icon: Person },
-    { name: '/organizadores', label: 'Organizadores', Icon: Person }
+    { name: '/usuarios', label: 'Usuários', Icon: Person }
   ];
   return (
     <Container>

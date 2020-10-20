@@ -67,7 +67,7 @@ const Routes = () => (
     <Route exact path="/organizadores" component={Organizadores} isPrivate />
     <Route
       exact
-      path="/organizadores/cadastro"
+      path="/organizadores/eventos/:idEvento"
       component={OrganizadoresCadastro}
       isPrivate
     />

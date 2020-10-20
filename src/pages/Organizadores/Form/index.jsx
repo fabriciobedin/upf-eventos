@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { Form } from '@unform/web';
 import * as Yup from 'yup';
 import 'firebase/firestore';
-
+import { useParams } from 'react-router-dom';
 import Button from '../../../components/Button';
 import Input from '../../../components/Input';
 import getValidationErrors from '../../../hooks';
@@ -14,20 +14,21 @@ import * as OrganizadorService from '../../../services/organizadores';
 
 const schema = Yup.object().shape({
   nome: Yup.string().required('Nome obrigatório!'),
-  senha: Yup.string().required('Senha obrigatória!'),
   email: Yup.string()
     .required('Email obrigatório!')
     .email('Digite um email válido!')
 });
 
+
 function OrganizadorForm({ organizador, formTitle, idOrganizador }) {
+  const { idEvento } = useParams();
   const history = useHistory();
   const formRef = useRef(null);
   const { addToast } = useToast();
 
   useEffect(() => {
     if (organizador) {
-      formRef.current.setData(organizador);
+      formRef.current.setData(idEvento, organizador);
     }
   }, [organizador]);
 
@@ -38,11 +39,13 @@ function OrganizadorForm({ organizador, formTitle, idOrganizador }) {
   const submitNew = useCallback(
     async data => {
       OrganizadorService.submit(data).then(() => {
-        addToast({
-          type: 'success',
-          description: 'Organizador cadastrado com sucesso.'
-        });
-        redirect();
+        console.log('d', data)
+        OrganizadorService.cadastrarOrganizador(idEvento, data.id).then(() => {
+          addToast({
+            type: 'success',
+            description: 'Organizador cadastrado com sucesso.'
+          });
+        })
       });
     },
     [addToast, redirect]
@@ -55,7 +58,6 @@ function OrganizadorForm({ organizador, formTitle, idOrganizador }) {
           type: 'success',
           description: 'Organizador alterado com sucesso.'
         });
-        redirect();
       });
     },
     [addToast, idOrganizador, redirect]

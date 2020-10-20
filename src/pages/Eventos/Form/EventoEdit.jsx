@@ -25,9 +25,11 @@ import { Container, Content, SubtitleContainer } from './styles';
 import {
   getEventoById,
   update,
-  getSubEventosByIdEvento
+  getSubEventosByIdEvento,
+  getOrganizadoresByEvento
 } from '../../../services/eventos';
 import ParticipantesList from '../../../components/exibicao/Participante';
+import OrganizadoresList from '../../../components/exibicao/Organizador';
 import { useToast } from '../../../hooks/toast';
 
 const schema = Yup.object().shape({
@@ -42,6 +44,7 @@ function EventoForm() {
   const history = useHistory();
   const formRef = useRef(null);
   const [subeventos, setSubeventos] = useState([]);
+  const [organizadores, setOrganizadores] = useState([]);
   const [evento, setEvento] = useState({});
   const { addToast } = useToast();
   const { id } = useParams();
@@ -80,6 +83,18 @@ function EventoForm() {
     });
   }, [id]);
 
+  // useEffect(() => {
+  //   getOrganizadoresByEvento(id).then(organizador => {
+  //     organizador.forEach(doc => {
+  //       const organizador = {
+  //         ...doc.data(),
+  //         uuid: doc.id
+  //       };
+  //       setOrganizadores(org => [...org, organizador]);
+  //     });
+  //   });
+  // }, [id]);
+
   useEffect(() => {
     getEventoById(id).then(docSnapshot => {
       if (docSnapshot.exists) {
@@ -99,6 +114,10 @@ function EventoForm() {
     },
     [history]
   );
+
+  const handleCadastroOrganizador = useCallback(() => {
+    history.push(`/organizadores/eventos/${id}`);
+  }, [history, id]);
 
   const handleDeleteSubevento = useCallback(
     idSubevento => {
@@ -231,6 +250,18 @@ function EventoForm() {
         </SubtitleContainer>
         <ParticipantesList
           participantes={evento.participantes || []}
+          hidePhone
+          hideButtons
+        />
+
+        <SubtitleContainer>
+          <h3>Organizadores:</h3>
+          <button type="button" onClick={() => handleCadastroOrganizador()}>
+            Cadastrar Organizadores
+          </button>
+        </SubtitleContainer>
+        <OrganizadoresList
+          organizadores={evento.organizadores || []}
           hidePhone
           hideButtons
         />
