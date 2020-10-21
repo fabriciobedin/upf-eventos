@@ -15,7 +15,6 @@ const AuthProvider = ({ children }) => {
     if (userLocal?.user?.stsTokenManager) {
       return { user: userLocal };
     }
-
     return null;
   });
 
@@ -61,8 +60,26 @@ const AuthProvider = ({ children }) => {
     history.push('/');
   }, [history]);
 
+  const resetPassword = useCallback(
+    email => {
+      firebase
+        .auth()
+        .sendPasswordResetEmail(email)
+        .then(() => {
+          console.log('Link sent');
+          history.push('/');
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    [history]
+  );
+
   return (
-    <AuthContext.Provider value={{ user, signIn, signOut, register }}>
+    <AuthContext.Provider
+      value={{ user, signIn, signOut, register, resetPassword }}
+    >
       {children}
     </AuthContext.Provider>
   );
