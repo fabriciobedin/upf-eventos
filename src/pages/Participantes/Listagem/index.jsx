@@ -57,7 +57,7 @@ function Participantes({ idEvento }) {
         })
         .catch(() => {});
     },
-    [addToast, confirmation, idEvento, verificaFrequencia]
+    [addToast, confirmation, idEvento, verificaFrequencia, deleteOptionsParticipante]
   );
 
   useEffect(() => {
