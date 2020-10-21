@@ -1,21 +1,19 @@
 import React, { useCallback, useRef } from 'react';
-import { FiMail, FiLock } from 'react-icons/fi';
+import { FiArrowLeft, FiMail } from 'react-icons/fi';
 import { Form } from '@unform/web';
 import * as Yup from 'yup';
 import { Link } from 'react-router-dom';
 
 import { Container, AnimationContainer, Content, Background } from './styles';
-import getValidationErrors from '../../utils/getValidationErrors';
 import logo from '../../assets/logo_upf.png';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 import { useAuth } from '../../hooks/auth';
 import { useToast } from '../../hooks/toast';
 
-const SignIn = () => {
+const ResetPassword = () => {
   const formRef = useRef(null);
-
-  const { signIn } = useAuth();
+  const { resetPassword } = useAuth();
   const { addToast } = useToast();
 
   const handleSubmit = useCallback(
@@ -25,56 +23,51 @@ const SignIn = () => {
         const schema = Yup.object().shape({
           email: Yup.string()
             .required('Email obrigatório!')
-            .email('Digite um email válido!'),
-          password: Yup.string().required('Senha obrigatória!')
+            .email('Digite um email válido!')
         });
-        await schema.validate(data, {
-          abortEarly: false
-        });
+        await schema.validate(data);
+        await resetPassword(data.email);
 
-        await signIn({
-          email: data.email,
-          password: data.password
+        addToast({
+          type: 'success',
+          title: 'Sucesso!',
+          description:
+            'Enviamos para o seu email um link para criação de nova senha.'
         });
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
-          formRef.current.setErrors(getValidationErrors(err));
+          formRef.current.setErrors({ email: err.message });
           return;
         }
-
         addToast({
           type: 'error',
-          title: 'Erro na autenticação!',
-          description:
-            'Por favor, verifique se digitou suas credenciais corretamente.'
+          title: 'Erro!',
+          description: 'Por favor, verifique se digitou o email corretamente.'
         });
       }
     },
-    [addToast, signIn]
+    [resetPassword, addToast]
   );
 
   return (
     <Container>
-      <Background />
       <Content>
         <AnimationContainer>
           <img src={logo} alt="UPF" />
           <Form ref={formRef} onSubmit={handleSubmit}>
-            <h1>Faça seu login</h1>
+            <h1>Redefinição de senha</h1>
             <Input name="email" icon={FiMail} placeholder="E-mail" />
-            <Input
-              name="password"
-              icon={FiLock}
-              type="password"
-              placeholder="Senha"
-            />
-            <Button type="submit">Entrar</Button>
-            <Link to="resetpassword">Esqueci minha senha :(</Link>
+            <Button type="submit">Enviar</Button>
           </Form>
+          <Link to="/">
+            <FiArrowLeft />
+            Voltar para Login
+          </Link>
         </AnimationContainer>
       </Content>
+      <Background />
     </Container>
   );
 };
 
-export default SignIn;
+export default ResetPassword;
