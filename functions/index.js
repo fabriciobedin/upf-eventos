@@ -146,9 +146,9 @@ async function enviarCracha(evento,participante){
 
 /* Função exposta para testar a criação do qr code*/
 exports.generateQrCode = functions.https.onRequest(async (req, res) => {
-  this.qrcode = await createQrCode('teste')
+  const qrcode = await createQrCode('teste')
 
-  res.json({result: this.qrcode});
+  res.json({result: qrcode});
 });
 
 /* FUNÇÃO PARA CRIAR QR CODE DE ACORDO COM PARAMETRO PASSADO */
