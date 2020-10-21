@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "UPF Eventos",
+  "name": "Aplicação para o controle de presença dos eventos da UPF.",
   "icons": [
     {
       "src": "favicon.ico",
