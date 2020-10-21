@@ -16,7 +16,7 @@ export const getParticipanteById = (idEvento, idParticipante) => {
 };
 
 export const getParticipantesByEvento = idEvento => {
-  return eventosRef.doc(idEvento).collection(PARTICIPANTES);
+  return eventosRef.doc(idEvento).collection(PARTICIPANTES).orderBy('nome');
 };
 
 export const buscaPorCodigoDocumento = (idEvento, codigo, documento) => {

@@ -45,3 +45,9 @@ const getUsuarioLogado = () => {
   const { user } = !!localStorage.getItem('@upf-eventos:user') ? JSON.parse(localStorage.getItem('@upf-eventos:user')) : {};
   return user;
 };
+
+export const remove = (idEvento) => {
+  return eventosRef
+    .doc(idEvento)
+    .delete();
+};

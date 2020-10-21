@@ -20,6 +20,10 @@ function Participantes({ idEvento }) {
     ...options,
     selectableRows: 'none'
   };
+  const deleteOptionsParticipante = {
+    ...deleteOptions,
+    description: 'Você confirma a exclusão do participante?'
+  };
 
   const handleEdit = useCallback(
     idParticipante => {
@@ -47,7 +51,7 @@ function Participantes({ idEvento }) {
         });
         return;
       }
-      confirmation(deleteOptions)
+      confirmation(deleteOptionsParticipante)
         .then(() => {
           ParticipantesService.remove(idEvento, idParticipante).then(() => {});
         })
