@@ -70,7 +70,7 @@ function EventosList() {
           type: 'error',
           title: 'Atenão!',
           description:
-            'Participante possui registro de frequência. Não será possível remove-lo.'
+            'Evento possui participantes/subeventos registrados. Não será possível remove-lo.'
         });
         return;
       }
