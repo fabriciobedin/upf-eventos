@@ -18,7 +18,7 @@ export const adicionarOrganizador = (idEvento, organizador) => {
   });
 };
 
-export const submit = (organizador, id) => {
+export const submit = (organizador, id, idEvento) => {
   if(id) {
     organizador.updatedAt = timestamp;
     return usuariosRef.doc(id).update(organizador);

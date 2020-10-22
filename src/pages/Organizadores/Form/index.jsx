@@ -38,10 +38,6 @@ function OrganizadorForm({ organizador, formTitle, idOrganizador }) {
     history.push('/organizadores');
   }, [history]);
 
-  const submitVinculoOrganizador = useCallback(() => {
-
-  })
-
   const submitNew = useCallback(
     async data => {
       OrganizadorService.submit(data).then(() => {
@@ -109,9 +105,6 @@ function OrganizadorForm({ organizador, formTitle, idOrganizador }) {
           <ButtonContainer>
             <Button type="submit" onClick={() => handleSubmit()}>
               Salvar Usuario
-            </Button>
-            <Button type="submit" onClick={() => submitVinculoOrganizador()}>
-              Tornar Organizador
             </Button>
             <Button onClick={redirect}>Cancelar</Button>
           </ButtonContainer>
