@@ -7,7 +7,6 @@ import 'firebase/firestore';
 const db = firebase.firestore();
 const buttonRef = React.createRef()
 
-
 export default class EventoImportacao extends Component {
 
   handleOpenDialog = (e) => {
@@ -26,8 +25,11 @@ export default class EventoImportacao extends Component {
     console.log('---------------------------')
     let linha = 0;
     let evento = {};
+    evento.participantes = [];
     evento.subeventos = [];
     evento.dados = {}
+    evento.organizadores = [];
+    evento.dados.organizadores = [];
 
     data.forEach(element => {
       let dado = element.data
@@ -37,6 +39,16 @@ export default class EventoImportacao extends Component {
         evento.dados.codigo = dado[5]
         evento.dados.nome = dado[6]
         evento.dados.descricao = dado[7]         
+
+        let organizador = {};
+
+        organizador.codigo = dado[21]
+        organizador.name = dado[22]
+        organizador.email = dado[23]
+        organizador.password = '123456'
+       
+        evento.organizadores[dado[21]]=organizador //adição do organizador por codigo para não duplicar
+        
 
         let subevento = {};
         subevento.dados = {};
@@ -53,7 +65,24 @@ export default class EventoImportacao extends Component {
       linha++
     }
     );
+    //ORGANIZAR ARRAY DE ORGANIZADORES PARA INSERÇÃO
+    evento.organizadores.forEach(async organizador => 
+      {
+        evento.dados.organizadores.push(organizador.codigo)  
+        db.collection('Users')
+            .doc(organizador.codigo)
+            .set({ email: organizador.email, nome:organizador.name })    
 
+        firebase
+        .auth()
+        .createUserWithEmailAndPassword(organizador.email, organizador.password)
+        .then(
+          console.log('Usuario criado')
+        )
+        .catch((error) => {
+          console.log(error)
+        });
+      });
     //FOREACH PARA PARTICIPANTES 
     linha = 0;
     data.forEach(element => {
@@ -69,7 +98,7 @@ export default class EventoImportacao extends Component {
         participante.tipo = dado[3]
 
         evento.subeventos[dado[8]].participantes.push(participante)  
-
+        evento.participantes.push(participante)
       }      
       linha++
     }
@@ -79,23 +108,33 @@ export default class EventoImportacao extends Component {
     //ADICIONANDO EVENTO
     console.log("------------------------------------")
     console.log("Adicionando Evento")
-    const eventosRef = db.collection('Eventos');
-    const retornoEvento = await eventosRef.add(evento.dados);
-    const subEventosRef = retornoEvento.collection('Subeventos')
+    console.log(evento.dados)
+    db.collection('Eventos').doc(evento.dados.codigo).set(evento.dados);
+    //const retornoEvento = await eventosRef.set(evento.dados);
+    const subEventosRef =  db.collection('Eventos').doc(evento.dados.codigo).collection('Subeventos')
     
-    //PARA CADA EVENTO ADICIONA O SUBEVENTO
+    //ADICIONAR TODOS OS PARTICIPANTES
+    let participanteEventoRef = db.collection('Eventos').doc(evento.dados.codigo).collection('Participantes')
+
+    evento.participantes.forEach(participante => {
+      participanteEventoRef.doc(participante.codigo).set(participante)
+    });
+
+    //PARA CADA EVENTO ADICIONA AO EVENTO
     evento.subeventos.forEach(async subevento => {
       console.log("------------------------------------")
       console.log('Adicionando subevento ')
       console.log(subevento.dados)
 
-      const retornoSubEvento = await subEventosRef.add(subevento.dados);
+      subEventosRef.doc(subevento.dados.codigo).set(subevento.dados);
+      const participantesRef = db.collection('Eventos').doc(evento.dados.codigo)
+      .collection('Subeventos').doc(subevento.dados.codigo).collection('Participantes')
 
       console.log('Parcipantes do subevento')
-      subevento.participantes.forEach(participante => {
-        console.log(participante)
-        const participantesRef = retornoSubEvento.collection('Participantes')
-        participantesRef.add(participante)
+      subevento.participantes.forEach(participante => 
+        {
+        console.log(participante)        
+        participantesRef.doc(participante.codigo).set(participante)
       });
     });
 
