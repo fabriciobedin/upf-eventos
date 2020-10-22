@@ -60,7 +60,7 @@ const SignIn = () => {
         <AnimationContainer>
           <img src={logo} alt="UPF" />
           <Form ref={formRef} onSubmit={handleSubmit}>
-            <h1>Faça seu login</h1>
+            <h1>Login</h1>
             <Input name="email" icon={FiMail} placeholder="E-mail" />
             <Input
               name="password"
