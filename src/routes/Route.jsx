@@ -13,7 +13,7 @@ const Route = ({ isPrivate = false, component: Component, ...rest }) => {
   }
 
   if (user && !isPrivate) {
-    return <Redirect to="/dashboard" />;
+    return <Redirect to="/eventos" />;
   }
 
   const Layout = user ? DefaultLayout : AuthLayout;
