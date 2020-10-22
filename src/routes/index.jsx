@@ -3,9 +3,7 @@ import { Switch } from 'react-router-dom';
 
 import Route from './Route';
 import SignIn from '../pages/SignIn';
-import Register from '../pages/Register';
 import ResetPassword from '../pages/ResetPassword';
-import Dashborad from '../pages/Dashboard';
 import SubeventosCadastro from '../pages/Subeventos/Form/SubeventoCadastro';
 import SubeventosEdit from '../pages/Subeventos/Form/SubeventoEdit';
 import EventosList from '../pages/Eventos/Listagem';
@@ -22,9 +20,7 @@ import Perfil from '../pages/Perfil';
 const Routes = () => (
   <Switch>
     <Route exact path="/" component={SignIn} />
-    <Route exact path="/register" component={Register} />
     <Route exact path="/resetpassword" component={ResetPassword} />
-    <Route exact path="/dashboard" component={Dashborad} isPrivate />
     <Route exact path="/eventos" component={EventosList} isPrivate />
     <Route exact path="/eventos/cadastro" component={EventoAdd} isPrivate />
     <Route

@@ -4,14 +4,12 @@ import { Link as RouterLink } from 'react-router-dom';
 
 import { Container, ProfileImg, MenuHeader, MenuList } from './styles';
 import {
-  Home,
   Event,
   Person
 } from '@material-ui/icons';
 
 function Sidebar() {
   const items = [
-    { name: '/dashboard', label: 'Home', Icon: Home },
     { name: '/eventos', label: 'Eventos', Icon: Event },
     { name: '/usuarios', label: 'Usuários', Icon: Person }
   ];
