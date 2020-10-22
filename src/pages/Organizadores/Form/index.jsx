@@ -2,13 +2,14 @@ import React, { useCallback, useRef, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Form } from '@unform/web';
 import * as Yup from 'yup';
-import 'firebase/firestore';
 import { useParams } from 'react-router-dom';
 import Button from '../../../components/Button';
 import Input from '../../../components/Input';
 import getValidationErrors from '../../../hooks';
 import { useToast } from '../../../hooks/toast';
 import { Container, Content, ButtonContainer } from './styles';
+import firebase from '../../../services/firebase';
+import 'firebase/firestore';
 
 import * as OrganizadorService from '../../../services/organizadores';
 
@@ -25,30 +26,41 @@ function OrganizadorForm({ organizador, formTitle, idOrganizador }) {
   const history = useHistory();
   const formRef = useRef(null);
   const { addToast } = useToast();
+  const db = firebase.firestore();
 
   useEffect(() => {
     if (organizador) {
       formRef.current.setData(idEvento, organizador);
     }
-  }, [organizador]);
+  }, [organizador, idEvento]);
 
   const redirect = useCallback(() => {
     history.push('/organizadores');
   }, [history]);
 
+  const submitVinculoOrganizador = useCallback(() => {
+
+  })
+
   const submitNew = useCallback(
     async data => {
       OrganizadorService.submit(data).then(() => {
-        console.log('d', data)
-        OrganizadorService.cadastrarOrganizador(idEvento, data.id).then(() => {
-          addToast({
-            type: 'success',
-            description: 'Organizador cadastrado com sucesso.'
-          });
+        const ref = db.collection('Users').doc()
+        console.log(ref.id)  // prints the unique id
+        ref.set({data})  // sets the contents of the doc using the id
+        .then(() => {  // fetch the doc again and show its data
+          ref.get().then(doc => {
+            OrganizadorService.adicionarOrganizador(idEvento, ref.id).then(() => {
+              addToast({
+                type: 'success',
+                description: 'Organizador vinculado com sucesso.'
+              });
+            })
+          })
         })
       });
     },
-    [addToast, redirect]
+    [addToast, db, idEvento]
   );
 
   const submitUpdate = useCallback(
@@ -60,7 +72,7 @@ function OrganizadorForm({ organizador, formTitle, idOrganizador }) {
         });
       });
     },
-    [addToast, idOrganizador, redirect]
+    [addToast, idOrganizador]
   );
 
   const handleSubmit = useCallback(
@@ -96,7 +108,10 @@ function OrganizadorForm({ organizador, formTitle, idOrganizador }) {
           <hr />
           <ButtonContainer>
             <Button type="submit" onClick={() => handleSubmit()}>
-              Salvar
+              Salvar Usuario
+            </Button>
+            <Button type="submit" onClick={() => submitVinculoOrganizador()}>
+              Tornar Organizador
             </Button>
             <Button onClick={redirect}>Cancelar</Button>
           </ButtonContainer>

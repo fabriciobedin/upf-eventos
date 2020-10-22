@@ -25,8 +25,7 @@ import { Container, Content, SubtitleContainer } from './styles';
 import {
   getEventoById,
   update,
-  getSubEventosByIdEvento,
-  getOrganizadoresByEvento
+  getSubEventosByIdEvento
 } from '../../../services/eventos';
 import ParticipantesList from '../../../components/exibicao/Participante';
 import OrganizadoresList from '../../../components/exibicao/Organizador';
@@ -44,7 +43,6 @@ function EventoForm() {
   const history = useHistory();
   const formRef = useRef(null);
   const [subeventos, setSubeventos] = useState([]);
-  const [organizadores, setOrganizadores] = useState([]);
   const [evento, setEvento] = useState({});
   const { addToast } = useToast();
   const { id } = useParams();
@@ -83,17 +81,6 @@ function EventoForm() {
     });
   }, [id]);
 
-  // useEffect(() => {
-  //   getOrganizadoresByEvento(id).then(organizador => {
-  //     organizador.forEach(doc => {
-  //       const organizador = {
-  //         ...doc.data(),
-  //         uuid: doc.id
-  //       };
-  //       setOrganizadores(org => [...org, organizador]);
-  //     });
-  //   });
-  // }, [id]);
 
   useEffect(() => {
     getEventoById(id).then(docSnapshot => {

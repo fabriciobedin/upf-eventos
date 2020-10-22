@@ -2,7 +2,7 @@ import firebase from './firebase';
 import 'firebase/firestore';
 
 const db = firebase.firestore();
-const eventosRef = db.collection('eventos');
+const eventosRef = db.collection('Eventos');
 const subEventosRef = db.collection('subeventos');
 
 export const getEventoById = idEvento => {

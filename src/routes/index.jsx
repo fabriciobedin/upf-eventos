@@ -17,7 +17,6 @@ import ParticipanteEdit from '../pages/Participantes/Edicao';
 import InscricaoEvento from '../pages/InscricaoEvento';
 import InscricaoSubevento from '../pages/InscricaoSubevento';
 import Usuarios from '../pages/Usuarios/Listagem';
-import Organizadores from '../pages/Organizadores/Listagem';
 import OrganizadoresCadastro from '../pages/Organizadores/Cadastro';
 
 const Routes = () => (
@@ -64,7 +63,6 @@ const Routes = () => (
       isPrivate
     />
     <Route exact path="/usuarios" component={Usuarios} isPrivate />
-    <Route exact path="/organizadores" component={Organizadores} isPrivate />
     <Route
       exact
       path="/organizadores/eventos/:idEvento"
