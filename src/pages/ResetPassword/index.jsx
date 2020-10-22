@@ -1,45 +1,52 @@
 import React, { useCallback, useRef } from 'react';
-import { FiArrowLeft, FiMail, FiUser, FiLock } from 'react-icons/fi';
+import { FiArrowLeft, FiMail } from 'react-icons/fi';
 import { Form } from '@unform/web';
 import * as Yup from 'yup';
 import { Link } from 'react-router-dom';
 
 import { Container, AnimationContainer, Content, Background } from './styles';
-import getValidationErrors from '../../utils/getValidationErrors';
 import logo from '../../assets/logo_upf.png';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 import { useAuth } from '../../hooks/auth';
+import { useToast } from '../../hooks/toast';
 
-const Register = () => {
+const ResetPassword = () => {
   const formRef = useRef(null);
-  const { register } = useAuth();
+  const { resetPassword } = useAuth();
+  const { addToast } = useToast();
 
   const handleSubmit = useCallback(
     async data => {
       try {
         formRef.current.setErrors({});
         const schema = Yup.object().shape({
-          name: Yup.string().required('Nome obrigatório!'),
           email: Yup.string()
             .required('Email obrigatório!')
-            .email('Digite um email válido!'),
-          password: Yup.string().min(6, 'Mínimo 6 dígitos!')
+            .email('Digite um email válido!')
         });
-        await schema.validate(data, {
-          abortEarly: false
-        });
+        await schema.validate(data);
+        await resetPassword(data.email);
 
-        await register({
-          name: data.name,
-          email: data.email,
-          password: data.password
+        addToast({
+          type: 'success',
+          title: 'Sucesso!',
+          description:
+            'Enviamos para o seu email um link para criação de nova senha.'
         });
       } catch (err) {
-        formRef.current.setErrors(getValidationErrors(err));
+        if (err instanceof Yup.ValidationError) {
+          formRef.current.setErrors({ email: err.message });
+          return;
+        }
+        addToast({
+          type: 'error',
+          title: 'Erro!',
+          description: 'Por favor, verifique se digitou o email corretamente.'
+        });
       }
     },
-    [register]
+    [resetPassword, addToast]
   );
 
   return (
@@ -48,16 +55,9 @@ const Register = () => {
         <AnimationContainer>
           <img src={logo} alt="UPF" />
           <Form ref={formRef} onSubmit={handleSubmit}>
-            <h1>Faça seu cadastro</h1>
-            <Input name="name" icon={FiUser} placeholder="Nome Completo" />
+            <h1>Redefinição de senha</h1>
             <Input name="email" icon={FiMail} placeholder="E-mail" />
-            <Input
-              name="password"
-              icon={FiLock}
-              type="password"
-              placeholder="Senha"
-            />
-            <Button type="submit">Cadastrar</Button>
+            <Button type="submit">Enviar</Button>
           </Form>
           <Link to="/">
             <FiArrowLeft />
@@ -70,4 +70,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default ResetPassword;

@@ -1,5 +1,5 @@
 import React, { useCallback, useRef } from 'react';
-import { FiLogIn, FiMail, FiLock } from 'react-icons/fi';
+import { FiMail, FiLock } from 'react-icons/fi';
 import { Form } from '@unform/web';
 import * as Yup from 'yup';
 import { Link } from 'react-router-dom';
@@ -60,7 +60,7 @@ const SignIn = () => {
         <AnimationContainer>
           <img src={logo} alt="UPF" />
           <Form ref={formRef} onSubmit={handleSubmit}>
-            <h1>Faça seu login</h1>
+            <h1>Login</h1>
             <Input name="email" icon={FiMail} placeholder="E-mail" />
             <Input
               name="password"
@@ -69,12 +69,8 @@ const SignIn = () => {
               placeholder="Senha"
             />
             <Button type="submit">Entrar</Button>
-            <Link to="forgot">Esqueci minha senha :(</Link>
+            <Link to="resetpassword">Esqueci minha senha :(</Link>
           </Form>
-          <Link to="register">
-            <FiLogIn />
-            Criar conta
-          </Link>
         </AnimationContainer>
       </Content>
     </Container>

@@ -6,8 +6,7 @@ import { Button } from '@material-ui/core';
 import { formatDate } from '../../utils/formatters';
 import { useToast } from '../../hooks/toast';
 import * as SubeventosService from '../../services/subeventos';
-// import * as ParticipantesService from '../../services/participantes';
-import * as ServiceEventos from '../../services/eventos';
+import * as ServiceParticipantes from '../../services/participantes';
 
 import {
   Container,
@@ -94,7 +93,7 @@ function InscricaoSubevento() {
       }
     );
 
-    ServiceEventos.getParticipantesByEvento(idEvento).onSnapshot(
+    ServiceParticipantes.getParticipantesByEvento(idEvento).onSnapshot(
       participantesSnapshot => {
         setParticipantesState(
           participantesSnapshot.docs.map(doc => ({

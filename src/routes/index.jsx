@@ -3,8 +3,7 @@ import { Switch } from 'react-router-dom';
 
 import Route from './Route';
 import SignIn from '../pages/SignIn';
-import Register from '../pages/Register';
-import Dashborad from '../pages/Dashboard';
+import ResetPassword from '../pages/ResetPassword';
 import SubeventosCadastro from '../pages/Subeventos/Form/SubeventoCadastro';
 import SubeventosEdit from '../pages/Subeventos/Form/SubeventoEdit';
 import EventosList from '../pages/Eventos/Listagem';
@@ -16,12 +15,12 @@ import ParticipanteCadastro from '../pages/Participantes/Cadastro';
 import ParticipanteEdit from '../pages/Participantes/Edicao';
 import Usuarios from '../pages/Usuarios/Listagem';
 import InscricaoSubevento from '../pages/InscricaoSubevento';
+import Perfil from '../pages/Perfil';
 
 const Routes = () => (
   <Switch>
     <Route exact path="/" component={SignIn} />
-    <Route exact path="/register" component={Register} />
-    <Route exact path="/dashboard" component={Dashborad} isPrivate />
+    <Route exact path="/resetpassword" component={ResetPassword} />
     <Route exact path="/eventos" component={EventosList} isPrivate />
     <Route exact path="/eventos/cadastro" component={EventoAdd} isPrivate />
     <Route
@@ -77,6 +76,7 @@ const Routes = () => (
       isPrivate
     />
     <Route exact path="/usuarios" component={Usuarios} isPrivate />
+    <Route exact path="/perfil" component={Perfil} isPrivate />
   </Switch>
 );
 
