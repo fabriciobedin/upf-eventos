@@ -66,6 +66,14 @@ export const Content = styled.div`
   max-height: 75%;
   max-width: 90%;
   margin: auto;
-  border-radius: 10px;
   text-align: center;
+`;
+
+export const ButtonContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-top: 30px;
+  button {
+    margin: 5px;
+  }
 `;
