@@ -89,7 +89,7 @@ function ParticipantesSubevento({ idEvento, idSubevento }) {
     );
   }
 
-  return <NoRecords />;
+  return <NoRecords message="Nenhum participante inscrito."  />;
 }
 
 export default ParticipantesSubevento;

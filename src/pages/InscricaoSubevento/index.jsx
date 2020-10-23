@@ -1,22 +1,13 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
-import { Button } from '@material-ui/core';
+import { Button, Dialog, DialogContent, DialogTitle } from '@material-ui/core';
 import { formatDate } from '../../utils/formatters';
 import { useToast } from '../../hooks/toast';
 import * as SubeventosService from '../../services/subeventos';
 import * as ServiceParticipantes from '../../services/participantes';
 import BreadCrumb from '../../components/BreadCrumb';
 
-import {
-  Container,
-  Title,
-  ContainerDatas,
-  Datas,
-  ParticipantesContainer,
-  ListaContainer
-} from './styles';
+import { Container, Title, ContainerDatas, Datas } from './styles';
 import ParticipantesSubevento from '../ParticipantesSubevento';
 import SelecaoParticipantes from './SelecaoParticipantes';
 
@@ -24,6 +15,7 @@ function InscricaoSubevento() {
   const [eventoState, setEventoState] = useState({});
   const [participantesState, setParticipantesState] = useState([]);
   const [participantesInscritos, setParticipantesInscritos] = useState([]);
+  const [open, setOpen] = useState(false);
   const { idEvento, idSubevento } = useParams();
   const { addToast } = useToast();
   const dataIniFormatada = useRef(null);
@@ -32,9 +24,13 @@ function InscricaoSubevento() {
   const subevento = useRef(null);
   const history = useHistory();
 
-  const finalizarInscricoes = useCallback(() => {
-    history.goBack();
+  const handleClickOpen = useCallback(() => {
+    setOpen(true);
   }, [history]);
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   const addParticipante = useCallback(
     value => {
@@ -120,7 +116,7 @@ function InscricaoSubevento() {
     {
       routeTo: '',
       name: 'Inscrição Subevento'
-    },
+    }
   ];
 
   return (
@@ -148,7 +144,7 @@ function InscricaoSubevento() {
 
       <hr />
 
-      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', padding:10 }}>
         <Button
           style={{
             backgroundColor: '#1BC5BD',
@@ -158,16 +154,34 @@ function InscricaoSubevento() {
           }}
           variant="outlined"
           color="primary"
-          onClick={() => finalizarInscricoes()}
+          onClick={handleClickOpen}
         >
-          Finalizar Inscrições
+          Inscrever participantes
         </Button>
       </div>
 
       <ParticipantesSubevento idEvento={idEvento} idSubevento={idSubevento} />
 
-      <SelecaoParticipantes idEvento={idEvento} idSubevento={idSubevento} title='Participantes do evento' selectable={true}/>
-
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="form-dialog-title"
+        fullWidth={true}
+        maxWidth={'lg'}
+      >
+        <DialogTitle id="form-dialog-title">
+          Inscrição de participantes
+        </DialogTitle>
+        <DialogContent>
+          <SelecaoParticipantes
+            idEvento={idEvento}
+            idSubevento={idSubevento}
+            title="Participantes do evento"
+            selectable={true}
+            statusModal={setOpen}
+          />
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

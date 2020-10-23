@@ -12,7 +12,7 @@ import { useToast } from '../../hooks/toast';
 import NoRecords from '../../components/NoRecords';
 import CustomToolbar from './CustomToolbar';
 
-function SelecaoParticipantes({ idEvento, idSubevento }) {
+function SelecaoParticipantes({ idEvento, idSubevento, statusModal }) {
   const history = useHistory();
   const confirmation = useConfirm();
   const [participantes, setParticipantes] = useState([]);
@@ -21,7 +21,7 @@ function SelecaoParticipantes({ idEvento, idSubevento }) {
     ...options,
     selectableRows: 'multiple',
     customToolbarSelect: (selectedRows, displayData, setSelectedRows) => (
-      <CustomToolbar selectedRows={selectedRows} displayData={displayData} setSelectedRows={setSelectedRows} />
+      <CustomToolbar selectedRows={selectedRows} displayData={displayData} setSelectedRows={setSelectedRows} statusModal={statusModal} />
     ),
   };
   const deleteOptionsParticipante = {
@@ -125,7 +125,7 @@ function SelecaoParticipantes({ idEvento, idSubevento }) {
   if (participantes.length > 0) {
     return (
       <MUIDataTable
-        title="Participantes do evento"
+        title="Participantes Não Inscritos"
         data={participantes}
         columns={columns}
         options={tableOptions}
