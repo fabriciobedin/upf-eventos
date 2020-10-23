@@ -24,6 +24,8 @@ function Perfil() {
   const { signOut, user, changePassword } = useAuth();
   const { addToast } = useToast();
   const formRef = useRef(null);
+  const AVATAR_URL_DEFAULT =
+    'https://firebasestorage.googleapis.com/v0/b/upf-eventos.appspot.com/o/assets%2Fdefault_avatar.png?alt=media&token=fda493df-ce4f-4c71-bea6-b310c8b524ad';
 
   const handleSubmit = useCallback(
     async data => {
@@ -66,14 +68,14 @@ function Perfil() {
     [addToast, changePassword]
   );
 
-  const { REACT_APP_AVATAR_URL_DEFAULT } = process.env;
-
   return (
     <Container>
       <HeaderBox />
       <FooterBox />
       <Content>
-        <UserImg avatar={user.avatarUrl ? user.avatarUrl : REACT_APP_AVATAR_URL_DEFAULT} />
+        <UserImg
+          avatar={user.avatarUrl ? user.avatarUrl : AVATAR_URL_DEFAULT}
+        />
         <BodyContent>
           <p>{user.name}</p>
           <p>{user.email}</p>
