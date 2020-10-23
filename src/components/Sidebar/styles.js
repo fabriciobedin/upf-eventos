@@ -1,7 +1,5 @@
 import styled from 'styled-components';
 
-import user_img from '../../assets/user_profile.png';
-
 export const Container = styled.div`
   flex: 0 0 260px;
   max-width: 260px;
@@ -13,24 +11,29 @@ export const Container = styled.div`
 `;
 
 export const MenuHeader = styled.div`
-  height: 100px;
+  height: 130px;
   max-width: 100%;
   text-align: center;
+  
+    & a {
+      color: white;
+      text-decoration: none;
+    }
 `;
 
 export const ProfileImg = styled.div`
-  width: 100px;
+  width: 130px;
   height: 100%;
   display: inline-block;
   border-radius: 50%;
-  background-image: url(${user_img});
+  background-image: url(${props => props.avatar});
   background-size: cover;
   background-position: center;
   border: 2px solid white;
 `;
 
 export const MenuList = styled.div`
-  margin-top: 20px;
+  margin-top: 40px;
   a {
     padding: 10px;
 

@@ -32,8 +32,22 @@ const AuthProvider = ({ children }) => {
     }
   }, [user]);
 
+  const handleAuthErrorMessage = useCallback(errorCode => {
+    return (
+      {
+        'auth/wrong-password': 'Senha incorreta',
+        'auth/invalid-email': 'Email inválido',
+        'auth/user-not-found': 'Usuário não encontrado',
+        'auth/user-disabled': 'Usuário desativado',
+        'auth/email-already-in-use': 'Usuário já está em uso',
+        'auth/operation-not-allowed': 'Operação não permitida',
+        'auth/weak-password': 'Senha muito fraca'
+      }[errorCode] || `Erro desconhecido ${errorCode}`
+    );
+  }, []);
+
   const signIn = useCallback(({ email, password }) => {
-    firebase
+    return firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
       .then(res => {
@@ -48,9 +62,9 @@ const AuthProvider = ({ children }) => {
           });
       })
       .catch(err => {
-        throw err;
+        throw new Error(handleAuthErrorMessage(err.code));
       });
-  }, []);
+  }, [handleAuthErrorMessage]);
 
   const signOut = useCallback(() => {
     setUser();
@@ -72,20 +86,6 @@ const AuthProvider = ({ children }) => {
     },
     [history]
   );
-
-  const handleAuthErrorMessage = useCallback(errorCode => {
-    return (
-      {
-        'auth/wrong-password': 'Senha incorreta',
-        'auth/invalid-email': 'Email inválido',
-        'auth/user-not-found': 'Usuário não encontrado',
-        'auth/user-disabled': 'Usuário desativado',
-        'auth/email-already-in-use': 'Usuário já está em uso',
-        'auth/operation-not-allowed': 'Operação não permitida',
-        'auth/weak-password': 'Senha muito fraca'
-      }[errorCode] || `Erro desconhecido ${errorCode}`
-    );
-  }, []);
 
   const reauthenticate = useCallback(currentPassword => {
     const { currentUser } = firebase.auth();
