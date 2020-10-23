@@ -4,6 +4,7 @@ import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import { Button } from '@material-ui/core';
 import { useParams } from 'react-router-dom';
 import { realizarInscricao } from '../../services/subeventos';
+import * as ParticipantesService from '../../services/participantes';
 import { useToast } from '../../hooks/toast';
 
 function CustomToolbar({selectedRows, displayData, setSelectedRows}) {
@@ -11,14 +12,17 @@ function CustomToolbar({selectedRows, displayData, setSelectedRows}) {
   const { addToast } = useToast();
 
   const addParticipante = useCallback(() => {
-
     console.log(displayData);
     var promises = [];
     displayData.forEach(element => {
       const snippet = {
-        uid: element.data[0],
+        codigo: element.data[0],
+        nome: element.data[1],
+        email: element.data[2],
+        status: 'inscrito'
       };
       promises.push(realizarInscricao(idEvento, idSubevento, snippet));
+      promises.push(ParticipantesService.atulizaInscricaoSubevento(idEvento, snippet.codigo, idSubevento));
     });
 
     Promise.all(promises).then(function(res) {
@@ -26,7 +30,7 @@ function CustomToolbar({selectedRows, displayData, setSelectedRows}) {
         type: 'success',
         description: 'Participantes inscrito com sucesso.'
       });
-      console.log(res);
+      setSelectedRows([]);
     });
 
   },[idEvento, idSubevento]);

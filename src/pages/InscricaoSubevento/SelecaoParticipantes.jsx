@@ -12,7 +12,7 @@ import { useToast } from '../../hooks/toast';
 import NoRecords from '../../components/NoRecords';
 import CustomToolbar from './CustomToolbar';
 
-function SelecaoParticipantes({ idEvento }) {
+function SelecaoParticipantes({ idEvento, idSubevento }) {
   const history = useHistory();
   const confirmation = useConfirm();
   const [participantes, setParticipantes] = useState([]);
@@ -65,7 +65,7 @@ function SelecaoParticipantes({ idEvento }) {
   );
 
   useEffect(() => {
-    const unsubscribe = ParticipantesService.getParticipantesByEvento(idEvento).onSnapshot(
+    const unsubscribe = ParticipantesService.getParticipantesByEvento(idEvento, idSubevento).onSnapshot(
       participantesSnapshot => {
         setParticipantes(
           participantesSnapshot.docs.map(doc => ({
@@ -118,32 +118,6 @@ function SelecaoParticipantes({ idEvento }) {
           sort: false
         }
       },
-      {
-        name: 'uuid',
-        label: 'Ações',
-        options: {
-          filter: false,
-          sort: false,
-          customBodyRender: value => (
-            <>
-              <IconButton
-                aria-label="edit"
-                size="small"
-                onClick={() => handleEdit(value)}
-              >
-                <EditIcon fontSize="inherit" />
-              </IconButton>
-              <IconButton
-                aria-label="delete"
-                size="small"
-                onClick={() => handleDelete(value)}
-              >
-                <DeleteIcon fontSize="inherit" />
-              </IconButton>
-            </>
-          )
-        }
-      }
     ],
     [handleDelete, handleEdit]
   );

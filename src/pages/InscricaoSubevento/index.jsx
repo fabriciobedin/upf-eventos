@@ -164,50 +164,10 @@ function InscricaoSubevento() {
         </Button>
       </div>
 
-      {/* <ParticipantesSubevento idEvento={idEvento} idSubevento={idSubevento} /> */}
+      <ParticipantesSubevento idEvento={idEvento} idSubevento={idSubevento} />
 
-      <SelecaoParticipantes idEvento={idEvento} title='Participantes do evento' selectable={true}/>
+      <SelecaoParticipantes idEvento={idEvento} idSubevento={idSubevento} title='Participantes do evento' selectable={true}/>
 
-
-      <ParticipantesContainer>
-        <ListaContainer>
-          <h3>Lista Participantes</h3>
-          {participantesState.map(participante => (
-            <li key={participante.uid}>
-              <strong>{participante.nome}</strong>
-              <span> {participante.email} </span>
-              <Button
-                variant="outlined"
-                color="primary"
-                onClick={() => addParticipante(participante)}
-                endIcon={<ArrowForwardIcon>Inscrever</ArrowForwardIcon>}
-              >
-                Inscrever
-              </Button>
-            </li>
-          ))}
-        </ListaContainer>
-        <ListaContainer>
-          <h3>Participantes Inscritos</h3>
-          {participantesInscritos.map(
-            participanteInscrito =>
-              participanteInscrito.uid && (
-                <li key={participanteInscrito.uid}>
-                  <strong>{participanteInscrito.nome}</strong>
-                  <span> {participanteInscrito.email} </span>
-                  <Button
-                    variant="outlined"
-                    startIcon={<ArrowBackIcon>Remover</ArrowBackIcon>}
-                    color="secondary"
-                    onClick={() => removeParticipante(participanteInscrito.uid)}
-                  >
-                    Remover
-                  </Button>
-                </li>
-              )
-          )}
-        </ListaContainer>
-      </ParticipantesContainer>
     </>
   );
 }

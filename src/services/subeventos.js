@@ -29,6 +29,6 @@ export const realizarInscricao = (idEvento, idSubevento, participante) => {
     .collection(SUBEVENTOS)
     .doc(idSubevento)
     .collection(SUBEVENTOS_PARTICIPANTES)
-    .doc(participante.uid)
+    .doc(participante.codigo)
     .set(participante);
 };

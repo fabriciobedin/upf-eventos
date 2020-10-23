@@ -17,7 +17,7 @@ export const getParticipanteById = (idEvento, idParticipante) => {
     .get();
 };
 
-export const getParticipantesByEvento = idEvento => {
+export const getParticipantesByEvento = (idEvento, idSubevento) => {
   return eventosRef.doc(idEvento).collection(PARTICIPANTES).orderBy('nome');
 };
 
@@ -76,4 +76,16 @@ export const getParticipantesSubevento = (idEvento, idSubevento) => {
     .doc(idSubevento)
     .collection(SUBEVENTOS_PARTICIPANTES)
     .orderBy('nome')
+}
+
+export const atulizaInscricaoSubevento = (idEvento, idParticipante, idSubevento )=>{
+
+  return eventosRef
+    .doc(idEvento)
+    .collection(PARTICIPANTES)
+    .doc(idParticipante)
+    .update({
+      subeventos: firebase.firestore.FieldValue.arrayUnion(idSubevento)
+    });
+
 }
