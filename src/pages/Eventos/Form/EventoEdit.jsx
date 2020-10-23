@@ -16,6 +16,7 @@ import { useToast } from '../../../hooks/toast';
 import TextArea from '../../../components/TextArea';
 import Subeventos from '../../Subeventos/Listagem';
 import Participantes from '../../Participantes/Listagem';
+import Organizadores from '../../Organizadores/Listagem';
 import firebase from '../../../services/firebase';
 import 'firebase/firestore';
 
@@ -35,6 +36,7 @@ function EventoForm() {
   const formRef = useRef(null);
   const { addToast } = useToast();
   const { idEvento } = useParams();
+  const { id } = useParams();
 
 
   useEffect(() => {
@@ -165,6 +167,13 @@ function EventoForm() {
         </button>
       </SubtitleContainer>
       <Participantes idEvento={idEvento} />
+      <SubtitleContainer>
+        <h3>Organizadores do evento:</h3>
+        <button type="button" onClick={() => handleCadastroOrganizador()}>
+          Inscrever organizadores
+        </button>
+      </SubtitleContainer>
+      <Organizadores idEvento={idEvento} />
     </Container>
   );
 }

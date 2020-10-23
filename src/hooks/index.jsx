@@ -1,5 +1,4 @@
 import React from 'react';
-import { ConfirmProvider } from 'material-ui-confirm';
 
 import { AuthProvider } from './auth';
 import { ToastProvider } from './toast';
