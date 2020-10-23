@@ -83,7 +83,6 @@ export default class EventoImportacao extends Component {
         console.log(error)
       });
     });
-    evento.dados.organizadores.push('aelvVlqRxzYrK4wSMBQB8s5cyAd2')
     //FOREACH PARA PARTICIPANTES 
     linha = 0;
     data.forEach(element => {
