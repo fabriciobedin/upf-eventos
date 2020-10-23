@@ -63,7 +63,7 @@ function EventoForm() {
         let array = [];
          if (objeto.horaEntrada) 
          {
-            array = ["S", participante.id, objeto.horaSaida.seconds, idEvento, subevento.id]
+            array = ["E", participante.id, objeto.horaEntrada.seconds, idEvento, subevento.id]
             let row = array.join(",");
             csvContent += row + "\r\n";
          }
