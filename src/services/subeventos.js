@@ -53,3 +53,13 @@ export const remove = (idEvento, idSubEvento) => {
     .doc(idSubEvento)
     .delete();
 };
+
+export const removeParticipante = (idEvento, idSubEvento, idParticipante) => {
+  return eventosRef
+    .doc(idEvento)
+    .collection(SUBEVENTOS)
+    .doc(idSubEvento)
+    .collection(SUBEVENTOS_PARTICIPANTES)
+    .doc(idParticipante)
+    .delete();
+};
