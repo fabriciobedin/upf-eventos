@@ -14,11 +14,15 @@ export const MenuHeader = styled.div`
   height: 130px;
   max-width: 100%;
   text-align: center;
-  
+
     & a {
       color: white;
       text-decoration: none;
     }
+`;
+
+export const ProfileName = styled.p`
+  color: #ed6707;
 `;
 
 export const ProfileImg = styled.div`
@@ -29,11 +33,12 @@ export const ProfileImg = styled.div`
   background-image: url(${props => props.avatar});
   background-size: cover;
   background-position: center;
+  margin-bottom: 15px;
   border: 2px solid white;
 `;
 
 export const MenuList = styled.div`
-  margin-top: 40px;
+  margin-top: 60px;
   a {
     padding: 10px;
 
