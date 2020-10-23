@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import ParticipanteForm from '../Form';
 import { getParticipanteById } from '../../../services/participantes';
+import BreadCrumb from '../../../components/BreadCrumb';
 
 function ParticipanteEdit() {
   const [participante, setParticipante] = useState({});
@@ -13,12 +14,30 @@ function ParticipanteEdit() {
     });
   }, [idEvento, idParticipante]);
 
+  const crumbs = [
+    {
+      routeTo: '/eventos',
+      name: 'Eventos'
+    },
+    {
+      routeTo: '',
+      name: 'Editar evento'
+    },
+    {
+      routeTo: '',
+      name: 'Editar Participante'
+    },
+  ];
+
   return (
-    <ParticipanteForm
-      participante={participante}
-      formTitle="Edição de participante"
-      idParticipante={idParticipante}
-    />
+    <>
+      <BreadCrumb crumbs={crumbs} />
+      <ParticipanteForm
+        participante={participante}
+        formTitle="Edição de participante"
+        idParticipante={idParticipante}
+      />
+    </>
   );
 }
 

@@ -1,8 +1,29 @@
 import React from 'react';
 import ParticipanteForm from '../Form';
+import BreadCrumb from '../../../components/BreadCrumb';
 
 function ParticipanteCadastro() {
-  return <ParticipanteForm formTitle="Inclusão de participante" />;
+  const crumbs = [
+    {
+      routeTo: '/eventos',
+      name: 'Eventos'
+    },
+    {
+      routeTo: '',
+      name: 'Editar evento'
+    },
+    {
+      routeTo: '',
+      name: 'Participante'
+    },
+  ];
+
+  return (
+    <>
+      <BreadCrumb crumbs={crumbs} />
+      <ParticipanteForm formTitle="Inclusão de participante" />
+    </>
+  );
 }
 
 export default ParticipanteCadastro;

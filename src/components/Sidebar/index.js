@@ -1,6 +1,7 @@
 import React from 'react';
 import { List, ListItem, ListItemText } from '@material-ui/core';
 import { Link as RouterLink } from 'react-router-dom';
+
 import { useAuth } from '../../hooks/auth';
 import { Container, ProfileImg, MenuHeader, MenuList } from './styles';
 import {
@@ -12,9 +13,10 @@ function Sidebar() {
   const { user } = useAuth();
   const items = [
     { name: '/eventos', label: 'Eventos', Icon: Event },
-    { name: '/usuarios', label: 'Usuários', Icon: Person }
   ];
   const { REACT_APP_AVATAR_URL_DEFAULT } = process.env;
+  
+  if (user.nivelAcesso === 1) items.push({ name: '/usuarios', label: 'Usuários', Icon: Person });
 
   return (
     <Container>
