@@ -20,7 +20,7 @@ export const adicionarOrganizador = (idEvento, organizador) => {
 };
 
 export const getOrganizadoresByEvento = idEvento => {
-  return eventosRef.doc(idEvento).collection(ORGANIZADORES).orderBy('nome');
+  return eventosRef.doc(idEvento).get();
 };
 
 export const submit = (organizador, id, idEvento) => {

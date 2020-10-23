@@ -99,8 +99,8 @@ function EventoForm() {
   }, [history, idEvento]);
 
   const handleCadastroOrganizador = useCallback(() => {
-    history.push(`/organizadores/eventos/${id}`);
-  }, [history, id]);
+    history.push(`/organizadores/eventos/${idEvento}`);
+  }, [history, idEvento]);
 
   const handleAddParticipantesEvento = useCallback(() => {
     history.push(`/eventos/${idEvento}/participantes`);

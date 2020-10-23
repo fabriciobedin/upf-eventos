@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
 import { IconButton } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
@@ -15,6 +15,7 @@ function Organizadores({ idEvento }) {
   const history = useHistory();
   const confirmation = useConfirm();
   const [organizadores, setOrganizadores] = useState([]);
+  const formRef = useRef(null);
   const { addToast } = useToast();
   const tableOptions = {
     ...options,
@@ -44,17 +45,12 @@ function Organizadores({ idEvento }) {
   );
 
   useEffect(() => {
-    const unsubscribe = OrganizadoresService.getOrganizadoresByEvento(idEvento).onSnapshot(
-      organizadoresSnapshot => {
-        setOrganizadores(
-          organizadoresSnapshot.docs.map(doc => ({
-            ...doc.data(),
-            uuid: doc.id
-          }))
-        );
+    OrganizadoresService.getOrganizadoresByEvento(idEvento).then(docSnapshot => {
+      if (docSnapshot.exists) {
+        console.log('d', docSnapshot.data().organizadores)
+        formRef.current.setData(docSnapshot.data());
       }
-    );
-    return () => unsubscribe();
+    });
   }, [idEvento]);
 
   const columns = useMemo(
@@ -115,7 +111,7 @@ function Organizadores({ idEvento }) {
     return (
       <MUIDataTable
         title="Organizadores"
-        data={organizadores}
+        data={formRef.organizadores}
         columns={columns}
         options={tableOptions}
       />
