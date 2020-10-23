@@ -46,25 +46,37 @@ const AuthProvider = ({ children }) => {
     );
   }, []);
 
-  const signIn = useCallback(({ email, password }) => {
-    return firebase
-      .auth()
-      .signInWithEmailAndPassword(email, password)
-      .then(res => {
-        firebase
-          .firestore()
-          .collection('Users')
-          .doc(res.user.uid)
-          .get()
-          .then(FbUser => setUser(FbUser.data()))
-          .catch(err => {
-            throw err;
-          });
-      })
-      .catch(err => {
-        throw new Error(handleAuthErrorMessage(err.code));
-      });
-  }, [handleAuthErrorMessage]);
+  const signIn = useCallback(
+    ({ email, password }) => {
+      return firebase
+        .auth()
+        .signInWithEmailAndPassword(email, password)
+        .then(res => {
+          firebase
+            .firestore()
+            .collection('Users')
+            .doc(res.user.uid)
+            .get()
+            .then(FbUser => {
+              const { name, nivelAcesso, avatarUrl } = FbUser.data();
+              setUser({
+                uid: res.user.uid,
+                name,
+                email,
+                nivelAcesso,
+                avatarUrl
+              });
+            })
+            .catch(err => {
+              throw err;
+            });
+        })
+        .catch(err => {
+          throw new Error(handleAuthErrorMessage(err.code));
+        });
+    },
+    [handleAuthErrorMessage]
+  );
 
   const signOut = useCallback(() => {
     setUser();
