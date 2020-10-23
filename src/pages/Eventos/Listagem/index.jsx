@@ -4,10 +4,10 @@ import { useHistory } from 'react-router-dom';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import MUIDataTable from 'mui-datatables';
+import { useConfirm } from 'material-ui-confirm';
 import options from '../../../utils/tableOptions';
 import { getEventos, remove } from '../../../services/eventos';
 import { formatDate } from '../../../utils/formatters';
-import { useConfirm } from 'material-ui-confirm';
 import { useToast } from '../../../hooks/toast';
 import { deleteOptions } from '../../../utils/confirmationOptions';
 import * as ParticipantesService from '../../../services/participantes';
@@ -77,11 +77,17 @@ function EventosList() {
       }
       confirmation(deleteOptionsEventos)
         .then(() => {
-          remove(idEvento).then(() => { });
+          remove(idEvento).then(() => {});
         })
-        .catch(() => { });
+        .catch(() => {});
     },
-    [addToast, confirmation, deleteOptionsEventos, verificaParticipantes, verificaSubeventos]
+    [
+      addToast,
+      confirmation,
+      deleteOptionsEventos,
+      verificaParticipantes,
+      verificaSubeventos
+    ]
   );
 
   const columns = useMemo(
