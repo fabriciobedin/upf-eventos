@@ -86,7 +86,7 @@ function Subeventos({ idEvento }) {
     () => [
       {
         label: 'Código',
-        name: 'codigo',
+        name: 'uuid',
         options: {
           filter: true
         }

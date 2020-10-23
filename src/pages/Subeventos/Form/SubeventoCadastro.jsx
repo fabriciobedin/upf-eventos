@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Checkbox, FormControlLabel } from '@material-ui/core';
 import { Form } from '@unform/web';
 import { useHistory, useParams } from 'react-router-dom';
@@ -64,6 +64,10 @@ function Subeventos() {
     [idEvento, addToast, redirect]
   );
 
+  useEffect(() => {
+    formRef.current.setData({ codigo: new Date().getTime() });
+  }, []);
+
   const crumbs = [
     {
       routeTo: '/eventos',
@@ -76,7 +80,7 @@ function Subeventos() {
     {
       routeTo: '',
       name: 'Subevento'
-    },
+    }
   ];
 
   return (
