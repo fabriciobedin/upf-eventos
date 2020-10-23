@@ -47,8 +47,12 @@ function Organizadores({ idEvento }) {
   useEffect(() => {
     OrganizadoresService.getOrganizadoresByEvento(idEvento).then(docSnapshot => {
       if (docSnapshot.exists) {
-        console.log('d', docSnapshot.data().organizadores)
-        formRef.current.setData(docSnapshot.data());
+        console.log('tamanho', docSnapshot.data().organizadores.length);
+        for(let i=0; i < docSnapshot.data().organizadores.length; i++){
+          OrganizadoresService.getOrganizadorById(docSnapshot.data().organizadores[i]).then(org => {
+            setOrganizadores(...org);
+          })
+        }
       }
     });
   }, [idEvento]);

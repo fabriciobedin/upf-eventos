@@ -52,6 +52,7 @@ function OrganizadorForm({ organizador, formTitle, idOrganizador }) {
                 type: 'success',
                 description: 'Organizador vinculado com sucesso.'
               });
+              redirectEvento();
             })
           })
         })
@@ -59,6 +60,10 @@ function OrganizadorForm({ organizador, formTitle, idOrganizador }) {
     },
     [addToast, db, idEvento]
   );
+
+  const redirectEvento = useCallback(() => {
+    history.push(`/eventos/${idEvento}`);
+  }, [history]);
 
   const submitUpdate = useCallback(
     async data => {

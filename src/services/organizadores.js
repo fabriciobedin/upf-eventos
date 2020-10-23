@@ -5,7 +5,6 @@ const db = firebase.firestore();
 const usuariosRef = db.collection('Users');
 const eventosRef = db.collection('Eventos');
 const timestamp = firebase.firestore.FieldValue.serverTimestamp();
-const ORGANIZADORES = 'Organizadores';
 
 export const cadastrarOrganizador = (idEvento, organizador) => {
   return eventosRef.doc(idEvento).update({
@@ -23,6 +22,9 @@ export const getOrganizadoresByEvento = idEvento => {
   return eventosRef.doc(idEvento).get();
 };
 
+export const getOrganizadorById = (id) => {
+  return usuariosRef.doc(id).get();
+}
 export const submit = (organizador, id, idEvento) => {
   if(id) {
     organizador.updatedAt = timestamp;
