@@ -11,6 +11,10 @@ export const getSubEventos = idEvento => {
   return eventosRef.doc(idEvento).collection(SUBEVENTOS).get();
 };
 
+export const getSubEventosSnapshot = idEvento => {
+  return eventosRef.doc(idEvento).collection(SUBEVENTOS);
+};
+
 export const submit = (idEvento, subevento) => {
   return eventosRef.doc(idEvento).collection(SUBEVENTOS).add(subevento);
 };
@@ -31,4 +35,21 @@ export const realizarInscricao = (idEvento, idSubevento, participante) => {
     .collection(SUBEVENTOS_PARTICIPANTES)
     .doc(participante.uid)
     .set(participante);
+};
+
+export const getParticipantesInscritosSubEvento = (idEvento, idSubevento) => {
+  return eventosRef
+    .doc(idEvento)
+    .collection(SUBEVENTOS)
+    .doc(idSubevento)
+    .collection(SUBEVENTOS_PARTICIPANTES)
+    .get();
+}
+
+export const remove = (idEvento, idSubEvento) => {
+  return eventosRef
+    .doc(idEvento)
+    .collection(SUBEVENTOS)
+    .doc(idSubEvento)
+    .delete();
 };
