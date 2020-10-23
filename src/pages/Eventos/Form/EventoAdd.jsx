@@ -9,6 +9,7 @@ import { ButtonContainer, Container, Content } from './styles';
 import { submit } from '../../../services/eventos';
 import { useToast } from '../../../hooks/toast';
 import TextArea from '../../../components/TextArea';
+import BreadCrumb from '../../../components/BreadCrumb';
 
 function EventoAdd() {
   const history = useHistory();
@@ -51,27 +52,41 @@ function EventoAdd() {
     [addToast, redirect]
   );
 
-  return (
-    <Container>
-      <h1>Cadastro de Evento:</h1>
-      <Content>
-        <Form ref={formRef} onSubmit={handleSubmit}>
-          <Input name="codigo" placeholder="Código" type="number" />
-          <Input name="titulo" placeholder="Título" />
-          <TextArea name="descricao" placeholder="Descricao" />
-          <p>Data Inicial:</p>
-          <Input type="date" name="dataInicial" />
-          <p>Data Final:</p>
-          <Input type="date" name="dataFinal" />
-          <hr />
+  const crumbs = [
+    {
+      routeTo: '/eventos',
+      name: 'Eventos'
+    },
+    {
+      routeTo: '/eventos/cadastro',
+      name: 'Cadastro'
+    },
+  ];
 
-          <ButtonContainer>
-            <Button type="submit">Salvar</Button>
-            <Button onClick={redirect}>Cancelar</Button>
-          </ButtonContainer>
-        </Form>
-      </Content>
-    </Container>
+  return (
+    <>
+      <BreadCrumb crumbs={crumbs} />
+      <Container>
+        <h1>Cadastro de Evento:</h1>
+        <Content>
+          <Form ref={formRef} onSubmit={handleSubmit}>
+            <Input name="codigo" placeholder="Código" type="number" />
+            <Input name="titulo" placeholder="Título" />
+            <TextArea name="descricao" placeholder="Descricao" />
+            <p>Data Inicial:</p>
+            <Input type="date" name="dataInicial" />
+            <p>Data Final:</p>
+            <Input type="date" name="dataFinal" />
+            <hr />
+
+            <ButtonContainer>
+              <Button type="submit">Salvar</Button>
+              <Button onClick={redirect}>Cancelar</Button>
+            </ButtonContainer>
+          </Form>
+        </Content>
+      </Container>
+    </>
   );
 }
 

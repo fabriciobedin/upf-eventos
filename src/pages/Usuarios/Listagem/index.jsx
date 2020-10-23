@@ -4,7 +4,7 @@ import { Button, IconButton } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import MUIDataTable from 'mui-datatables';
-
+import BreadCrumb from '../../../components/BreadCrumb';
 import options from '../../../utils/tableOptions';
 import { getUsers } from '../../../services/usuarios';
 import { useToast } from '../../../hooks/toast';
@@ -83,8 +83,17 @@ function Usuarios() {
     });
   }, []);
 
+
+  const crumbs = [
+    {
+      routeTo: '/usuarios',
+      name: 'Usuários'
+    },
+  ];
+
   return (
     <>
+      <BreadCrumb crumbs={crumbs} />
       <Button type="button" variant="outlined" onClick={() => handleAdd()}>
         Incluir
       </Button>
