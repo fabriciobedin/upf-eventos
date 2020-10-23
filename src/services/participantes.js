@@ -1,41 +1,68 @@
 import firebase from './firebase';
 import 'firebase/firestore';
+import { eventosRef } from './eventos';
 
 const db = firebase.firestore();
-const participantesRef = db.collection('participantes');
-const timestamp = firebase.firestore.FieldValue.serverTimestamp();
+// const timestamp = firebase.firestore.FieldValue.serverTimestamp();
+const STATUS_CONFIRMADO = 'confirmado';
+const PARTICIPANTES = 'Participantes';
 
-export const getParticipanteById = idParticipante => {
-  return participantesRef.doc(idParticipante).get();
+export const getParticipanteById = (idEvento, idParticipante) => {
+  return eventosRef
+    .doc(idEvento)
+    .collection(PARTICIPANTES)
+    .doc(idParticipante)
+    .get();
 };
 
-export const getParticipantes = () => {
-  return participantesRef.get();
+export const getParticipantesByEvento = idEvento => {
+  return eventosRef.doc(idEvento).collection(PARTICIPANTES).orderBy('nome');
 };
 
-export const getParticipantesPaginado = () => {
-  return participantesRef.orderBy('createdAt');
-};
-
-export const buscaPorCodigoDocumento = (codigo, documento) => {
-  return participantesRef
+export const buscaPorCodigoDocumento = (idEvento, codigo, documento) => {
+  return eventosRef
+    .doc(idEvento)
+    .collection(PARTICIPANTES)
     .where('codigo', '==', codigo)
     .where('documento', '==', documento)
     .get();
 };
 
-export const buscaPorIdEstrangeiro = (codigo, idEstrangeiro) => {
-  return participantesRef
+export const buscaPorIdEstrangeiro = (idEvento, codigo, idEstrangeiro) => {
+  return eventosRef
+    .doc(idEvento)
+    .collection(PARTICIPANTES)
     .where('codigo', '==', codigo)
     .where('idEstrangeiro', '==', idEstrangeiro)
     .get();
 };
 
-export const submit = (participante, id) => {
-  if(id) {
-    participante.updatedAt = timestamp;
-    return participantesRef.doc(id).update(participante);
+export const submitParticipante = (idEvento, participante, idParticipante) => {
+  if (idParticipante) {
+    return eventosRef
+      .doc(idEvento)
+      .collection('Participantes')
+      .doc(idParticipante)
+      .update(participante);
   }
-  participante.createdAt = timestamp;
-  return participantesRef.add(participante);
+  return eventosRef.doc(idEvento).collection('Participantes').doc(participante.codigo).set(participante);
+};
+
+export const possuiFrequencia = particpanteId => {
+  return (
+    db
+      .collectionGroup('SubeventoParticipantes')
+      .where('participanteId', '==', particpanteId)
+      .where('status', '!=', STATUS_CONFIRMADO)
+      .limit(1)
+      .get()
+  );
+};
+
+export const remove = (idEvento, participanteId) => {
+  return eventosRef
+    .doc(idEvento)
+    .collection('Participantes')
+    .doc(participanteId)
+    .delete();
 };

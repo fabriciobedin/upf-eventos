@@ -1,36 +1,34 @@
-import firebase from './firebase';
-import 'firebase/firestore';
+import { eventosRef } from './eventos';
 
-const db = firebase.firestore();
-const subEventosRef = db.collection('subeventos');
+const SUBEVENTOS = 'Subeventos';
+const SUBEVENTOS_PARTICIPANTES = 'SubeventoParticipantes';
 
-export const getSubEventos = () => {
-  return subEventosRef.get();
+export const getSubeventoById = (idEvento, idSubevento) => {
+  return eventosRef.doc(idEvento).collection(SUBEVENTOS).doc(idSubevento).get();
 };
 
-export const getSubeventoById = idSubevento => {
-  return subEventosRef.doc(idSubevento).get();
+export const getSubEventos = idEvento => {
+  return eventosRef.doc(idEvento).collection(SUBEVENTOS).get();
 };
 
-export const getSubEventosByIdEvento = (idEvento) => {
-  return subEventosRef.where('idEvento', '==', idEvento).get();
+export const submit = (idEvento, subevento) => {
+  return eventosRef.doc(idEvento).collection(SUBEVENTOS).add(subevento);
 };
 
-export const submit = subevento => {
-  return subEventosRef.add(subevento);
-}
-
-export const update = (idSubevento, subevento) => {
-  return subEventosRef.doc(idSubevento).update(subevento);
-
-}
-
-export const remove = (idSubevento) => {
-  return subEventosRef.doc(idSubevento).delete();
+export const update = (idEvento, idSubevento, subevento) => {
+  return eventosRef
+    .doc(idEvento)
+    .collection(SUBEVENTOS)
+    .doc(idSubevento)
+    .update(subevento);
 };
 
-export const realizarInscricao = (idSubevento, participantes) => {
-  return subEventosRef.doc(idSubevento).update({
-    participantes: participantes
-  });
+export const realizarInscricao = (idEvento, idSubevento, participante) => {
+  return eventosRef
+    .doc(idEvento)
+    .collection(SUBEVENTOS)
+    .doc(idSubevento)
+    .collection(SUBEVENTOS_PARTICIPANTES)
+    .doc(participante.uid)
+    .set(participante);
 };

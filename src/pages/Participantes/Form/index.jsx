@@ -1,31 +1,20 @@
 import React, { useCallback, useRef, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { Form } from '@unform/web';
 import * as Yup from 'yup';
-import 'firebase/firestore';
-
 import Button from '../../../components/Button';
 import Input from '../../../components/Input';
 import Select from '../../../components/Select';
 import getValidationErrors from '../../../hooks';
 import { useToast } from '../../../hooks/toast';
 import { Container, Content, ButtonContainer } from './styles';
-
 import * as ParticipantesService from '../../../services/participantes';
-
-const schema = Yup.object().shape({
-  codigo: Yup.string().required('Código obrigatório!'),
-  nome: Yup.string().required('Nome obrigatório!'),
-  telefone: Yup.string().required('Telefone obrigatório!'),
-  email: Yup.string()
-    .required('Email obrigatório!')
-    .email('Digite um email válido!')
-});
 
 function ParticipanteForm({ participante, formTitle, idParticipante }) {
   const history = useHistory();
-  const formRef = useRef(null);
+  const formRef = useRef();
   const { addToast } = useToast();
+  const { idEvento } = useParams();
   const tiposParticipantes = [
     { value: 'aluno', label: 'Aluno' },
     { value: 'professor', label: 'Professor' },
@@ -40,21 +29,30 @@ function ParticipanteForm({ participante, formTitle, idParticipante }) {
   }, [participante]);
 
   const redirect = useCallback(() => {
-    history.push('/participantes');
+    history.goBack();
   }, [history]);
 
-  const findByDoc = useCallback(async (codigo, documento) => {
-    return ParticipantesService.buscaPorCodigoDocumento(codigo, documento).then(
-      data => data.size
-    );
-  }, []);
+  const findByDoc = useCallback(
+    async (codigo, documento) => {
+      return ParticipantesService.buscaPorCodigoDocumento(
+        idEvento,
+        codigo,
+        documento
+      ).then(data => data.size);
+    },
+    [idEvento]
+  );
 
-  const findByIdEstrangeiro = useCallback(async (codigo, idEstrangeiro) => {
-    return ParticipantesService.buscaPorIdEstrangeiro(
-      codigo,
-      idEstrangeiro
-    ).then(data => data.size);
-  }, []);
+  const findByIdEstrangeiro = useCallback(
+    async (codigo, idEstrangeiro) => {
+      return ParticipantesService.buscaPorIdEstrangeiro(
+        idEvento,
+        codigo,
+        idEstrangeiro
+      ).then(data => data.size);
+    },
+    [idEvento]
+  );
 
   const submitNew = useCallback(
     async data => {
@@ -72,7 +70,7 @@ function ParticipanteForm({ participante, formTitle, idParticipante }) {
         });
         return;
       }
-      ParticipantesService.submit(data).then(() => {
+      ParticipantesService.submitParticipante(idEvento, data).then(() => {
         addToast({
           type: 'success',
           description: 'Participante cadastrado com sucesso.'
@@ -80,12 +78,16 @@ function ParticipanteForm({ participante, formTitle, idParticipante }) {
         redirect();
       });
     },
-    [addToast, findByDoc, findByIdEstrangeiro, redirect]
+    [addToast, findByDoc, findByIdEstrangeiro, idEvento, redirect]
   );
 
   const submitUpdate = useCallback(
     async data => {
-      ParticipantesService.submit(data, idParticipante).then(() => {
+      ParticipantesService.submitParticipante(
+        idEvento,
+        data,
+        idParticipante
+      ).then(() => {
         addToast({
           type: 'success',
           description: 'Participante alterado com sucesso.'
@@ -93,16 +95,26 @@ function ParticipanteForm({ participante, formTitle, idParticipante }) {
         redirect();
       });
     },
-    [addToast, idParticipante, redirect]
+    [addToast, idEvento, idParticipante, redirect]
   );
 
   const handleSubmit = useCallback(
     async data => {
       try {
         formRef.current.setErrors({});
+        const schema = Yup.object().shape({
+          codigo: Yup.string().required('Código obrigatório!'),
+          nome: Yup.string().required('Nome obrigatório!'),
+          telefone: Yup.string().required('Telefone obrigatório!'),
+          email: Yup.string()
+            .required('Email obrigatório!')
+            .email('Digite um email válido!')
+        });
+
         await schema.validate(data, {
           abortEarly: false
         });
+
         if (data.idEstrangeiro === '' && data.documento === '') {
           addToast({
             type: 'error',
@@ -146,9 +158,7 @@ function ParticipanteForm({ participante, formTitle, idParticipante }) {
           </Select>
           <hr />
           <ButtonContainer>
-            <Button type="submit" onClick={() => handleSubmit()}>
-              Salvar
-            </Button>
+            <Button type="submit">Salvar</Button>
             <Button onClick={redirect}>Cancelar</Button>
           </ButtonContainer>
         </Form>

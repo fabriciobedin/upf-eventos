@@ -2,23 +2,23 @@ import React, { useCallback, useRef, useEffect } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { Form } from '@unform/web';
 import * as Yup from 'yup';
-import 'firebase/firestore';
 
 import { Checkbox, FormControlLabel } from '@material-ui/core';
 import getValidationErrors from '../../../utils/getValidationErrors';
-import firebase from '../../../services/firebase';
 import { Container, Content } from './Styles';
 import Button from '../../../components/Button';
 import Select from '../../../components/Select';
 import Input from '../../../components/Input';
 import { useToast } from '../../../hooks/toast';
+import { getSubeventoById, update } from '../../../services/subeventos';
+import TextArea from '../../../components/TextArea';
+import { ButtonContainer } from '../../Eventos/Form/styles';
 
 function SubeventosEdit() {
   const [checked] = React.useState(true);
   const history = useHistory();
   const formRef = useRef(null);
-  const subeventoRef = firebase.firestore().collection('subeventos');
-  const { id } = useParams();
+  const { idEvento, idSubevento } = useParams();
   const { addToast } = useToast();
 
   const turnos = [
@@ -28,51 +28,45 @@ function SubeventosEdit() {
   ];
 
   useEffect(() => {
-    subeventoRef
-      .doc(id)
-      .get()
-      .then(docSnapshot => {
-        if (docSnapshot.exists) {
-          formRef.current.setData(docSnapshot.data());
-        }
-      });
-  }, [id, subeventoRef]);
+    getSubeventoById(idEvento, idSubevento).then(docSnapshot => {
+      if (docSnapshot.exists) {
+        formRef.current.setData(docSnapshot.data());
+      }
+    });
+  }, [idEvento, idSubevento]);
 
   const redirect = useCallback(() => {
-    history.push('/subeventos');
+    history.goBack();
   }, [history]);
 
   const handleSubmit = useCallback(
     async data => {
       try {
         formRef.current.setErrors({});
-        subeventoRef
-          .doc(id)
-          .update(data)
-          .then(() => {
-            addToast({
-              type: 'success',
-              title: 'Atenção!',
-              description: 'Subevento alterado com sucesso.'
-            });
-            redirect();
+        update(idEvento, idSubevento, data).then(() => {
+          addToast({
+            type: 'success',
+            title: 'Atenção!',
+            description: 'Subevento alterado com sucesso.'
           });
+          redirect();
+        });
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           formRef.current.setErrors(getValidationErrors(err));
         }
       }
     },
-    [addToast, id, redirect, subeventoRef]
+    [addToast, idSubevento, redirect, idEvento]
   );
 
   return (
     <Container>
-      <h2>Cadastro de Subevento:</h2>
+      <h2>Edição de Subevento:</h2>
       <Content>
         <Form ref={formRef} onSubmit={handleSubmit}>
           <Input name="codigo" placeholder="Código" type="number" />
-          <Input name="descricao" placeholder="Descrição" />
+          <TextArea name="descricao" placeholder="Descrição" />
           <Select name="tipo">
             {turnos.map(tipo => (
               <option value={tipo.value} key={tipo.value}>
@@ -109,8 +103,10 @@ function SubeventosEdit() {
 
           <hr />
 
-          <Button type="submit">Salvar</Button>
-          <Button onClick={redirect}>Cancelar</Button>
+          <ButtonContainer>
+            <Button type="submit">Salvar</Button>
+            <Button onClick={redirect}>Cancelar</Button>
+          </ButtonContainer>
         </Form>
       </Content>
     </Container>

@@ -8,14 +8,12 @@ import AuthLayout from '../pages/_layouts/auth';
 const Route = ({ isPrivate = false, component: Component, ...rest }) => {
   const { user } = useAuth();
 
-  console.log(user);
-
   if (!user && isPrivate) {
     return <Redirect to="/" />;
   }
 
   if (user && !isPrivate) {
-    return <Redirect to="/dashboard" />;
+    return <Redirect to="/eventos" />;
   }
 
   const Layout = user ? DefaultLayout : AuthLayout;

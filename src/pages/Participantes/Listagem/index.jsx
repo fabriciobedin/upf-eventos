@@ -1,29 +1,78 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Button, IconButton } from '@material-ui/core';
+import { IconButton } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-
 import MUIDataTable from 'mui-datatables';
-
-import { getParticipantes } from '../../../services/participantes';
-
+import { useConfirm } from 'material-ui-confirm';
+import * as ParticipantesService from '../../../services/participantes';
 import options from '../../../utils/tableOptions';
+import { deleteOptions } from '../../../utils/confirmationOptions';
+import { useToast } from '../../../hooks/toast';
+import NoRecords from '../../../components/NoRecords';
 
-function Participantes() {
+function Participantes({ idEvento }) {
   const history = useHistory();
+  const confirmation = useConfirm();
   const [participantes, setParticipantes] = useState([]);
+  const { addToast } = useToast();
   const tableOptions = {
     ...options,
     selectableRows: 'none'
   };
+  const deleteOptionsParticipante = {
+    ...deleteOptions,
+    description: 'Você confirma a exclusão do participante?'
+  };
 
   const handleEdit = useCallback(
     idParticipante => {
-      history.push(`/participantes/${idParticipante}`);
+      history.push(`/eventos/${idEvento}/participantes/${idParticipante}`);
     },
-    [history]
+    [history, idEvento]
   );
+
+  const verificaFrequencia = useCallback(async idParticipante => {
+    return ParticipantesService.possuiFrequencia(idParticipante).then(data => {
+      return data.size;
+    });
+  }, []);
+
+  const handleDelete = useCallback(
+    async idParticipante => {
+      const frequencia = await verificaFrequencia(idParticipante);
+      if (frequencia > 0) {
+        window.scrollTo({ top: 0, behavior: 'auto' });
+        addToast({
+          type: 'error',
+          title: 'Atenão!',
+          description:
+            'Participante possui registro de frequência. Não será possível remove-lo.'
+        });
+        return;
+      }
+      confirmation(deleteOptionsParticipante)
+        .then(() => {
+          ParticipantesService.remove(idEvento, idParticipante).then(() => {});
+        })
+        .catch(() => {});
+    },
+    [addToast, confirmation, idEvento, verificaFrequencia, deleteOptionsParticipante]
+  );
+
+  useEffect(() => {
+    const unsubscribe = ParticipantesService.getParticipantesByEvento(idEvento).onSnapshot(
+      participantesSnapshot => {
+        setParticipantes(
+          participantesSnapshot.docs.map(doc => ({
+            ...doc.data(),
+            uuid: doc.id
+          }))
+        );
+      }
+    );
+    return () => unsubscribe();
+  }, [idEvento]);
 
   const columns = useMemo(
     () => [
@@ -58,6 +107,14 @@ function Participantes() {
         }
       },
       {
+        label: 'Tipo',
+        name: 'tipo',
+        options: {
+          filter: true,
+          sort: false
+        }
+      },
+      {
         name: 'uuid',
         label: 'Ações',
         options: {
@@ -72,7 +129,11 @@ function Participantes() {
               >
                 <EditIcon fontSize="inherit" />
               </IconButton>
-              <IconButton aria-label="delete" size="small">
+              <IconButton
+                aria-label="delete"
+                size="small"
+                onClick={() => handleDelete(value)}
+              >
                 <DeleteIcon fontSize="inherit" />
               </IconButton>
             </>
@@ -80,35 +141,21 @@ function Participantes() {
         }
       }
     ],
-    [handleEdit]
+    [handleDelete, handleEdit]
   );
 
-  const handleAdd = useCallback(() => {
-    history.push('/participantes/cadastro');
-  }, [history]);
-
-  useEffect(() => {
-    getParticipantes().then(docSnapshot => {
-      setParticipantes(
-        docSnapshot.docs.map(doc => ({ ...doc.data(), uuid: doc.id }))
-      );
-    });
-  }, []);
-
-  return (
-    <>
-      <Button type="button" variant="outlined" onClick={() => handleAdd()}>
-        Incluir
-      </Button>
-
+  if (participantes.length > 0) {
+    return (
       <MUIDataTable
         title="Participantes"
         data={participantes}
         columns={columns}
         options={tableOptions}
       />
-    </>
-  );
+    );
+  }
+
+  return <NoRecords />;
 }
 
 export default Participantes;

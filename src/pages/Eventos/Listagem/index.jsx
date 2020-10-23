@@ -1,32 +1,86 @@
-import { Button, IconButton } from '@material-ui/core';
+import { Button, IconButton, Tooltip } from '@material-ui/core';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import MUIDataTable from 'mui-datatables';
 import options from '../../../utils/tableOptions';
-import { getEventos } from '../../../services/eventos';
+import { getEventos, remove } from '../../../services/eventos';
 import { formatDate } from '../../../utils/formatters';
-
-// import { Container } from './styles';
+import { useConfirm } from 'material-ui-confirm';
+import { useToast } from '../../../hooks/toast';
+import { deleteOptions } from '../../../utils/confirmationOptions';
+import * as ParticipantesService from '../../../services/participantes';
+import * as SubeventosService from '../../../services/subeventos';
 
 function EventosList() {
   const [eventos, setEventos] = useState([]);
   const history = useHistory();
+  const confirmation = useConfirm();
+  const { addToast } = useToast();
   const tableOptions = {
     ...options,
     selectableRows: 'none'
+  };
+
+  const deleteOptionsEventos = {
+    ...deleteOptions,
+    description: 'Você confirma a exclusão do evento?'
   };
 
   const handleAdd = useCallback(() => {
     history.push('/eventos/cadastro');
   }, [history]);
 
+  const handleImport = useCallback(() => {
+    history.push('/eventos/importacao');
+  }, [history]);
+
   const handleEdit = useCallback(
     idEvento => {
-      history.push(`/eventos/editar/${idEvento}`);
+      history.push(`/eventos/${idEvento}`);
     },
     [history]
+  );
+
+  const verificaParticipantes = useCallback(async idEvento => {
+    return ParticipantesService.getParticipantesByEvento(idEvento)
+      .get()
+      .then(data => {
+        return data.size;
+      });
+  }, []);
+
+  const verificaSubeventos = useCallback(async idEvento => {
+    return SubeventosService.getSubEventos(idEvento).then(data => {
+      return data.size;
+    });
+  }, []);
+
+  const handleDelete = useCallback(
+    async idEvento => {
+      const participantes = await verificaParticipantes(idEvento);
+      const subeventos = await verificaSubeventos(idEvento);
+      console.log('participantes', participantes);
+      console.log('subeventos', subeventos);
+
+      if (participantes > 0 || subeventos) {
+        window.scrollTo({ top: 0, behavior: 'auto' });
+        addToast({
+          type: 'error',
+          title: 'Atenão!',
+          description:
+            'Evento possui participantes/subeventos registrados. Não será possível remove-lo.'
+        });
+        return;
+      }
+      confirmation(deleteOptionsEventos)
+        .then(() => {
+          remove(idEvento).then(() => {});
+        })
+        .catch(() => {});
+    },
+    [addToast, confirmation, deleteOptionsEventos, verificaParticipantes, verificaSubeventos]
   );
 
   const columns = useMemo(
@@ -42,7 +96,10 @@ function EventosList() {
         label: 'Descrição',
         name: 'descricao',
         options: {
-          filter: true
+          filter: true,
+          setCellProps: () => ({
+            style: { maxWidth: window.innerWidth > 1366 ? 900 : 600 }
+          })
         }
       },
       {
@@ -75,24 +132,36 @@ function EventosList() {
         options: {
           filter: false,
           sort: false,
+          setCellProps: () => ({
+            style: { minWidth: 80 }
+          }),
           customBodyRender: value => (
             <>
-              <IconButton
-                aria-label="edit"
-                size="small"
-                onClick={() => handleEdit(value)}
-              >
-                <EditIcon fontSize="inherit" />
-              </IconButton>
-              <IconButton aria-label="delete" size="small">
-                <DeleteIcon fontSize="inherit" />
-              </IconButton>
+              <Tooltip title="Editar">
+                <IconButton
+                  aria-label="edit"
+                  size="small"
+                  onClick={() => handleEdit(value)}
+                >
+                  <EditIcon fontSize="inherit" />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Remover">
+                <IconButton
+                  about="teste"
+                  aria-label="delete"
+                  size="small"
+                  onClick={() => handleDelete(value)}
+                >
+                  <DeleteIcon fontSize="inherit" />
+                </IconButton>
+              </Tooltip>
             </>
           )
         }
       }
     ],
-    [handleEdit]
+    [handleEdit, handleDelete]
   );
 
   useEffect(() => {
@@ -112,8 +181,21 @@ function EventosList() {
 
   return (
     <>
-      <Button type="button" variant="outlined" onClick={() => handleAdd()}>
-        Incluir
+      <Button
+        type="button"
+        variant="outlined"
+        onClick={() => handleAdd()}
+        style={{ marginBottom: 10 }}
+      >
+        Cadastrar Evento
+      </Button>
+      <Button
+        type="button"
+        variant="outlined"
+        onClick={() => handleImport()}
+        style={{ marginBottom: 10 }}
+      >
+        Importar Evento
       </Button>
 
       <MUIDataTable

@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import { Button } from '@material-ui/core';
 import { formatDate } from '../../utils/formatters';
 import { useToast } from '../../hooks/toast';
 import * as SubeventosService from '../../services/subeventos';
-import * as ParticipantesService from '../../services/participantes';
+import * as ServiceParticipantes from '../../services/participantes';
 
 import {
   Container,
@@ -17,33 +17,25 @@ import {
   ListaContainer
 } from './styles';
 
-function InscricaoEvento() {
+function InscricaoSubevento() {
   const [eventoState, setEventoState] = useState({});
   const [participantesState, setParticipantesState] = useState([]);
   const [participantesInscritos, setParticipantesInscritos] = useState([]);
-  const { id: idSubevento } = useParams();
+  const { idEvento, idSubevento } = useParams();
   const { addToast } = useToast();
   const dataIniFormatada = useRef(null);
   const horaIni = useRef(null);
   const horaFim = useRef(null);
   const subevento = useRef(null);
+  const history = useHistory();
 
   const finalizarInscricoes = useCallback(() => {
-    SubeventosService.realizarInscricao(
-      idSubevento,
-      participantesInscritos
-    ).then(() => {
-      addToast({
-        type: 'success',
-        title: 'Atenção!',
-        description: 'Participantes inscritos com sucesso.'
-      });
-    });
-  }, [addToast, idSubevento, participantesInscritos]);
+    history.goBack();
+  }, [history]);
 
   const addParticipante = useCallback(
     value => {
-      if (participantesInscritos.find(e => e.uuid === value.uuid)) {
+      if (participantesInscritos.find(e => e.uid === value.uid)) {
         addToast({
           type: 'error',
           title: 'Atenção!',
@@ -53,21 +45,31 @@ function InscricaoEvento() {
       }
 
       const snippet = {
-        uuid: value.uuid,
+        uid: value.uid,
         codigo: value.codigo,
         nome: value.nome,
-        email: value.email
+        email: value.email,
+        status: 'inscrito'
       };
+
+      SubeventosService.realizarInscricao(idEvento, idSubevento, snippet).then(
+        () => {
+          addToast({
+            type: 'success',
+            description: 'Participante inscrito com sucesso.'
+          });
+        }
+      );
 
       setParticipantesInscritos(part => [...part, snippet]);
     },
-    [addToast, participantesInscritos]
+    [addToast, idEvento, idSubevento, participantesInscritos]
   );
 
   const removeParticipante = useCallback(
     participanteId => {
       const newParticipantesList = participantesInscritos.filter(
-        item => item.uuid !== participanteId
+        item => item.uid !== participanteId
       );
       setParticipantesInscritos(newParticipantesList);
     },
@@ -75,30 +77,33 @@ function InscricaoEvento() {
   );
 
   useEffect(() => {
-    SubeventosService.getSubeventoById(idSubevento).then(docSnapshot => {
-      if (docSnapshot.exists) {
-        const subeventFound = docSnapshot.data();
-        if (subeventFound.participantes?.length > 0) {
-          setParticipantesInscritos(subeventFound.participantes);
+    SubeventosService.getSubeventoById(idEvento, idSubevento).then(
+      docSnapshot => {
+        if (docSnapshot.exists) {
+          const subeventFound = docSnapshot.data();
+          if (subeventFound.participantes?.length > 0) {
+            setParticipantesInscritos(subeventFound.participantes);
+          }
+          dataIniFormatada.current = formatDate(subeventFound.dataInicial);
+          horaIni.current = subeventFound.horaInicial;
+          horaFim.current = subeventFound.horaFinal;
+          subevento.current = subeventFound.descricao;
+          setEventoState(subeventFound);
         }
-        dataIniFormatada.current = formatDate(subeventFound.dataInicial);
-        horaIni.current = subeventFound.horaInicial;
-        horaFim.current = subeventFound.horaFinal;
-        subevento.current = subeventFound.descricao;
-        setEventoState(subeventFound);
       }
-    });
+    );
 
-    ParticipantesService.getParticipantes().then(eventos => {
-      eventos.forEach(doc => {
-        const participante = {
-          ...doc.data(),
-          uuid: doc.id
-        };
-        setParticipantesState(part => [...part, participante]);
-      });
-    });
-  }, [idSubevento]);
+    ServiceParticipantes.getParticipantesByEvento(idEvento).onSnapshot(
+      participantesSnapshot => {
+        setParticipantesState(
+          participantesSnapshot.docs.map(doc => ({
+            ...doc.data(),
+            uid: doc.id
+          }))
+        );
+      }
+    );
+  }, [idEvento, idSubevento]);
 
   return (
     <>
@@ -107,10 +112,6 @@ function InscricaoEvento() {
         <p>{eventoState.descricao}</p>
 
         <ContainerDatas>
-          <Datas>
-            <div>Subevento</div>
-            <span>{subevento.current}</span>
-          </Datas>
           <Datas>
             <div>Início</div>
             <span>{dataIniFormatada.current}</span>
@@ -148,7 +149,7 @@ function InscricaoEvento() {
         <ListaContainer>
           <h3>Lista Participantes</h3>
           {participantesState.map(participante => (
-            <li key={participante.uuid}>
+            <li key={participante.uid}>
               <strong>{participante.nome}</strong>
               <span> {participante.email} </span>
               <Button
@@ -166,17 +167,15 @@ function InscricaoEvento() {
           <h3>Participantes Inscritos</h3>
           {participantesInscritos.map(
             participanteInscrito =>
-              participanteInscrito.uuid && (
-                <li key={participanteInscrito.uuid}>
+              participanteInscrito.uid && (
+                <li key={participanteInscrito.uid}>
                   <strong>{participanteInscrito.nome}</strong>
                   <span> {participanteInscrito.email} </span>
                   <Button
                     variant="outlined"
                     startIcon={<ArrowBackIcon>Remover</ArrowBackIcon>}
                     color="secondary"
-                    onClick={() =>
-                      removeParticipante(participanteInscrito.uuid)
-                    }
+                    onClick={() => removeParticipante(participanteInscrito.uid)}
                   >
                     Remover
                   </Button>
@@ -189,4 +188,4 @@ function InscricaoEvento() {
   );
 }
 
-export default InscricaoEvento;
+export default InscricaoSubevento;

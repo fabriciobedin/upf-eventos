@@ -1,35 +1,26 @@
-import React, { useCallback, useRef, useEffect, useState } from 'react';
+import React, { useCallback, useRef, useEffect } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { Form } from '@unform/web';
 import * as Yup from 'yup';
-import { useConfirm } from 'material-ui-confirm';
-import { remove  } from '../../../services/subeventos';
-import { deleteOptions } from '../../../utils/confirmationOptions';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  IconButton
-} from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
-import moment from 'moment';
-import { Edit, Delete, PersonAdd } from '@material-ui/icons';
 import Button from '../../../components/Button';
 import Input from '../../../components/Input';
 import getValidationErrors from '../../../utils/getValidationErrors';
-import { Container, Content, SubtitleContainer } from './styles';
 import {
-  getEventoById,
-  update,
-  getSubEventosByIdEvento
-} from '../../../services/eventos';
-import ParticipantesList from '../../../components/exibicao/Participante';
-import OrganizadoresList from '../../../components/exibicao/Organizador';
+  ButtonContainer,
+  Container,
+  Content,
+  SubtitleContainer
+} from './styles';
+import { getEventoById, update } from '../../../services/eventos';
 import { useToast } from '../../../hooks/toast';
+import TextArea from '../../../components/TextArea';
+import Subeventos from '../../Subeventos/Listagem';
+import Participantes from '../../Participantes/Listagem';
+import firebase from '../../../services/firebase';
+import 'firebase/firestore';
+
+const db = firebase.firestore();
+
 
 const schema = Yup.object().shape({
   codigo: Yup.string().required('Código obrigatório!'),
@@ -42,91 +33,76 @@ const schema = Yup.object().shape({
 function EventoForm() {
   const history = useHistory();
   const formRef = useRef(null);
-  const [subeventos, setSubeventos] = useState([]);
-  const [evento, setEvento] = useState({});
   const { addToast } = useToast();
-  const { id } = useParams();
-  const confirmation = useConfirm();
-
-  const StyledTableCell = withStyles({
-    body: {
-      fontSize: 14
-    }
-  })(TableCell);
-
-  const StyledTableRow = withStyles(theme => ({
-    root: {
-      '&:nth-of-type(odd)': {
-        backgroundColor: theme.palette.action.hover
-      }
-    }
-  }))(TableRow);
-
-  const handleAddParticipantes = useCallback(
-    idEvento => {
-      history.push(`/subevento/${idEvento}/participantes`);
-    },
-    [history]
-  );
-
-  useEffect(() => {
-    getSubEventosByIdEvento(id).then(subEvento => {
-      subEvento.forEach(doc => {
-        const subevento = {
-          ...doc.data(),
-          uuid: doc.id
-        };
-        setSubeventos(sub => [...sub, subevento]);
-      });
-    });
-  }, [id]);
+  const { idEvento } = useParams();
 
 
   useEffect(() => {
-    getEventoById(id).then(docSnapshot => {
+    getEventoById(idEvento).then(docSnapshot => {
       if (docSnapshot.exists) {
         formRef.current.setData(docSnapshot.data());
-        setEvento(docSnapshot.data());
       }
     });
-  }, [id]);
+  }, [idEvento]);
+
+  const exportarFrequencia = (async () => {
+
+    let csvContent = "data:text/csv;charset=utf-8,";
+    let array = ["TIPO", "COD PARTICIPANTE", "HORARIO", "COD EVENTO", "COD SUBEVENTO"]
+            let row = array.join(",");
+            csvContent += row + "\r\n";
+
+    const subeventos = await db.doc('Eventos/' + idEvento).collection('Subeventos').get();
+
+    for (let index = 0; index < subeventos.docs.length; index++) {
+      const subevento = subeventos.docs[index];
+      let participantes = await db.doc('Eventos/' + idEvento + '/Subeventos/' + subevento.id).collection('SubeventoParticipantes').get()
+      for (let indexParticipante = 0; indexParticipante < participantes.docs.length; indexParticipante++) {
+        const participante = participantes.docs[indexParticipante];
+        let objeto = participante.data()
+        let array = [];
+         if (objeto.horaEntrada)
+         {
+            array = ["S", participante.id, objeto.horaSaida.seconds, idEvento, subevento.id]
+            let row = array.join(",");
+            csvContent += row + "\r\n";
+         }
+         if (objeto.horaSaida) {
+            array = ["S", participante.id, objeto.horaSaida.seconds, idEvento, subevento.id]
+            let row = array.join(",");
+            csvContent += row + "\r\n";
+         }
+      }
+    }
+
+
+    console.log('montando csv')
+    var encodedUri = encodeURI(csvContent);
+    var link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "frequencia.csv");
+    document.body.appendChild(link); // Required for FF
+
+    link.click();
+
+  }
+  );
 
   const redirect = useCallback(() => {
     history.push('/eventos');
   }, [history]);
 
-  const handleSubevento = useCallback(
-    idEvento => {
-      history.push(`/subevento/cadastro/${idEvento}`);
-    },
-    [history]
-  );
+  const handleSubevento = useCallback(() => {
+    history.push(`/eventos/${idEvento}/subeventos/cadastro`);
+  }, [history, idEvento]);
 
   const handleCadastroOrganizador = useCallback(() => {
     history.push(`/organizadores/eventos/${id}`);
   }, [history, id]);
 
-  const handleDeleteSubevento = useCallback(
-    idSubevento => {
-      confirmation(deleteOptions)
-        .then(() => {
-          remove(idSubevento).then(() => {});
-        })
-        .catch(() => {});
-    },
-    [confirmation]
-  );
-
-  const handleEdit = useCallback(
-    idEvento => {
-      history.push(`/subevento/${idEvento}`);
-    },
-    [history]
-  );
-
   const handleAddParticipantesEvento = useCallback(() => {
-    history.push(`/eventos/${id}/participantes`);
-  }, [history, id]);
+    history.push(`/eventos/${idEvento}/participantes`);
+  }, [history, idEvento]);
 
   const handleSubmit = useCallback(
     async data => {
@@ -138,7 +114,7 @@ function EventoForm() {
         });
 
         data.titulo = data.titulo.toUpperCase();
-        update(id, data).then(() => {
+        update(idEvento, data).then(() => {
           addToast({
             type: 'success',
             description: 'Evento alterado com sucesso.'
@@ -151,7 +127,7 @@ function EventoForm() {
         }
       }
     },
-    [addToast, id, redirect]
+    [addToast, idEvento, redirect]
   );
 
   return (
@@ -161,98 +137,34 @@ function EventoForm() {
         <Form ref={formRef} onSubmit={handleSubmit}>
           <Input name="codigo" placeholder="Código" type="number" />
           <Input name="titulo" placeholder="Título" />
-          <Input name="descricao" placeholder="Descricao" />
+          <TextArea name="descricao" placeholder="Descricao" />
           <p>Data Inicial:</p>
           <Input type="date" name="dataInicial" placeholder="Data" />
           <p>Data Final:</p>
           <Input type="date" name="dataFinal" placeholder="Data" />
 
-          <Button type="submit">Salvar</Button>
-          <Button onClick={redirect}>Cancelar</Button>
+          <ButtonContainer>
+            <Button type="submit">Salvar</Button>
+            <Button onClick={redirect}>Cancelar</Button>
+            <Button onClick={exportarFrequencia}>Exportar Frequência</Button>
+          </ButtonContainer>
         </Form>
-
-        <SubtitleContainer>
-          <h3>Subeventos:</h3>
-          <button type="button" onClick={() => handleSubevento(id)}>
-            Criar Subeventos
-          </button>
-        </SubtitleContainer>
-        <TableContainer component={Paper}>
-          <Table aria-label="simple table">
-            <TableHead>
-              <StyledTableRow>
-                <StyledTableCell>Código</StyledTableCell>
-                <StyledTableCell>Descrição</StyledTableCell>
-                <StyledTableCell>Turno</StyledTableCell>
-                <StyledTableCell>Data</StyledTableCell>
-                <StyledTableCell>Hora Inicial</StyledTableCell>
-                <StyledTableCell>Hora Final</StyledTableCell>
-                <TableCell />
-              </StyledTableRow>
-            </TableHead>
-            <TableBody>
-              {subeventos.map(subevento => (
-                <StyledTableRow key={subevento.uuid}>
-                  <StyledTableCell component="th" scope="row">
-                    {subevento.codigo}
-                  </StyledTableCell>
-                  <StyledTableCell>{subevento.descricao}</StyledTableCell>
-                  <StyledTableCell>{subevento.turno}</StyledTableCell>
-                  <StyledTableCell align="left" type="date">
-                    {moment(subevento.dataInicial).format('D/MM/YYYY')}
-                  </StyledTableCell>
-                  <StyledTableCell>{subevento.horaInicial}</StyledTableCell>
-                  <StyledTableCell>{subevento.horaFinal}</StyledTableCell>
-                  <TableCell>
-                    <IconButton
-                      aria-label="edit"
-                      size="small"
-                      onClick={() => handleEdit(subevento.uuid)}
-                    >
-                      <Edit fontSize="inherit" />
-                    </IconButton>
-
-                    <IconButton aria-label="delete" size="small" onClick={() => handleDeleteSubevento(subevento.uuid)}>
-                      <Delete fontSize="inherit" />
-                    </IconButton>
-                    <IconButton
-                      variant="outlined"
-                      size="small"
-                      onClick={() => handleAddParticipantes(subevento.uuid)}
-                    >
-                      <PersonAdd fontSize="inherit" />
-                    </IconButton>
-                  </TableCell>
-                </StyledTableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-
-        <SubtitleContainer>
-          <h3>Participantes:</h3>
-          <button type="button" onClick={() => handleAddParticipantesEvento()}>
-            Inscrever participantes
-          </button>
-        </SubtitleContainer>
-        <ParticipantesList
-          participantes={evento.participantes || []}
-          hidePhone
-          hideButtons
-        />
-
-        <SubtitleContainer>
-          <h3>Organizadores:</h3>
-          <button type="button" onClick={() => handleCadastroOrganizador()}>
-            Cadastrar Organizadores
-          </button>
-        </SubtitleContainer>
-        <OrganizadoresList
-          organizadores={evento.organizadores || []}
-          hidePhone
-          hideButtons
-        />
       </Content>
+      <hr style={{ marginTop: 10, marginBottom: 10 }} />
+      <SubtitleContainer>
+        <h3>Subeventos:</h3>
+        <button type="button" onClick={() => handleSubevento()}>
+          Criar Subeventos
+        </button>
+      </SubtitleContainer>
+      <Subeventos idEvento={idEvento} />
+      <SubtitleContainer>
+        <h3>Participantes do evento:</h3>
+        <button type="button" onClick={() => handleAddParticipantesEvento()}>
+          Inscrever participantes
+        </button>
+      </SubtitleContainer>
+      <Participantes idEvento={idEvento} />
     </Container>
   );
 }
