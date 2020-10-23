@@ -37,7 +37,7 @@ export default class EventoImportacao extends Component {
       console.log(dado)
       if (element.data.length > 20 && linha !== 0) {
         evento.dados.codigo = dado[5]
-        evento.dados.nome = dado[6]
+        evento.dados.titulo = dado[6]
         evento.dados.descricao = dado[7]
 
         let organizador = {};
@@ -67,22 +67,23 @@ export default class EventoImportacao extends Component {
     );
     //ORGANIZAR ARRAY DE ORGANIZADORES PARA INSERÇÃO
     evento.organizadores.forEach(async organizador => 
-      {
-        evento.dados.organizadores.push(organizador.codigo)  
-        db.collection('Users')
-            .doc(organizador.codigo)
-            .set({ email: organizador.email, nome:organizador.name })    
+    {
+      evento.dados.organizadores.push(organizador.codigo)  
+      db.collection('Users')
+          .doc(organizador.codigo)
+          .set({ email: organizador.email, nome:organizador.name })    
 
-        firebase
-        .auth()
-        .createUserWithEmailAndPassword(organizador.email, organizador.password)
-        .then(
-          console.log('Usuario criado')
-        )
-        .catch((error) => {
-          console.log(error)
-        });
+      firebase
+      .auth()
+      .createUserWithEmailAndPassword(organizador.email, organizador.password)
+      .then(
+        console.log('Usuario criado')
+      )
+      .catch((error) => {
+        console.log(error)
       });
+    });
+    evento.dados.organizadores.push('aelvVlqRxzYrK4wSMBQB8s5cyAd2')
     //FOREACH PARA PARTICIPANTES 
     linha = 0;
     data.forEach(element => {
@@ -127,7 +128,7 @@ export default class EventoImportacao extends Component {
 
       subEventosRef.doc(subevento.dados.codigo).set(subevento.dados);
       const participantesRef = db.collection('Eventos').doc(evento.dados.codigo)
-      .collection('Subeventos').doc(subevento.dados.codigo).collection('Participantes')
+      .collection('Subeventos').doc(subevento.dados.codigo).collection('SubeventoParticipantes')
 
       console.log('Parcipantes do subevento')
       subevento.participantes.forEach(participante => 
