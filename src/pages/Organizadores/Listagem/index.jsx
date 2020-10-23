@@ -118,8 +118,8 @@ function Organizadores({ idEvento }) {
     ],
     [handleDelete, handleEdit]
   );
-  console.log(organizadores)
-  // if (organizadores.list.size > 0) {
+
+  if (organizadores.size > 0) {
     return (
       <MUIDataTable
         title="Organizadores"
@@ -128,7 +128,7 @@ function Organizadores({ idEvento }) {
         options={tableOptions}
       />
     );
-  // }
+  }
 
   return <NoRecords />;
 }

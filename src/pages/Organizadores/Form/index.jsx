@@ -108,7 +108,7 @@ function OrganizadorForm({ organizador, formTitle, idOrganizador }) {
           <hr />
           <ButtonContainer>
             <Button type="submit" onClick={() => handleSubmit()}>
-              Salvar Usuario
+              Salvar Organizador
             </Button>
             <Button onClick={redirect}>Cancelar</Button>
           </ButtonContainer>
