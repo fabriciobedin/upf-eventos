@@ -31,7 +31,7 @@ exports.onCreateParticipante = functions.firestore
       participante.uuid = participanteId;
 
       console.log(participante);
-      console.log(eventoId);
+      console.log('Evento Id '+eventoId);
       if(participante.email && participante.nome && participante.uuid)
       {
       const evento = await buscarEvento(eventoId);
@@ -178,7 +178,7 @@ exports.buscarParticipante = functions.https.onRequest(async (req, res) => {
 });
 
 /* função para buscar dados de um evento */
-async function (eventoId){
+async function buscarEvento(eventoId){
   functions.logger.log('Buscando Evento '+eventoId);
   const promise = admin.firestore().doc('Eventos/'+eventoId).get();
   let data = await promise.then(snapshot =>{
