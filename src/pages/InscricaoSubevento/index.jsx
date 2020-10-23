@@ -16,6 +16,8 @@ import {
   ParticipantesContainer,
   ListaContainer
 } from './styles';
+import ParticipantesSubevento from '../ParticipantesSubevento';
+import SelecaoParticipantes from './SelecaoParticipantes';
 
 function InscricaoSubevento() {
   const [eventoState, setEventoState] = useState({});
@@ -144,6 +146,11 @@ function InscricaoSubevento() {
           Finalizar Inscrições
         </Button>
       </div>
+
+      {/* <ParticipantesSubevento idEvento={idEvento} idSubevento={idSubevento} /> */}
+
+      <SelecaoParticipantes idEvento={idEvento} title='Participantes do evento' selectable={true}/>
+
 
       <ParticipantesContainer>
         <ListaContainer>
