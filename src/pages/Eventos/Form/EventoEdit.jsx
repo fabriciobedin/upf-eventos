@@ -17,6 +17,11 @@ import TextArea from '../../../components/TextArea';
 import Subeventos from '../../Subeventos/Listagem';
 import Participantes from '../../Participantes/Listagem';
 import BreadCrumb from '../../../components/BreadCrumb';
+import firebase from '../../../services/firebase';
+import 'firebase/firestore';
+
+const db = firebase.firestore();
+
 
 const schema = Yup.object().shape({
   codigo: Yup.string().required('Código obrigatório!'),
@@ -39,6 +44,49 @@ function EventoForm() {
       }
     });
   }, [idEvento]);
+
+  const exportarFrequencia = (async () => {
+
+    let csvContent = "data:text/csv;charset=utf-8,";
+    let array = ["TIPO", "COD PARTICIPANTE", "HORARIO", "COD EVENTO", "COD SUBEVENTO"]
+            let row = array.join(",");
+            csvContent += row + "\r\n";
+
+    const subeventos = await db.doc('Eventos/' + idEvento).collection('Subeventos').get();
+    
+    for (let index = 0; index < subeventos.docs.length; index++) {
+      const subevento = subeventos.docs[index];
+      let participantes = await db.doc('Eventos/' + idEvento + '/Subeventos/' + subevento.id).collection('SubeventoParticipantes').get()
+      for (let indexParticipante = 0; indexParticipante < participantes.docs.length; indexParticipante++) {
+        const participante = participantes.docs[indexParticipante];
+        let objeto = participante.data()
+        let array = [];
+         if (objeto.horaEntrada) 
+         {
+            array = ["S", participante.id, objeto.horaSaida.seconds, idEvento, subevento.id]
+            let row = array.join(",");
+            csvContent += row + "\r\n";
+         }
+         if (objeto.horaSaida) {
+            array = ["S", participante.id, objeto.horaSaida.seconds, idEvento, subevento.id]
+            let row = array.join(",");
+            csvContent += row + "\r\n";
+         }         
+      }      
+    }
+
+
+    console.log('montando csv')
+    var encodedUri = encodeURI(csvContent);
+    var link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "frequencia.csv");
+    document.body.appendChild(link); // Required for FF
+
+    link.click();
+
+  }
+  );
 
   const redirect = useCallback(() => {
     history.push('/eventos');
@@ -104,17 +152,18 @@ function EventoForm() {
             <p>Data Final:</p>
             <Input type="date" name="dataFinal" placeholder="Data" />
 
-            <ButtonContainer>
-              <Button type="submit">Salvar</Button>
-              <Button onClick={redirect}>Cancelar</Button>
-            </ButtonContainer>
-          </Form>
-        </Content>
-        <hr style={{ marginTop: 10, marginBottom: 10 }} />
-        <SubtitleContainer>
-          <h3>Subeventos:</h3>
-          <button type="button" onClick={() => handleSubevento()}>
-            Criar Subeventos
+          <ButtonContainer>
+            <Button type="submit">Salvar</Button>
+            <Button onClick={redirect}>Cancelar</Button>
+            <Button onClick={exportarFrequencia}>Exportar Frequência</Button>
+          </ButtonContainer>
+        </Form>
+      </Content>
+      <hr style={{ marginTop: 10, marginBottom: 10 }} />
+      <SubtitleContainer>
+        <h3>Subeventos:</h3>
+        <button type="button" onClick={() => handleSubevento()}>
+          Criar Subeventos
         </button>
         </SubtitleContainer>
         <Subeventos idEvento={idEvento} />
