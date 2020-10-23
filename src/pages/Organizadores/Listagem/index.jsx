@@ -49,12 +49,15 @@ function Organizadores({ idEvento }) {
       if (docSnapshot.exists) {
         for(let i=0; i < docSnapshot.data().organizadores.length; i++){
           OrganizadoresService.getOrganizadorById(docSnapshot.data().organizadores[i]).then(doc => {
-            if(doc != undefined){
-              organizadores = {
-                list: [doc.data()],
-              };
-              console.log(organizadores)
-            }
+            let promises = [];
+              promises.push(
+                doc,
+                console.log('dc', doc)
+              );
+            Promise.all(promises).then(() => {
+              organizadores = promises;
+              console.log('dc', promises);
+            });
           });
         }
       }
@@ -115,12 +118,12 @@ function Organizadores({ idEvento }) {
     ],
     [handleDelete, handleEdit]
   );
-  console.log(organizadores.list)
+  console.log(organizadores)
   // if (organizadores.list.size > 0) {
     return (
       <MUIDataTable
         title="Organizadores"
-        data={organizadores.list}
+        data={organizadores}
         columns={columns}
         options={tableOptions}
       />

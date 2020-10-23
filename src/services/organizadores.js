@@ -30,6 +30,10 @@ export const submit = (organizador, id, idEvento) => {
     organizador.updatedAt = timestamp;
     return usuariosRef.doc(id).update(organizador);
   }
+  if(organizador.senha === undefined){
+    organizador.senha = '123456'
+  }
+  organizador.nivelAcesso = '2';
   organizador.createdAt = timestamp;
   return usuariosRef.add(organizador);
 };
