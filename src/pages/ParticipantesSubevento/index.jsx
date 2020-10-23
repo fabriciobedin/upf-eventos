@@ -2,18 +2,15 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { IconButton } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import MUIDataTable from 'mui-datatables';
-import { useConfirm } from 'material-ui-confirm';
 import * as ParticipantesService from '../../services/participantes';
 import options from '../../utils/tableOptions';
-import { deleteOptions } from '../../utils/confirmationOptions';
 import NoRecords from '../../components/NoRecords';
 
 function ParticipantesSubevento({ idEvento, idSubevento }) {
   const [participantes, setParticipantes] = useState([]);
   const tableOptions = {
     ...options,
-    selectableRows: 'none',
-
+    selectableRows: 'none'
   };
 
   useEffect(() => {
@@ -29,9 +26,9 @@ function ParticipantesSubevento({ idEvento, idSubevento }) {
       );
     });
     return () => unsubscribe();
-  }, [idEvento]);
+  }, [idEvento, idSubevento]);
 
-  const handleDelete = () => {};
+  const handleDelete = useCallback(() => {}, []);
 
   const columns = useMemo(
     () => [
@@ -89,7 +86,7 @@ function ParticipantesSubevento({ idEvento, idSubevento }) {
     );
   }
 
-  return <NoRecords message="Nenhum participante inscrito."  />;
+  return <NoRecords message="Nenhum participante inscrito." />;
 }
 
 export default ParticipantesSubevento;

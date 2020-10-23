@@ -1,10 +1,8 @@
-import React, { useEffect, useState, useCallback, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { Button, Dialog, DialogContent, DialogTitle } from '@material-ui/core';
 import { formatDate } from '../../utils/formatters';
-import { useToast } from '../../hooks/toast';
 import * as SubeventosService from '../../services/subeventos';
-import * as ServiceParticipantes from '../../services/participantes';
 import BreadCrumb from '../../components/BreadCrumb';
 
 import { Container, Title, ContainerDatas, Datas } from './styles';
@@ -13,11 +11,9 @@ import SelecaoParticipantes from './SelecaoParticipantes';
 
 function InscricaoSubevento() {
   const [eventoState, setEventoState] = useState({});
-  const [participantesState, setParticipantesState] = useState([]);
   const [participantesInscritos, setParticipantesInscritos] = useState([]);
   const [open, setOpen] = useState(false);
   const { idEvento, idSubevento } = useParams();
-  const { addToast } = useToast();
   const dataIniFormatada = useRef(null);
   const horaIni = useRef(null);
   const horaFim = useRef(null);
@@ -26,44 +22,11 @@ function InscricaoSubevento() {
 
   const handleClickOpen = useCallback(() => {
     setOpen(true);
-  }, [history]);
+  }, []);
 
   const handleClose = () => {
     setOpen(false);
   };
-
-  const addParticipante = useCallback(
-    value => {
-      if (participantesInscritos.find(e => e.uid === value.uid)) {
-        addToast({
-          type: 'error',
-          title: 'Atenção!',
-          description: 'Participante já inscrito.'
-        });
-        return;
-      }
-
-      const snippet = {
-        uid: value.uid,
-        codigo: value.codigo,
-        nome: value.nome,
-        email: value.email,
-        status: 'inscrito'
-      };
-
-      SubeventosService.realizarInscricao(idEvento, idSubevento, snippet).then(
-        () => {
-          addToast({
-            type: 'success',
-            description: 'Participante inscrito com sucesso.'
-          });
-        }
-      );
-
-      setParticipantesInscritos(part => [...part, snippet]);
-    },
-    [addToast, idEvento, idSubevento, participantesInscritos]
-  );
 
   const removeParticipante = useCallback(
     participanteId => {
@@ -89,17 +52,6 @@ function InscricaoSubevento() {
           subevento.current = subeventFound.descricao;
           setEventoState(subeventFound);
         }
-      }
-    );
-
-    ServiceParticipantes.getParticipantesByEvento(idEvento).onSnapshot(
-      participantesSnapshot => {
-        setParticipantesState(
-          participantesSnapshot.docs.map(doc => ({
-            ...doc.data(),
-            uid: doc.id
-          }))
-        );
       }
     );
   }, [idEvento, idSubevento]);

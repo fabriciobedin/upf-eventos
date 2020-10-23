@@ -39,7 +39,7 @@ function CustomToolbar({ selectedRows, displayData, setSelectedRows, statusModal
       setSelectedRows([]);
       statusModal(false);
     });
-  }, [idEvento, idSubevento, setSelectedRows, addToast, displayData]);
+  }, [idEvento, idSubevento, setSelectedRows, addToast, displayData, statusModal]);
 
   return (
     <div style={{ marginRight: 24 }}>

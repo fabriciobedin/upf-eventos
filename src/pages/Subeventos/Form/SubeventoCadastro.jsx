@@ -18,7 +18,7 @@ function Subeventos() {
   const { addToast } = useToast();
 
   const formRef = useRef(null);
-  const [checked] = React.useState(true);
+  const [checked] = useState(true);
   const history = useHistory();
   const { idEvento } = useParams();
 
