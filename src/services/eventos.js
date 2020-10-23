@@ -11,7 +11,6 @@ export const getEventoById = idEvento => {
 export const getEventos = async () => {
   const user = await getUsuarioLogado();
 
-
   if (user && user?.nivelAcesso==='2') {
     // if (user && !user?.nivelAcesso) {
     return eventosRef.where('organizadores', 'array-contains', user.uid).get();
@@ -42,8 +41,7 @@ export const adicionarOrganizador = (idEvento, organizador) => {
 };
 
 const getUsuarioLogado = () => {
-  const { user } = !!localStorage.getItem('@upf-eventos:user') ? JSON.parse(localStorage.getItem('@upf-eventos:user')) : {};
-  return user;
+  return JSON.parse(localStorage.getItem('@upf-eventos:user')) || {};
 };
 
 export const remove = (idEvento) => {
