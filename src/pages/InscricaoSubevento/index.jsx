@@ -7,6 +7,7 @@ import { formatDate } from '../../utils/formatters';
 import { useToast } from '../../hooks/toast';
 import * as SubeventosService from '../../services/subeventos';
 import * as ServiceParticipantes from '../../services/participantes';
+import BreadCrumb from '../../components/BreadCrumb';
 
 import {
   Container,
@@ -105,8 +106,24 @@ function InscricaoSubevento() {
     );
   }, [idEvento, idSubevento]);
 
+  const crumbs = [
+    {
+      routeTo: '/eventos',
+      name: 'Eventos'
+    },
+    {
+      routeTo: '',
+      name: 'Editar evento'
+    },
+    {
+      routeTo: '',
+      name: 'Inscrição Subevento'
+    },
+  ];
+
   return (
     <>
+      <BreadCrumb crumbs={crumbs} />
       <Container>
         <Title>{eventoState.titulo}</Title>
         <p>{eventoState.descricao}</p>

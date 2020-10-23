@@ -16,9 +16,10 @@ import { useToast } from '../../../hooks/toast';
 import TextArea from '../../../components/TextArea';
 import Subeventos from '../../Subeventos/Listagem';
 import Participantes from '../../Participantes/Listagem';
-import Organizadores from '../../Organizadores/Listagem';
+import BreadCrumb from '../../../components/BreadCrumb';
 import firebase from '../../../services/firebase';
 import 'firebase/firestore';
+import Organizadores from '../../Organizadores/Listagem';
 
 const db = firebase.firestore();
 
@@ -64,7 +65,7 @@ function EventoForm() {
         let array = [];
          if (objeto.horaEntrada)
          {
-            array = ["S", participante.id, objeto.horaSaida.seconds, idEvento, subevento.id]
+            array = ["E", participante.id, objeto.horaEntrada.seconds, idEvento, subevento.id]
             let row = array.join(",");
             csvContent += row + "\r\n";
          }
@@ -131,18 +132,31 @@ function EventoForm() {
     [addToast, idEvento, redirect]
   );
 
+  const crumbs = [
+    {
+      routeTo: '/eventos',
+      name: 'Eventos'
+    },
+    {
+      routeTo: '',
+      name: 'Editar'
+    },
+  ];
+
   return (
-    <Container>
-      <h1>Edição de Evento:</h1>
-      <Content>
-        <Form ref={formRef} onSubmit={handleSubmit}>
-          <Input name="codigo" placeholder="Código" type="number" />
-          <Input name="titulo" placeholder="Título" />
-          <TextArea name="descricao" placeholder="Descricao" />
-          <p>Data Inicial:</p>
-          <Input type="date" name="dataInicial" placeholder="Data" />
-          <p>Data Final:</p>
-          <Input type="date" name="dataFinal" placeholder="Data" />
+    <>
+      <BreadCrumb crumbs={crumbs} />
+      <Container>
+        <h1>Edição de Evento:</h1>
+        <Content>
+          <Form ref={formRef} onSubmit={handleSubmit}>
+            <Input name="codigo" placeholder="Código" type="number" />
+            <Input name="titulo" placeholder="Título" />
+            <TextArea name="descricao" placeholder="Descricao" />
+            <p>Data Inicial:</p>
+            <Input type="date" name="dataInicial" placeholder="Data" />
+            <p>Data Final:</p>
+            <Input type="date" name="dataFinal" placeholder="Data" />
 
           <ButtonContainer>
             <Button type="submit">Salvar</Button>
@@ -157,23 +171,24 @@ function EventoForm() {
         <button type="button" onClick={() => handleSubevento()}>
           Criar Subeventos
         </button>
-      </SubtitleContainer>
-      <Subeventos idEvento={idEvento} />
-      <SubtitleContainer>
-        <h3>Participantes do evento:</h3>
-        <button type="button" onClick={() => handleAddParticipantesEvento()}>
-          Inscrever participantes
+        </SubtitleContainer>
+        <Subeventos idEvento={idEvento} />
+        <SubtitleContainer>
+          <h3>Participantes do evento:</h3>
+          <button type="button" onClick={() => handleAddParticipantesEvento()}>
+            Inscrever participantes
         </button>
-      </SubtitleContainer>
-      <Participantes idEvento={idEvento} />
-      <SubtitleContainer>
+        </SubtitleContainer>
+        <Participantes idEvento={idEvento} />
+        <SubtitleContainer>
         <h3>Organizadores do evento:</h3>
         <button type="button" onClick={() => handleCadastroOrganizador()}>
           Inscrever organizadores
         </button>
       </SubtitleContainer>
       <Organizadores idEvento={idEvento} />
-    </Container>
+      </Container>
+    </>
   );
 }
 

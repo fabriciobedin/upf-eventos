@@ -32,25 +32,51 @@ const AuthProvider = ({ children }) => {
     }
   }, [user]);
 
-  const signIn = useCallback(({ email, password }) => {
-    firebase
-      .auth()
-      .signInWithEmailAndPassword(email, password)
-      .then(res => {
-        firebase
-          .firestore()
-          .collection('Users')
-          .doc(res.user.uid)
-          .get()
-          .then(FbUser => setUser(FbUser.data()))
-          .catch(err => {
-            throw err;
-          });
-      })
-      .catch(err => {
-        throw err;
-      });
+  const handleAuthErrorMessage = useCallback(errorCode => {
+    return (
+      {
+        'auth/wrong-password': 'Senha incorreta',
+        'auth/invalid-email': 'Email inválido',
+        'auth/user-not-found': 'Usuário não encontrado',
+        'auth/user-disabled': 'Usuário desativado',
+        'auth/email-already-in-use': 'Usuário já está em uso',
+        'auth/operation-not-allowed': 'Operação não permitida',
+        'auth/weak-password': 'Senha muito fraca'
+      }[errorCode] || `Erro desconhecido ${errorCode}`
+    );
   }, []);
+
+  const signIn = useCallback(
+    ({ email, password }) => {
+      return firebase
+        .auth()
+        .signInWithEmailAndPassword(email, password)
+        .then(res => {
+          firebase
+            .firestore()
+            .collection('Users')
+            .doc(res.user.uid)
+            .get()
+            .then(FbUser => {
+              const { name, nivelAcesso, avatarUrl } = FbUser.data();
+              setUser({
+                uid: res.user.uid,
+                name,
+                email,
+                nivelAcesso,
+                avatarUrl
+              });
+            })
+            .catch(err => {
+              throw err;
+            });
+        })
+        .catch(err => {
+          throw new Error(handleAuthErrorMessage(err.code));
+        });
+    },
+    [handleAuthErrorMessage]
+  );
 
   const signOut = useCallback(() => {
     setUser();
@@ -72,20 +98,6 @@ const AuthProvider = ({ children }) => {
     },
     [history]
   );
-
-  const handleAuthErrorMessage = useCallback(errorCode => {
-    return (
-      {
-        'auth/wrong-password': 'Senha incorreta',
-        'auth/invalid-email': 'Email inválido',
-        'auth/user-not-found': 'Usuário não encontrado',
-        'auth/user-disabled': 'Usuário desativado',
-        'auth/email-already-in-use': 'Usuário já está em uso',
-        'auth/operation-not-allowed': 'Operação não permitida',
-        'auth/weak-password': 'Senha muito fraca'
-      }[errorCode] || `Erro desconhecido ${errorCode}`
-    );
-  }, []);
 
   const reauthenticate = useCallback(currentPassword => {
     const { currentUser } = firebase.auth();

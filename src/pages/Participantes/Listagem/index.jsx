@@ -10,6 +10,10 @@ import options from '../../../utils/tableOptions';
 import { deleteOptions } from '../../../utils/confirmationOptions';
 import { useToast } from '../../../hooks/toast';
 import NoRecords from '../../../components/NoRecords';
+import {
+  getSubEventos,
+  removeParticipante as removePartSubevento
+} from '../../../services/subeventos';
 
 function Participantes({ idEvento }) {
   const history = useHistory();
@@ -53,24 +57,47 @@ function Participantes({ idEvento }) {
       }
       confirmation(deleteOptionsParticipante)
         .then(() => {
-          ParticipantesService.remove(idEvento, idParticipante).then(() => {});
+          ParticipantesService.remove(idEvento, idParticipante).then(() => {
+            getSubEventos(idEvento).then(res => {
+              let promises = [];
+              res.forEach(doc => {
+                promises.push(
+                  removePartSubevento(idEvento, doc.id, idParticipante)
+                );
+              });
+              Promise.all(promises).then(() => {
+                window.scrollTo({ top: 0});
+                addToast({
+                  type: 'success',
+                  description:
+                    'Participante removido com sucesso.'
+                });
+              });
+            });
+          });
         })
         .catch(() => {});
     },
-    [addToast, confirmation, idEvento, verificaFrequencia, deleteOptionsParticipante]
+    [
+      addToast,
+      confirmation,
+      idEvento,
+      verificaFrequencia,
+      deleteOptionsParticipante
+    ]
   );
 
   useEffect(() => {
-    const unsubscribe = ParticipantesService.getParticipantesByEvento(idEvento).onSnapshot(
-      participantesSnapshot => {
-        setParticipantes(
-          participantesSnapshot.docs.map(doc => ({
-            ...doc.data(),
-            uuid: doc.id
-          }))
-        );
-      }
-    );
+    const unsubscribe = ParticipantesService.getParticipantesByEvento(
+      idEvento
+    ).onSnapshot(participantesSnapshot => {
+      setParticipantes(
+        participantesSnapshot.docs.map(doc => ({
+          ...doc.data(),
+          uuid: doc.id
+        }))
+      );
+    });
     return () => unsubscribe();
   }, [idEvento]);
 

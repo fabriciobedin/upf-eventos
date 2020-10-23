@@ -4,14 +4,15 @@ import { useHistory } from 'react-router-dom';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import MUIDataTable from 'mui-datatables';
+import { useConfirm } from 'material-ui-confirm';
 import options from '../../../utils/tableOptions';
 import { getEventos, remove } from '../../../services/eventos';
 import { formatDate } from '../../../utils/formatters';
-import { useConfirm } from 'material-ui-confirm';
 import { useToast } from '../../../hooks/toast';
 import { deleteOptions } from '../../../utils/confirmationOptions';
 import * as ParticipantesService from '../../../services/participantes';
 import * as SubeventosService from '../../../services/subeventos';
+import BreadCrumb from '../../../components/BreadCrumb';
 
 function EventosList() {
   const [eventos, setEventos] = useState([]);
@@ -80,7 +81,13 @@ function EventosList() {
         })
         .catch(() => {});
     },
-    [addToast, confirmation, deleteOptionsEventos, verificaParticipantes, verificaSubeventos]
+    [
+      addToast,
+      confirmation,
+      deleteOptionsEventos,
+      verificaParticipantes,
+      verificaSubeventos
+    ]
   );
 
   const columns = useMemo(
@@ -179,8 +186,16 @@ function EventosList() {
     fetch();
   }, []);
 
+  const crumbs = [
+    {
+      routeTo: '/eventos',
+      name: 'Eventos'
+    }
+  ];
+
   return (
     <>
+      <BreadCrumb crumbs={crumbs} />
       <Button
         type="button"
         variant="outlined"

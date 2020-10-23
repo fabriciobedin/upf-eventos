@@ -1,14 +1,9 @@
 import React, { useCallback, useRef } from 'react';
 import { Button as ButtonMaterial } from '@material-ui/core';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import LockIcon from '@material-ui/icons/Lock';
 import { Form } from '@unform/web';
 import { FiLock } from 'react-icons/fi';
 import * as Yup from 'yup';
-import Dialog from '@material-ui/core/Dialog';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-
 import { useToast } from '../../hooks/toast';
 import getValidationErrors from '../../utils/getValidationErrors';
 import Input from '../../components/Input';
@@ -19,7 +14,9 @@ import {
   HeaderBox,
   FooterBox,
   UserImg,
-  ButtonContainer
+  ContainerForm,
+  BodyContent,
+  Divider
 } from './styles';
 import Button from '../../components/Button';
 
@@ -27,15 +24,8 @@ function Perfil() {
   const { signOut, user, changePassword } = useAuth();
   const { addToast } = useToast();
   const formRef = useRef(null);
-  const [open, setOpen] = React.useState(false);
-
-  const handleClickOpen = useCallback(() => {
-    setOpen(true);
-  }, []);
-
-  const handleClose = useCallback(() => {
-    setOpen(false);
-  }, []);
+  const AVATAR_URL_DEFAULT =
+    'https://firebasestorage.googleapis.com/v0/b/upf-eventos.appspot.com/o/assets%2Fdefault_avatar.png?alt=media&token=fda493df-ce4f-4c71-bea6-b310c8b524ad';
 
   const handleSubmit = useCallback(
     async data => {
@@ -57,7 +47,6 @@ function Perfil() {
         });
         await changePassword(data.old_password, data.password);
 
-        handleClose();
         addToast({
           type: 'success',
           title: 'Sucesso!',
@@ -69,7 +58,6 @@ function Perfil() {
           return;
         }
 
-        handleClose();
         addToast({
           type: 'error',
           title: 'Erro para realizar operação!',
@@ -77,7 +65,7 @@ function Perfil() {
         });
       }
     },
-    [addToast, changePassword, handleClose]
+    [addToast, changePassword]
   );
 
   return (
@@ -85,34 +73,14 @@ function Perfil() {
       <HeaderBox />
       <FooterBox />
       <Content>
-        <UserImg />
-        <p style={{ marginTop: 10 }}>{user.name}</p>
-        <p>{user.email}</p>
-        <ButtonContainer>
-          <ButtonMaterial
-            color="primary"
-            startIcon={<LockIcon />}
-            onClick={handleClickOpen}
-          >
-            Trocar Minha senha
-          </ButtonMaterial>
-          <ButtonMaterial
-            color="secondary"
-            startIcon={<ExitToAppIcon />}
-            onClick={signOut}
-          >
-            Sair
-          </ButtonMaterial>
-        </ButtonContainer>
-        <Dialog
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="form-dialog-title"
-        >
-          <DialogTitle id="form-dialog-title">
-            Defina sua nova senha de acesso
-          </DialogTitle>
-          <DialogContent>
+        <UserImg
+          avatar={user.avatarUrl ? user.avatarUrl : AVATAR_URL_DEFAULT}
+        />
+        <BodyContent>
+          <p>{user.name}</p>
+          <p>{user.email}</p>
+          <ContainerForm>
+            <h2>Redefinir minha senha</h2>
             <Form ref={formRef} onSubmit={handleSubmit}>
               <Input
                 name="old_password"
@@ -132,12 +100,20 @@ function Perfil() {
                 type="password"
                 placeholder="Confirmar Senha"
               />
-              <Button type="submit" style={{ marginTop: 30 }}>
+              <Button type="submit" style={{ marginTop: 10 }}>
                 Salvar
               </Button>
             </Form>
-          </DialogContent>
-        </Dialog>
+          </ContainerForm>
+          <Divider />
+          <ButtonMaterial
+            color="secondary"
+            startIcon={<ExitToAppIcon />}
+            onClick={signOut}
+          >
+            Sair
+          </ButtonMaterial>
+        </BodyContent>
       </Content>
     </Container>
   );

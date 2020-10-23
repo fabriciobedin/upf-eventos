@@ -45,8 +45,7 @@ const SignIn = () => {
         addToast({
           type: 'error',
           title: 'Erro na autenticação!',
-          description:
-            'Por favor, verifique se digitou suas credenciais corretamente.'
+          description: err.message
         });
       }
     },
