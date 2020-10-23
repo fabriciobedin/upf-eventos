@@ -38,6 +38,10 @@ function OrganizadorForm({ organizador, formTitle, idOrganizador }) {
     history.push('/organizadores');
   }, [history]);
 
+  const redirectEvento = useCallback(() => {
+    history.push(`/eventos/${idEvento}`);
+  }, [history, idEvento]);
+
   const submitNew = useCallback(
     async data => {
       OrganizadorService.submit(data).then(() => {
@@ -57,12 +61,8 @@ function OrganizadorForm({ organizador, formTitle, idOrganizador }) {
         })
       });
     },
-    [addToast, db, idEvento]
+    [addToast, db, idEvento, redirectEvento]
   );
-
-  const redirectEvento = useCallback(() => {
-    history.push(`/eventos/${idEvento}`);
-  }, [history]);
 
   const submitUpdate = useCallback(
     async data => {

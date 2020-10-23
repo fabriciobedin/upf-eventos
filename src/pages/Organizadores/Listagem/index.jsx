@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
 import { IconButton } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
@@ -8,13 +8,11 @@ import { useConfirm } from 'material-ui-confirm';
 import * as OrganizadoresService from '../../../services/organizadores';
 import options from '../../../utils/tableOptions';
 import { deleteOptions } from '../../../utils/confirmationOptions';
-import { useToast } from '../../../hooks/toast';
 import NoRecords from '../../../components/NoRecords';
 
 function Organizadores({ idEvento }) {
   const history = useHistory();
   const confirmation = useConfirm();
-  const { addToast } = useToast();
   const tableOptions = {
     ...options,
     selectableRows: 'none'
@@ -24,7 +22,7 @@ function Organizadores({ idEvento }) {
     description: 'Você confirma a exclusão do organizador?'
   };
 
-  let organizadores = [];
+  let organizadoresEvento = [];
 
   const handleEdit = useCallback(
     idOrganizador => {
@@ -41,29 +39,29 @@ function Organizadores({ idEvento }) {
         })
         .catch(() => {});
     },
-    [addToast, confirmation, idEvento, deleteOptionsOrganizador]
+    [confirmation, idEvento, deleteOptionsOrganizador]
   );
 
-  useEffect(() => {
-    OrganizadoresService.getOrganizadoresByEvento(idEvento).then(docSnapshot => {
-      if (docSnapshot.exists) {
-        for(let i=0; i < docSnapshot.data().organizadores.length; i++){
-          OrganizadoresService.getOrganizadorById(docSnapshot.data().organizadores[i]).then(doc => {
-            let promises = [];
-              promises.push(
-                doc,
-                console.log('dc', doc)
-              );
-            Promise.all(promises).then(() => {
-              organizadores = promises;
-              console.log('dc', promises);
-            });
-          });
-        }
-      }
-    });
+  // useEffect(() => {
+  //   OrganizadoresService.getOrganizadoresByEvento(idEvento).then(docSnapshot => {
+  //     if (docSnapshot.exists) {
+  //       for(let i=0; i < docSnapshot.data().organizadores.length; i++){
+  //         OrganizadoresService.getOrganizadorById(docSnapshot.data().organizadores[i]).then(doc => {
+  //           let promises = [];
+  //             promises.push(
+  //               doc,
+  //               console.log('dc', doc)
+  //             );
+  //           Promise.all(promises).then(() => {
+  //             organizadoresEvento = promises;
+  //             console.log('dc', promises);
+  //           });
+  //         });
+  //       }
+  //     }
+  //   });
 
-  }, [idEvento]);
+  // }, [idEvento]);
 
   const columns = useMemo(
     () => [
@@ -119,11 +117,11 @@ function Organizadores({ idEvento }) {
     [handleDelete, handleEdit]
   );
 
-  if (organizadores.size > 0) {
+  if (organizadoresEvento.size > 0) {
     return (
       <MUIDataTable
         title="Organizadores"
-        data={organizadores}
+        data={organizadoresEvento}
         columns={columns}
         options={tableOptions}
       />
