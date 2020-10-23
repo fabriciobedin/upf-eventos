@@ -95,7 +95,7 @@ async function enviarCracha(evento,participante){
     var buffer = new Buffer(logo, 'base64');
     doc.image(buffer, 10, 10, {height: 55});
 
-    doc.fontSize(17).text(evento.descricao, 10, 70);
+    doc.fontSize(17).text(evento.titulo, 10, 70);
     doc.fontSize(12).text('Participante: ', 10, 90);
     doc.fontSize(17).text(participante.nome, 10, 110);
 
