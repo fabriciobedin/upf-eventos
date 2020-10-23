@@ -13,6 +13,7 @@ import { useToast } from '../../../hooks/toast';
 import { getSubeventoById, update } from '../../../services/subeventos';
 import TextArea from '../../../components/TextArea';
 import { ButtonContainer } from '../../Eventos/Form/styles';
+import BreadCrumb from '../../../components/BreadCrumb';
 
 function SubeventosEdit() {
   const [checked] = React.useState(true);
@@ -60,56 +61,74 @@ function SubeventosEdit() {
     [addToast, idSubevento, redirect, idEvento]
   );
 
+  const crumbs = [
+    {
+      routeTo: '/eventos',
+      name: 'Eventos'
+    },
+    {
+      routeTo: '',
+      name: 'Editar Evento'
+    },
+    {
+      routeTo: '',
+      name: 'Editar Subevento'
+    },
+  ];
+
   return (
-    <Container>
-      <h2>Edição de Subevento:</h2>
-      <Content>
-        <Form ref={formRef} onSubmit={handleSubmit}>
-          <Input name="codigo" placeholder="Código" type="number" />
-          <TextArea name="descricao" placeholder="Descrição" />
-          <Select name="tipo">
-            {turnos.map(tipo => (
-              <option value={tipo.value} key={tipo.value}>
-                {tipo.label}
-              </option>
-            ))}
-          </Select>
-          <p>Data Inicial:</p>
-          <Input type="date" name="dataInicial" />
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={checked.controlaInicio}
-                name="controlaInicio"
-                color="primary"
-              />
-            }
-            label="Controlar Inicio"
-          />
-          <p>Hora Inicial:</p>
-          <Input type="time" name="horaInicial" />
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={checked.controlaInicio}
-                name="controlaFim"
-                color="primary"
-              />
-            }
-            label="Controlar Fim"
-          />
-          <p>Hora Final:</p>
-          <Input type="time" name="horaFinal" />
+    <>
+      <BreadCrumb crumbs={crumbs} />
+      <Container>
+        <h2>Edição de Subevento:</h2>
+        <Content>
+          <Form ref={formRef} onSubmit={handleSubmit}>
+            <Input name="codigo" placeholder="Código" type="number" />
+            <TextArea name="descricao" placeholder="Descrição" />
+            <Select name="tipo">
+              {turnos.map(tipo => (
+                <option value={tipo.value} key={tipo.value}>
+                  {tipo.label}
+                </option>
+              ))}
+            </Select>
+            <p>Data Inicial:</p>
+            <Input type="date" name="dataInicial" />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={checked.controlaInicio}
+                  name="controlaInicio"
+                  color="primary"
+                />
+              }
+              label="Controlar Inicio"
+            />
+            <p>Hora Inicial:</p>
+            <Input type="time" name="horaInicial" />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={checked.controlaInicio}
+                  name="controlaFim"
+                  color="primary"
+                />
+              }
+              label="Controlar Fim"
+            />
+            <p>Hora Final:</p>
+            <Input type="time" name="horaFinal" />
 
-          <hr />
+            <hr />
 
-          <ButtonContainer>
-            <Button type="submit">Salvar</Button>
-            <Button onClick={redirect}>Cancelar</Button>
-          </ButtonContainer>
-        </Form>
-      </Content>
-    </Container>
+            <ButtonContainer>
+              <Button type="submit">Salvar</Button>
+              <Button onClick={redirect}>Cancelar</Button>
+            </ButtonContainer>
+          </Form>
+        </Content>
+      </Container>
+    </>
   );
 }
 

@@ -7,7 +7,7 @@ import Input from '../../../components/Input';
 import Button from '../../../components/Button';
 import { Container, Content, ButtonContainer } from './Styles';
 import getValidationErrors from '../../../utils/getValidationErrors';
-
+import BreadCrumb from '../../../components/BreadCrumb';
 import Select from '../../../components/Select';
 
 import { useToast } from '../../../hooks/toast';
@@ -64,57 +64,75 @@ function Subeventos() {
     [idEvento, addToast, redirect]
   );
 
+  const crumbs = [
+    {
+      routeTo: '/eventos',
+      name: 'Eventos'
+    },
+    {
+      routeTo: '',
+      name: 'Editar evento'
+    },
+    {
+      routeTo: '',
+      name: 'Subevento'
+    },
+  ];
+
   return (
-    <Container>
-      <h1>Cadastro de Subevento</h1>
-      <Content>
-        <Form ref={formRef} onSubmit={handleSubmit}>
-          <Input name="codigo" placeholder="Código" type="number" />
-          <TextArea name="descricao" placeholder="Descrição" />
-          <br />
-          <p>Data Inicial:</p>
-          <Input type="date" name="dataInicial" />
-          <br />
-          <p>Turno do Subevento:</p>
-          <Select name="turno">
-            {turnos.map(turno => (
-              <option value={turno.value} key={turno.value}>
-                {turno.label}
-              </option>
-            ))}
-          </Select>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={checked.controlaInicio}
-                name="controlaInicio"
-                color="primary"
-              />
-            }
-            label="Controlar Inicio"
-          />
-          <p>Hora Inicial:</p>
-          <Input type="time" name="horaInicial" />
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={checked.controlaInicio}
-                name="controlaFim"
-                color="primary"
-              />
-            }
-            label="Controlar Fim"
-          />
-          <p>Hora Final:</p>
-          <Input type="time" name="horaFinal" />
-          <hr />
-          <ButtonContainer>
-            <Button type="submit">Salvar</Button>
-            <Button onClick={redirect}>Cancelar</Button>
-          </ButtonContainer>
-        </Form>
-      </Content>
-    </Container>
+    <>
+      <BreadCrumb crumbs={crumbs} />
+      <Container>
+        <h1>Cadastro de Subevento</h1>
+        <Content>
+          <Form ref={formRef} onSubmit={handleSubmit}>
+            <Input name="codigo" placeholder="Código" type="number" />
+            <TextArea name="descricao" placeholder="Descrição" />
+            <br />
+            <p>Data Inicial:</p>
+            <Input type="date" name="dataInicial" />
+            <br />
+            <p>Turno do Subevento:</p>
+            <Select name="turno">
+              {turnos.map(turno => (
+                <option value={turno.value} key={turno.value}>
+                  {turno.label}
+                </option>
+              ))}
+            </Select>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={checked.controlaInicio}
+                  name="controlaInicio"
+                  color="primary"
+                />
+              }
+              label="Controlar Inicio"
+            />
+            <p>Hora Inicial:</p>
+            <Input type="time" name="horaInicial" />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={checked.controlaInicio}
+                  name="controlaFim"
+                  color="primary"
+                />
+              }
+              label="Controlar Fim"
+            />
+            <p>Hora Final:</p>
+            <Input type="time" name="horaFinal" />
+            <hr />
+            <ButtonContainer>
+              <Button type="submit">Salvar</Button>
+              <Button onClick={redirect}>Cancelar</Button>
+            </ButtonContainer>
+          </Form>
+        </Content>
+      </Container>
+    </>
   );
 }
 

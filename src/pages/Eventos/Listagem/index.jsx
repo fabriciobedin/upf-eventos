@@ -12,6 +12,7 @@ import { useToast } from '../../../hooks/toast';
 import { deleteOptions } from '../../../utils/confirmationOptions';
 import * as ParticipantesService from '../../../services/participantes';
 import * as SubeventosService from '../../../services/subeventos';
+import BreadCrumb from '../../../components/BreadCrumb';
 
 function EventosList() {
   const [eventos, setEventos] = useState([]);
@@ -76,9 +77,9 @@ function EventosList() {
       }
       confirmation(deleteOptionsEventos)
         .then(() => {
-          remove(idEvento).then(() => {});
+          remove(idEvento).then(() => { });
         })
-        .catch(() => {});
+        .catch(() => { });
     },
     [addToast, confirmation, deleteOptionsEventos, verificaParticipantes, verificaSubeventos]
   );
@@ -179,8 +180,16 @@ function EventosList() {
     fetch();
   }, []);
 
+  const crumbs = [
+    {
+      routeTo: '/eventos',
+      name: 'Eventos'
+    }
+  ];
+
   return (
     <>
+      <BreadCrumb crumbs={crumbs} />
       <Button
         type="button"
         variant="outlined"

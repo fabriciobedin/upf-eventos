@@ -16,6 +16,7 @@ import { useToast } from '../../../hooks/toast';
 import TextArea from '../../../components/TextArea';
 import Subeventos from '../../Subeventos/Listagem';
 import Participantes from '../../Participantes/Listagem';
+import BreadCrumb from '../../../components/BreadCrumb';
 
 const schema = Yup.object().shape({
   codigo: Yup.string().required('Código obrigatório!'),
@@ -77,41 +78,55 @@ function EventoForm() {
     [addToast, idEvento, redirect]
   );
 
-  return (
-    <Container>
-      <h1>Edição de Evento:</h1>
-      <Content>
-        <Form ref={formRef} onSubmit={handleSubmit}>
-          <Input name="codigo" placeholder="Código" type="number" />
-          <Input name="titulo" placeholder="Título" />
-          <TextArea name="descricao" placeholder="Descricao" />
-          <p>Data Inicial:</p>
-          <Input type="date" name="dataInicial" placeholder="Data" />
-          <p>Data Final:</p>
-          <Input type="date" name="dataFinal" placeholder="Data" />
+  const crumbs = [
+    {
+      routeTo: '/eventos',
+      name: 'Eventos'
+    },
+    {
+      routeTo: '',
+      name: 'Editar'
+    },
+  ];
 
-          <ButtonContainer>
-            <Button type="submit">Salvar</Button>
-            <Button onClick={redirect}>Cancelar</Button>
-          </ButtonContainer>
-        </Form>
-      </Content>
-      <hr style={{ marginTop: 10, marginBottom: 10 }} />
-      <SubtitleContainer>
-        <h3>Subeventos:</h3>
-        <button type="button" onClick={() => handleSubevento()}>
-          Criar Subeventos
+  return (
+    <>
+      <BreadCrumb crumbs={crumbs} />
+      <Container>
+        <h1>Edição de Evento:</h1>
+        <Content>
+          <Form ref={formRef} onSubmit={handleSubmit}>
+            <Input name="codigo" placeholder="Código" type="number" />
+            <Input name="titulo" placeholder="Título" />
+            <TextArea name="descricao" placeholder="Descricao" />
+            <p>Data Inicial:</p>
+            <Input type="date" name="dataInicial" placeholder="Data" />
+            <p>Data Final:</p>
+            <Input type="date" name="dataFinal" placeholder="Data" />
+
+            <ButtonContainer>
+              <Button type="submit">Salvar</Button>
+              <Button onClick={redirect}>Cancelar</Button>
+            </ButtonContainer>
+          </Form>
+        </Content>
+        <hr style={{ marginTop: 10, marginBottom: 10 }} />
+        <SubtitleContainer>
+          <h3>Subeventos:</h3>
+          <button type="button" onClick={() => handleSubevento()}>
+            Criar Subeventos
         </button>
-      </SubtitleContainer>
-      <Subeventos idEvento={idEvento} />
-      <SubtitleContainer>
-        <h3>Participantes do evento:</h3>
-        <button type="button" onClick={() => handleAddParticipantesEvento()}>
-          Inscrever participantes
+        </SubtitleContainer>
+        <Subeventos idEvento={idEvento} />
+        <SubtitleContainer>
+          <h3>Participantes do evento:</h3>
+          <button type="button" onClick={() => handleAddParticipantesEvento()}>
+            Inscrever participantes
         </button>
-      </SubtitleContainer>
-      <Participantes idEvento={idEvento} />
-    </Container>
+        </SubtitleContainer>
+        <Participantes idEvento={idEvento} />
+      </Container>
+    </>
   );
 }
 

@@ -3,6 +3,7 @@ import { CSVReader } from 'react-papaparse'
 import firebase from '../../../services/firebase';
 import { Container, Content } from './styles';
 import 'firebase/firestore';
+import BreadCrumb from '../../../components/BreadCrumb';
 
 const db = firebase.firestore();
 const buttonRef = React.createRef()
@@ -19,7 +20,7 @@ export default class EventoImportacao extends Component {
 
   handleOnFileLoad = async (data) => {
 
-   
+
 
     console.log('------------ Carregado ---------------')
     console.log(data)
@@ -32,11 +33,10 @@ export default class EventoImportacao extends Component {
     data.forEach(element => {
       let dado = element.data
       console.log(dado)
-      if(element.data.length > 20 && linha!==0)
-      {
+      if (element.data.length > 20 && linha !== 0) {
         evento.dados.codigo = dado[5]
         evento.dados.nome = dado[6]
-        evento.dados.descricao = dado[7]         
+        evento.dados.descricao = dado[7]
 
         let subevento = {};
         subevento.dados = {};
@@ -46,10 +46,10 @@ export default class EventoImportacao extends Component {
         subevento.dados.horaInicial = dado[10]
         subevento.dados.horaFinal = dado[11]
         subevento.dados.turno = dado[12]
-        subevento.participantes = []       
+        subevento.participantes = []
 
         evento.subeventos[subevento.dados.codigo] = subevento
-      }      
+      }
       linha++
     }
     );
@@ -59,8 +59,7 @@ export default class EventoImportacao extends Component {
     data.forEach(element => {
       let dado = element.data
       console.log(dado)
-      if(element.data.length > 20 && linha!==0)
-      {
+      if (element.data.length > 20 && linha !== 0) {
         let participante = {};
         participante.codigo = dado[0]
         participante.nome = dado[1]
@@ -68,21 +67,21 @@ export default class EventoImportacao extends Component {
         participante.email = dado[4]
         participante.tipo = dado[3]
 
-        evento.subeventos[dado[8]].participantes.push(participante)  
+        evento.subeventos[dado[8]].participantes.push(participante)
 
-      }      
+      }
       linha++
     }
     );
 
-    
+
     //ADICIONANDO EVENTO
     console.log("------------------------------------")
     console.log("Adicionando Evento")
     const eventosRef = db.collection('Eventos');
     const retornoEvento = await eventosRef.add(evento.dados);
     const subEventosRef = retornoEvento.collection('Subeventos')
-    
+
     //PARA CADA EVENTO ADICIONA O SUBEVENTO
     evento.subeventos.forEach(async subevento => {
       console.log("------------------------------------")
@@ -103,7 +102,7 @@ export default class EventoImportacao extends Component {
 
 
   }
-  
+
   handleOnError = (err, file, inputElem, reason) => {
     console.log(err)
   }
@@ -116,61 +115,74 @@ export default class EventoImportacao extends Component {
   }
 
   render() {
-    return (
-      <Container>
-      <h1>Importação de Evento:</h1>
-      <Content>
-      <CSVReader
-          ref={buttonRef}
-          onFileLoad={this.handleOnFileLoad}
-          onError={this.handleOnError}
-          noClick
-          noDrag
-        >
-          {({ file }) => (
-            <aside
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                marginBottom: 10
-              }}
-            >
-              <button
-                type='button'
-                onClick={this.handleOpenDialog}
-                style={{
-                  borderRadius: 0,
-                  marginLeft: 0,
-                  marginRight: 0,
-                  width: '40%',
-                  paddingLeft: 0,
-                  paddingRight: 0
-                }}
-              >
-                Buscar CSV
-              </button>
-              <div
-                style={{
-                  borderWidth: 1,
-                  borderStyle: 'solid',
-                  borderColor: '#ccc',
-                  height: 45,
-                  lineHeight: 2.5,
-                  marginTop: 5,
-                  marginBottom: 5,
-                  paddingLeft: 13,
-                  paddingTop: 3,
-                  width: '60%'
-                }}
-              >
-                {file && file.name}
-              </div>              
-            </aside>
-          )}
-        </CSVReader>
-      </Content>
-    </Container>
+    const crumbs = [
+      {
+        routeTo: '/eventos',
+        name: 'Eventos'
+      },
+      {
+        routeTo: '/eventos/importacao',
+        name: 'Importação'
+      }
+    ];
 
+    return (
+      <>
+        <BreadCrumb crumbs={crumbs} />
+        <Container>
+          <h1>Importação de Evento:</h1>
+          <Content>
+            <CSVReader
+              ref={buttonRef}
+              onFileLoad={this.handleOnFileLoad}
+              onError={this.handleOnError}
+              noClick
+              noDrag
+            >
+              {({ file }) => (
+                <aside
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    marginBottom: 10
+                  }}
+                >
+                  <button
+                    type='button'
+                    onClick={this.handleOpenDialog}
+                    style={{
+                      borderRadius: 0,
+                      marginLeft: 0,
+                      marginRight: 0,
+                      width: '40%',
+                      paddingLeft: 0,
+                      paddingRight: 0
+                    }}
+                  >
+                    Buscar CSV
+              </button>
+                  <div
+                    style={{
+                      borderWidth: 1,
+                      borderStyle: 'solid',
+                      borderColor: '#ccc',
+                      height: 45,
+                      lineHeight: 2.5,
+                      marginTop: 5,
+                      marginBottom: 5,
+                      paddingLeft: 13,
+                      paddingTop: 3,
+                      width: '60%'
+                    }}
+                  >
+                    {file && file.name}
+                  </div>
+                </aside>
+              )}
+            </CSVReader>
+          </Content>
+        </Container>
+      </>
     )
   }
 }
