@@ -36,7 +36,6 @@ function EventoForm() {
   const formRef = useRef(null);
   const { addToast } = useToast();
   const { idEvento } = useParams();
-  const { id } = useParams();
 
 
   useEffect(() => {

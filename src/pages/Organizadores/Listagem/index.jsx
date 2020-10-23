@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
 import { IconButton } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
@@ -14,8 +14,6 @@ import NoRecords from '../../../components/NoRecords';
 function Organizadores({ idEvento }) {
   const history = useHistory();
   const confirmation = useConfirm();
-  const [organizadores, setOrganizadores] = useState([]);
-  const formRef = useRef(null);
   const { addToast } = useToast();
   const tableOptions = {
     ...options,
@@ -25,6 +23,8 @@ function Organizadores({ idEvento }) {
     ...deleteOptions,
     description: 'Você confirma a exclusão do organizador?'
   };
+
+  let organizadores = [];
 
   const handleEdit = useCallback(
     idOrganizador => {
@@ -47,14 +47,19 @@ function Organizadores({ idEvento }) {
   useEffect(() => {
     OrganizadoresService.getOrganizadoresByEvento(idEvento).then(docSnapshot => {
       if (docSnapshot.exists) {
-        console.log('tamanho', docSnapshot.data().organizadores.length);
         for(let i=0; i < docSnapshot.data().organizadores.length; i++){
-          OrganizadoresService.getOrganizadorById(docSnapshot.data().organizadores[i]).then(org => {
-            setOrganizadores(...org);
-          })
+          OrganizadoresService.getOrganizadorById(docSnapshot.data().organizadores[i]).then(doc => {
+            if(doc != undefined){
+              organizadores = {
+                list: [doc.data()],
+              };
+              console.log(organizadores)
+            }
+          });
         }
       }
     });
+
   }, [idEvento]);
 
   const columns = useMemo(
@@ -68,7 +73,7 @@ function Organizadores({ idEvento }) {
       },
       {
         label: 'Nome',
-        name: 'nome',
+        name: 'name',
         options: {
           filter: true
         }
@@ -110,17 +115,17 @@ function Organizadores({ idEvento }) {
     ],
     [handleDelete, handleEdit]
   );
-
-  if (organizadores.length > 0) {
+  console.log(organizadores.list)
+  // if (organizadores.list.size > 0) {
     return (
       <MUIDataTable
         title="Organizadores"
-        data={formRef.organizadores}
+        data={organizadores.list}
         columns={columns}
         options={tableOptions}
       />
     );
-  }
+  // }
 
   return <NoRecords />;
 }

@@ -46,7 +46,6 @@ function OrganizadorForm({ organizador, formTitle, idOrganizador }) {
         ref.set({data})  // sets the contents of the doc using the id
         .then(() => {  // fetch the doc again and show its data
           ref.get().then(doc => {
-            console.log('idevento', idEvento);
             OrganizadorService.adicionarOrganizador(idEvento, ref.id).then(() => {
               addToast({
                 type: 'success',
