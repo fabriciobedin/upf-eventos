@@ -105,7 +105,6 @@ function OrganizadorForm({ organizador, formTitle, idOrganizador }) {
         <Form ref={formRef} onSubmit={handleSubmit}>
           <Input name="nome" placeholder="Nome" />
           <Input name="email" placeholder="E-mail" />
-          <Input name="senha" placeholder="Senha" />
           <hr />
           <ButtonContainer>
             <Button type="submit" onClick={() => handleSubmit()}>
