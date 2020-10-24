@@ -3,21 +3,28 @@ import { useHistory } from 'react-router-dom';
 import { IconButton, Tooltip } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-
+import { deleteOptions } from '../../../utils/confirmationOptions';
 import MUIDataTable from 'mui-datatables';
 import { PersonAdd } from '@material-ui/icons';
 import { formatDate } from '../../../utils/formatters';
-
+import { useToast } from '../../../hooks/toast';
 import options from '../../../utils/tableOptions';
 import NoRecords from '../../../components/NoRecords';
-import { getSubEventos } from '../../../services/subeventos';
+import { useConfirm } from 'material-ui-confirm';
+import { getSubEventosSnapshot, getParticipantesInscritosSubEvento, remove } from '../../../services/subeventos';
 
 function Subeventos({ idEvento }) {
   const history = useHistory();
+  const { addToast } = useToast();
   const [subeventos, setSubeventos] = useState([]);
+  const confirmation = useConfirm();
   const tableOptions = {
     ...options,
     selectableRows: 'none'
+  };
+  const deleteOptionsSubEvento = {
+    ...deleteOptions,
+    description: 'Você confirma a exclusão do subevento?'
   };
 
   const handleEdit = useCallback(
@@ -25,6 +32,45 @@ function Subeventos({ idEvento }) {
       history.push(`/eventos/${idEvento}/subeventos/${idSubevento}`);
     },
     [history, idEvento]
+  );
+
+  const verificaInscritosSubEvento = useCallback(async idSubevento => {
+    return getParticipantesInscritosSubEvento(idEvento, idSubevento).then(data => {
+      return data.size;
+    });
+  }, [idEvento]);
+
+  const handleDelete = useCallback(
+    async idSubevento => {
+      //verificar se tem inscritos
+      const inscritos = await verificaInscritosSubEvento(idSubevento);
+      if (inscritos > 0) {
+        window.scrollTo({ top: 0, behavior: 'auto' });
+        addToast({
+          type: 'error',
+          title: 'Atenção!',
+          description:
+            'Não é possível excluir subevento, pois possui participantes inscritos!'
+        });
+        return;
+      }
+      confirmation(deleteOptionsSubEvento)
+        .then(() => {
+          remove(idEvento, idSubevento)
+            .then(() => { })
+            .catch(() => {
+              window.scrollTo({ top: 0, behavior: 'auto' });
+              addToast({
+                type: 'error',
+                title: 'Atenção!',
+                description:
+                  'Algo de errado ocorreu e não foi possível excluir subevento!!'
+              });
+            });
+        })
+        .catch(() => { });
+    },
+    [addToast, confirmation, idEvento, verificaInscritosSubEvento, deleteOptionsSubEvento]
   );
 
   const handleAddParticipantes = useCallback(
@@ -40,7 +86,7 @@ function Subeventos({ idEvento }) {
     () => [
       {
         label: 'Código',
-        name: 'codigo',
+        name: 'uuid',
         options: {
           filter: true
         }
@@ -106,7 +152,9 @@ function Subeventos({ idEvento }) {
               </Tooltip>
               <Tooltip title="Excluir subevento">
                 <IconButton aria-label="delete" size="small">
-                  <DeleteIcon fontSize="inherit" />
+                  <DeleteIcon
+                    fontSize="inherit"
+                    onClick={() => handleDelete(value)} />
                 </IconButton>
               </Tooltip>
               <Tooltip title="Inscrever participantes">
@@ -123,20 +171,22 @@ function Subeventos({ idEvento }) {
         }
       }
     ],
-    [handleAddParticipantes, handleEdit]
+    [handleAddParticipantes, handleEdit, handleDelete]
   );
 
   useEffect(() => {
-    getSubEventos(idEvento).then(eventos => {
-      eventos.forEach(doc => {
-        const subevento = {
-          ...doc.data(),
-          dataInicial: formatDate(doc.data().dataInicial),
-          uuid: doc.id
-        };
-        setSubeventos(sub => [...sub, subevento]);
-      });
-    });
+    const subeventosList = getSubEventosSnapshot(idEvento).onSnapshot(
+      subeventosSnapshot => {
+        setSubeventos(
+          subeventosSnapshot.docs.map(doc => ({
+            ...doc.data(),
+            dataInicial: formatDate(doc.data().dataInicial),
+            uuid: doc.id
+          }))
+        );
+      }
+    );
+    return () => subeventosList();
   }, [idEvento]);
 
   if (subeventos.length > 0) {

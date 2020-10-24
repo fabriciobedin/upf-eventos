@@ -24,8 +24,9 @@ function ParticipanteForm({ participante, formTitle, idParticipante }) {
 
   useEffect(() => {
     if (participante) {
-      formRef.current.setData(participante);
+      return formRef.current.setData(participante);
     }
+    formRef.current.setData({ codigo: new Date().getTime() });
   }, [participante]);
 
   const redirect = useCallback(() => {
@@ -143,7 +144,7 @@ function ParticipanteForm({ participante, formTitle, idParticipante }) {
       <h1>{formTitle}</h1>
       <Content>
         <Form ref={formRef} onSubmit={handleSubmit}>
-          <Input name="codigo" placeholder="Código" type="number" />
+          <Input name="codigo" placeholder="Código" type="number" disabled={!!participante}/>
           <Input name="nome" placeholder="Nome" />
           <Input name="telefone" placeholder="Telefone" maxLength="11" />
           <Input name="documento" placeholder="CPF" maxLength="11" />

@@ -25,6 +25,7 @@ import Participantes from '../../Participantes/Listagem';
 import BreadCrumb from '../../../components/BreadCrumb';
 import firebase from '../../../services/firebase';
 import 'firebase/firestore';
+import Organizadores from '../../Organizadores/Listagem';
 
 const db = firebase.firestore();
 
@@ -42,6 +43,7 @@ function EventoForm() {
   const formRef = useRef(null);
   const { addToast } = useToast();
   const { idEvento } = useParams();
+
 
   useEffect(() => {
     getEventoById(idEvento).then(docSnapshot => {
@@ -67,8 +69,9 @@ function EventoForm() {
         const participante = participantes.docs[indexParticipante];
         let objeto = participante.data()
         let array = [];
+
         if (objeto.horaEntrada) {
-          array = ["S", participante.id, objeto.horaSaida.seconds, idEvento, subevento.id]
+          array = ["E", participante.id, objeto.horaEntrada.seconds, idEvento, subevento.id]
           let row = array.join(",");
           csvContent += row + "\r\n";
         }
@@ -99,6 +102,10 @@ function EventoForm() {
 
   const handleSubevento = useCallback(() => {
     history.push(`/eventos/${idEvento}/subeventos/cadastro`);
+  }, [history, idEvento]);
+
+  const handleCadastroOrganizador = useCallback(() => {
+    history.push(`/organizadores/eventos/${idEvento}`);
   }, [history, idEvento]);
 
   const handleAddParticipantesEvento = useCallback(() => {
@@ -184,6 +191,7 @@ function EventoForm() {
           <Tab label="Evento" {...a11yProps(0)} />
           <Tab label="Subeventos" {...a11yProps(1)} />
           <Tab label="Participantes" {...a11yProps(2)} />
+          <Tab label="Organizadores" {...a11yProps(3)} />
         </Tabs>
 
         <TabPanel value={value} index={0}>
@@ -238,6 +246,14 @@ function EventoForm() {
         </button>
           </SubtitleContainer>
           <Participantes idEvento={idEvento} />
+        </TabPanel>
+        <TabPanel value={value} index={3}>
+          <SubtitleContainer>
+            <button type="button" onClick={() => handleCadastroOrganizador()}>
+              Inscrever organizadores
+        </button>
+          </SubtitleContainer>
+          <Organizadores idEvento={idEvento} />
         </TabPanel>
       </Container>
     </>
