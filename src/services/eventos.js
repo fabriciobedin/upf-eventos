@@ -21,7 +21,7 @@ export const getEventos = async () => {
 export const submit = async evento => {
   const user = await getUsuarioLogado();
   evento.organizadores = [user.uid];
-  return eventosRef.add(evento);
+  return eventosRef.doc(evento.codigo).set(evento);
 };
 
 export const update = (idEvento, evento) => {
