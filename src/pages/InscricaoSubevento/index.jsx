@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Button, Dialog, DialogContent, DialogTitle } from '@material-ui/core';
 import { formatDate } from '../../utils/formatters';
 import * as SubeventosService from '../../services/subeventos';
@@ -11,14 +11,14 @@ import SelecaoParticipantes from './SelecaoParticipantes';
 
 function InscricaoSubevento() {
   const [eventoState, setEventoState] = useState({});
-  const [participantesInscritos, setParticipantesInscritos] = useState([]);
+  // const [participantesInscritos, setParticipantesInscritos] = useState([]);
   const [open, setOpen] = useState(false);
   const { idEvento, idSubevento } = useParams();
   const dataIniFormatada = useRef(null);
   const horaIni = useRef(null);
   const horaFim = useRef(null);
   const subevento = useRef(null);
-  const history = useHistory();
+  // const history = useHistory();
 
   const handleClickOpen = useCallback(() => {
     setOpen(true);
@@ -28,24 +28,21 @@ function InscricaoSubevento() {
     setOpen(false);
   };
 
-  const removeParticipante = useCallback(
-    participanteId => {
-      const newParticipantesList = participantesInscritos.filter(
-        item => item.uid !== participanteId
-      );
-      setParticipantesInscritos(newParticipantesList);
-    },
-    [participantesInscritos]
-  );
+  // const removeParticipante = useCallback(
+  //   participanteId => {
+  //     const newParticipantesList = participantesInscritos.filter(
+  //       item => item.uid !== participanteId
+  //     );
+  //     setParticipantesInscritos(newParticipantesList);
+  //   },
+  //   [participantesInscritos]
+  // );
 
   useEffect(() => {
     SubeventosService.getSubeventoById(idEvento, idSubevento).then(
       docSnapshot => {
         if (docSnapshot.exists) {
           const subeventFound = docSnapshot.data();
-          if (subeventFound.participantes?.length > 0) {
-            setParticipantesInscritos(subeventFound.participantes);
-          }
           dataIniFormatada.current = formatDate(subeventFound.dataInicial);
           horaIni.current = subeventFound.horaInicial;
           horaFim.current = subeventFound.horaFinal;
