@@ -67,7 +67,7 @@ const SignIn = () => {
               type="password"
               placeholder="Senha"
             />
-            <Button type="submit">Entrar</Button>
+            <Button type="submit" className="primary">Entrar</Button>
             <Link to="resetpassword">Esqueci minha senha :(</Link>
           </Form>
         </AnimationContainer>
