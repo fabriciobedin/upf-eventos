@@ -10,6 +10,7 @@ import { submit } from '../../../services/eventos';
 import { useToast } from '../../../hooks/toast';
 import TextArea from '../../../components/TextArea';
 import BreadCrumb from '../../../components/BreadCrumb';
+import Grid from "@material-ui/core/Grid";
 
 function EventoAdd() {
   const history = useHistory();
@@ -67,22 +68,37 @@ function EventoAdd() {
     <>
       <BreadCrumb crumbs={crumbs} />
       <Container>
-        <h1>Cadastro de Evento:</h1>
+        <h1>Cadastro de Evento</h1>
         <Content>
           <Form ref={formRef} onSubmit={handleSubmit}>
-            <Input name="codigo" placeholder="Código" type="number" />
-            <Input name="titulo" placeholder="Título" />
-            <TextArea name="descricao" placeholder="Descricao" />
-            <p>Data Inicial:</p>
-            <Input type="date" name="dataInicial" />
-            <p>Data Final:</p>
-            <Input type="date" name="dataFinal" />
-            <hr />
-
-            <ButtonContainer>
-              <Button type="submit">Salvar</Button>
-              <Button onClick={redirect}>Cancelar</Button>
-            </ButtonContainer>
+            <Grid container spacing={1}>
+              <Grid item sm={6} lg={2}>
+              <p>Código:</p>
+                <Input name="codigo" placeholder="Código" type="number" />
+              </Grid>
+              <Grid item sm={6} lg={10}>
+              <p>Título:</p>
+                <Input name="titulo" placeholder="Título" />
+              </Grid>
+              <Grid item xs={12}>
+                <p>Descrição:</p>
+                <TextArea name="descricao" placeholder="Descricao" />
+              </Grid>
+              <Grid item xs={6} lg={2}>
+                <p>Data Inicial:</p>
+                <Input type="date" name="dataInicial" />
+                </Grid>
+                <Grid item xs={6} lg={2}>
+                <p>Data Final:</p>
+                <Input type="date" name="dataFinal" />
+              </Grid>
+              <Grid item xs={12}>
+                <ButtonContainer>
+                  <Button type="submit" className="primary">Salvar</Button>
+                  <Button onClick={redirect} className="secondary">Cancelar</Button>
+                </ButtonContainer>
+              </Grid>
+            </Grid>
           </Form>
         </Content>
       </Container>

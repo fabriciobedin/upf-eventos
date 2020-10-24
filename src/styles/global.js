@@ -27,4 +27,28 @@ export default createGlobalStyle`
     cursor: pointer;
     font-weight: 500;
   }
+
+  .primary{
+    background: #ed6707;
+
+    &:hover {
+      background: #e04113;
+    }
+  }
+
+  .secondary{
+    background: #6c757d;
+
+    &:hover {
+      background: #5a6268;
+    }
+  }
+
+  .success{
+    background: #28a745;
+  
+    &:hover {
+      background: #218838;
+    }
+  }
 `;

@@ -126,8 +126,8 @@ function Subeventos() {
             <Input type="time" name="horaFinal" />
             <hr />
             <ButtonContainer>
-              <Button type="submit">Salvar</Button>
-              <Button onClick={redirect}>Cancelar</Button>
+              <Button type="submit" className="primary">Salvar</Button>
+              <Button onClick={redirect} className="secondary">Cancelar</Button>
             </ButtonContainer>
           </Form>
         </Content>

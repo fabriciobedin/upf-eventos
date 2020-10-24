@@ -53,9 +53,9 @@ function Participantes({ idEvento }) {
       }
       confirmation(deleteOptionsParticipante)
         .then(() => {
-          ParticipantesService.remove(idEvento, idParticipante).then(() => {});
+          ParticipantesService.remove(idEvento, idParticipante).then(() => { });
         })
-        .catch(() => {});
+        .catch(() => { });
     },
     [addToast, confirmation, idEvento, verificaFrequencia, deleteOptionsParticipante]
   );
