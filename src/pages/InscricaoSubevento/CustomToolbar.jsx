@@ -7,28 +7,37 @@ import { realizarInscricao } from '../../services/subeventos';
 import * as ParticipantesService from '../../services/participantes';
 import { useToast } from '../../hooks/toast';
 
-function CustomToolbar({ selectedRows, displayData, setSelectedRows, statusModal }) {
+function CustomToolbar({
+  selectedRows,
+  displayData,
+  setSelectedRows,
+  statusModal
+}) {
   const { idEvento, idSubevento } = useParams();
   const { addToast } = useToast();
 
   const addParticipante = useCallback(() => {
-    var promises = [];
-    displayData.forEach(element => {
-      const snippet = {
-        codigo: element.data[0],
-        nome: element.data[1],
-        email: element.data[2],
-        status: 'inscrito'
-      };
-      promises.push(realizarInscricao(idEvento, idSubevento, snippet));
-      promises.push(
-        ParticipantesService.atulizaInscricaoSubevento(
-          idEvento,
-          snippet.codigo,
-          idSubevento
-        )
-      );
-    });
+    let promises = [];
+    let selecionados = selectedRows.data.map(d => d.dataIndex);
+    displayData
+      .filter(data => selecionados.includes(data.dataIndex))
+      .forEach(element => {
+        const snippet = {
+          codigo: element.data[0],
+          nome: element.data[1],
+          email: element.data[2],
+          status: 'inscrito'
+        };
+
+        promises.push(realizarInscricao(idEvento, idSubevento, snippet));
+        promises.push(
+          ParticipantesService.atulizaInscricaoSubevento(
+            idEvento,
+            snippet.codigo,
+            idSubevento
+          )
+        );
+      });
 
     Promise.all(promises).then(() => {
       window.scrollTo({ top: 0, behavior: 'auto' });
@@ -39,7 +48,15 @@ function CustomToolbar({ selectedRows, displayData, setSelectedRows, statusModal
       setSelectedRows([]);
       statusModal(false);
     });
-  }, [idEvento, idSubevento, setSelectedRows, addToast, displayData, statusModal]);
+  }, [
+    idEvento,
+    idSubevento,
+    setSelectedRows,
+    addToast,
+    displayData,
+    statusModal,
+    selectedRows
+  ]);
 
   return (
     <div style={{ marginRight: 24 }}>
