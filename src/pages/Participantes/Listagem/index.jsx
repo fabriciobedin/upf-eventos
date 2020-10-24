@@ -91,7 +91,6 @@ function Participantes({ idEvento }) {
     const unsubscribe = ParticipantesService.getParticipantesByEvento(
       idEvento
     ).onSnapshot(participantesSnapshot => {
-      console.log()
       setParticipantes(
         participantesSnapshot.docs.map(doc => ({
           ...doc.data(),

@@ -3,7 +3,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 export const deleteOptions = {
   description: 'Você confirma a exclusão do registro?',
-  title: 'Exclusão de participante',
+  title: 'Exclusão de registros',
   confirmationButtonProps: {
     variant: 'contained',
     color: 'secondary',

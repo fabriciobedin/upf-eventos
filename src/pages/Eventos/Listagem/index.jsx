@@ -26,6 +26,7 @@ function EventosList() {
 
   const deleteOptionsEventos = {
     ...deleteOptions,
+    title: 'Exclusão de evento',
     description: 'Você confirma a exclusão do evento?'
   };
 
@@ -62,8 +63,6 @@ function EventosList() {
     async idEvento => {
       const participantes = await verificaParticipantes(idEvento);
       const subeventos = await verificaSubeventos(idEvento);
-      console.log('participantes', participantes);
-      console.log('subeventos', subeventos);
 
       if (participantes > 0 || subeventos) {
         window.scrollTo({ top: 0, behavior: 'auto' });
@@ -172,18 +171,17 @@ function EventosList() {
   );
 
   useEffect(() => {
-    const fetch = async () => {
-      const data = await getEventos();
+    const unsubscribe = getEventos().onSnapshot(teste => {
       setEventos(
-        data.docs.map(doc => ({
+        teste.docs.map(doc => ({
           ...doc.data(),
           dataInicial: formatDate(doc.data().dataInicial),
           dataFinal: formatDate(doc.data().dataFinal),
           uuid: doc.id
-        })) ?? []
+        }))
       );
-    };
-    fetch();
+    });
+    return () => unsubscribe();
   }, []);
 
   const crumbs = [
