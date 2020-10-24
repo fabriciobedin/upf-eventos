@@ -8,14 +8,14 @@ export const getEventoById = idEvento => {
   return eventosRef.doc(idEvento).get();
 };
 
-export const getEventos = async () => {
-  const user = await getUsuarioLogado();
+export const getEventos = () => {
+  const user = getUsuarioLogado();
 
   if (user && user?.nivelAcesso==='2') {
     // if (user && !user?.nivelAcesso) {
-    return eventosRef.where('organizadores', 'array-contains', user.uid).get();
+    return eventosRef.where('organizadores', 'array-contains', user.uid);
   }
-  return eventosRef.get();
+  return eventosRef;
 };
 
 export const submit = async evento => {
