@@ -41,6 +41,8 @@ export default class EventoImportacao extends Component {
       if (element.data.length > 20 && linha !== 0) {
         evento.dados.codigo = dado[5]
         evento.dados.titulo = dado[6]
+        evento.dados.dataInicial = dado[25]
+        evento.dados.dataFinal = dado[26]
         evento.dados.descricao = dado[7]
 
         let organizador = {};
@@ -56,6 +58,7 @@ export default class EventoImportacao extends Component {
         let subevento = {};
         subevento.dados = {};
         subevento.dados.codigo = dado[8]
+        subevento.dados.titulo = dado[15]
         subevento.dados.descricao = dado[9]
         subevento.dados.dataInicial = dado[10]
         subevento.dados.horaInicial = dado[10]
@@ -85,7 +88,6 @@ export default class EventoImportacao extends Component {
       .catch((error) => {
         console.log(error)
       });
-
     });
     //FOREACH PARA PARTICIPANTES 
     linha = 0;
@@ -131,7 +133,6 @@ export default class EventoImportacao extends Component {
 
       subEventosRef.doc(subevento.dados.codigo).set(subevento.dados);
       const participantesRef = db.collection('Eventos').doc(evento.dados.codigo)
-
       .collection('Subeventos').doc(subevento.dados.codigo).collection('SubeventoParticipantes')
 
       console.log('Parcipantes do subevento')
