@@ -21,7 +21,7 @@ function ParticipanteCadastro() {
   return (
     <>
       <BreadCrumb crumbs={crumbs} />
-      <ParticipanteForm formTitle="Inclusão de participante" />
+      <ParticipanteForm formTitle="Inclusão de Participante" />
     </>
   );
 }

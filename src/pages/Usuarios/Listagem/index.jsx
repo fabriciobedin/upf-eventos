@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Button, IconButton } from '@material-ui/core';
+import {IconButton } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import MUIDataTable from 'mui-datatables';
@@ -8,6 +8,8 @@ import BreadCrumb from '../../../components/BreadCrumb';
 import options from '../../../utils/tableOptions';
 import { getUsers } from '../../../services/usuarios';
 import { useToast } from '../../../hooks/toast';
+import Grid from "@material-ui/core/Grid";
+import Button from '../../../components/Button';
 
 function Usuarios() {
   const history = useHistory();
@@ -94,16 +96,21 @@ function Usuarios() {
   return (
     <>
       <BreadCrumb crumbs={crumbs} />
-      <Button type="button" variant="outlined" onClick={() => handleAdd()}>
-        Incluir
+      <Grid container spacing={1}>
+        <Grid item xs={2}>
+          <Button type="button" className="primary" onClick={() => handleAdd()} style={{ height: 40}}>
+            Cadastrar Usuário
       </Button>
-
-      <MUIDataTable
-        title="Usuários"
-        data={usuarios}
-        columns={columns}
-        options={tableOptions}
-      />
+        </Grid>
+        <Grid item xs={12}>
+          <MUIDataTable
+            title="Usuários"
+            data={usuarios}
+            columns={columns}
+            options={tableOptions}
+          />
+        </Grid>
+      </Grid>
     </>
   );
 }
