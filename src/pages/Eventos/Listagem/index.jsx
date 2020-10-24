@@ -1,4 +1,4 @@
-import { Button, IconButton, Tooltip } from '@material-ui/core';
+import {IconButton, Tooltip } from '@material-ui/core';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import EditIcon from '@material-ui/icons/Edit';
@@ -13,6 +13,8 @@ import { deleteOptions } from '../../../utils/confirmationOptions';
 import * as ParticipantesService from '../../../services/participantes';
 import * as SubeventosService from '../../../services/subeventos';
 import BreadCrumb from '../../../components/BreadCrumb';
+import Grid from "@material-ui/core/Grid";
+import Button from '../../../components/Button';
 
 function EventosList() {
   const [eventos, setEventos] = useState([]);
@@ -26,6 +28,7 @@ function EventosList() {
 
   const deleteOptionsEventos = {
     ...deleteOptions,
+    title: 'Exclusão de evento',
     description: 'Você confirma a exclusão do evento?'
   };
 
@@ -62,8 +65,6 @@ function EventosList() {
     async idEvento => {
       const participantes = await verificaParticipantes(idEvento);
       const subeventos = await verificaSubeventos(idEvento);
-      console.log('participantes', participantes);
-      console.log('subeventos', subeventos);
 
       if (participantes > 0 || subeventos) {
         window.scrollTo({ top: 0, behavior: 'auto' });
@@ -172,18 +173,17 @@ function EventosList() {
   );
 
   useEffect(() => {
-    const fetch = async () => {
-      const data = await getEventos();
+    const unsubscribe = getEventos().onSnapshot(teste => {
       setEventos(
-        data.docs.map(doc => ({
+        teste.docs.map(doc => ({
           ...doc.data(),
           dataInicial: formatDate(doc.data().dataInicial),
           dataFinal: formatDate(doc.data().dataFinal),
           uuid: doc.id
-        })) ?? []
+        }))
       );
-    };
-    fetch();
+    });
+    return () => unsubscribe();
   }, []);
 
   const crumbs = [
@@ -196,29 +196,30 @@ function EventosList() {
   return (
     <>
       <BreadCrumb crumbs={crumbs} />
-      <Button
-        type="button"
-        variant="outlined"
-        onClick={() => handleAdd()}
-        style={{ marginBottom: 10 }}
-      >
-        Cadastrar Evento
-      </Button>
-      <Button
-        type="button"
-        variant="outlined"
-        onClick={() => handleImport()}
-        style={{ marginBottom: 10 }}
-      >
-        Importar Evento
-      </Button>
-
-      <MUIDataTable
-        title="Eventos"
-        data={eventos}
-        columns={columns}
-        options={tableOptions}
-      />
+          <Grid container spacing={1}>
+            <Grid item xs={2} >
+              <Button className="primary" onClick={() => handleAdd()} style={{ height: 40}}>
+                Cadastrar Evento
+              </Button>
+            </Grid>
+            <Grid item xs={2} >
+              <Button
+                className="secondary"
+                onClick={() => handleImport()}
+                style={{ height: 40}}
+              >
+                Importar Evento
+          </Button>
+            </Grid>
+            <Grid item xs={12} >
+              <MUIDataTable
+                title="Eventos"
+                data={eventos}
+                columns={columns}
+                options={tableOptions}
+              />
+            </Grid>
+          </Grid>
     </>
   );
 }

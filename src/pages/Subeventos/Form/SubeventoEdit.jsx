@@ -80,10 +80,10 @@ function SubeventosEdit() {
     <>
       <BreadCrumb crumbs={crumbs} />
       <Container>
-        <h2>Edição de Subevento:</h2>
+        <h2>Cadastro de Subevento</h2>
         <Content>
           <Form ref={formRef} onSubmit={handleSubmit}>
-            <Input name="codigo" placeholder="Código" type="number" />
+            <Input name="codigo" placeholder="Código" type="number" disabled={true} />
             <TextArea name="descricao" placeholder="Descrição" />
             <Select name="tipo">
               {turnos.map(tipo => (
@@ -122,8 +122,8 @@ function SubeventosEdit() {
             <hr />
 
             <ButtonContainer>
-              <Button type="submit">Salvar</Button>
-              <Button onClick={redirect}>Cancelar</Button>
+              <Button type="submit" className="primary">Salvar</Button>
+              <Button onClick={redirect} className="secondary">Cancelar</Button>
             </ButtonContainer>
           </Form>
         </Content>

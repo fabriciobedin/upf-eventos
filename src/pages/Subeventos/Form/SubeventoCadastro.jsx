@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Checkbox, FormControlLabel } from '@material-ui/core';
 import { Form } from '@unform/web';
 import { useHistory, useParams } from 'react-router-dom';
@@ -18,7 +18,7 @@ function Subeventos() {
   const { addToast } = useToast();
 
   const formRef = useRef(null);
-  const [checked] = React.useState(true);
+  const [checked] = useState(true);
   const history = useHistory();
   const { idEvento } = useParams();
 
@@ -64,6 +64,10 @@ function Subeventos() {
     [idEvento, addToast, redirect]
   );
 
+  useEffect(() => {
+    formRef.current.setData({ codigo: new Date().getTime() });
+  }, []);
+
   const crumbs = [
     {
       routeTo: '/eventos',
@@ -76,7 +80,7 @@ function Subeventos() {
     {
       routeTo: '',
       name: 'Subevento'
-    },
+    }
   ];
 
   return (
@@ -126,8 +130,8 @@ function Subeventos() {
             <Input type="time" name="horaFinal" />
             <hr />
             <ButtonContainer>
-              <Button type="submit">Salvar</Button>
-              <Button onClick={redirect}>Cancelar</Button>
+              <Button type="submit" className="primary">Salvar</Button>
+              <Button onClick={redirect} className="secondary">Cancelar</Button>
             </ButtonContainer>
           </Form>
         </Content>

@@ -34,7 +34,7 @@ function ParticipanteEdit() {
       <BreadCrumb crumbs={crumbs} />
       <ParticipanteForm
         participante={participante}
-        formTitle="Edição de participante"
+        formTitle="Inclusão de Participante"
         idParticipante={idParticipante}
       />
     </>
