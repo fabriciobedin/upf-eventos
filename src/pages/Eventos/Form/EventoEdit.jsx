@@ -199,7 +199,7 @@ function EventoForm() {
             <Grid container spacing={1}>
               <Grid item sm={6} lg={2}>
                 <p>Código:</p>
-                <Input name="codigo" placeholder="Código" type="number" />
+                <Input name="codigo" placeholder="Código" type="number" disabled={true} />
               </Grid>
               <Grid item sm={6} lg={10}>
                 <p>Título:</p>

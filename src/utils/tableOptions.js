@@ -4,7 +4,8 @@ const options = {
   responsive: 'standard',
   fixedHeader: true,
   fixedSelectColumn: true,
-  tableBodyHeight: window.innerWidth > 1366 ? '700px' : '450px',
+  tableBodyHeight: window.innerWidth > 1366 ? '550px' : '450px',
+
   textLabels: {
     body: {
       noMatch: 'Nenhum registro encontrado',
