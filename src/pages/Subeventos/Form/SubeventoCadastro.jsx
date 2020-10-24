@@ -39,6 +39,8 @@ function Subeventos() {
         formRef.current.setErrors({});
         const schema = Yup.object().shape({
           codigo: Yup.string().required('Código obrigatório!'),
+          titulo: Yup.string().required('Título obrigatório!'),
+          palestrante : Yup.string(),
           descricao: Yup.string().required('Descrição obrigatória!'),
           turno: Yup.string().required('Turno obrigatório'),
           dataInicial: Yup.string().required('Data inicial obrigatória!')
@@ -91,6 +93,8 @@ function Subeventos() {
         <Content>
           <Form ref={formRef} onSubmit={handleSubmit}>
             <Input name="codigo" placeholder="Código" type="number" />
+            <Input name="titulo" placeholder="Título" />
+            <Input name="palestrante" placeholder="Palestrante" />
             <TextArea name="descricao" placeholder="Descrição" />
             <br />
             <p>Data Inicial:</p>
