@@ -58,13 +58,15 @@ export const ButtonContainer = styled.div`
 export const SubtitleContainer = styled.div`
   display:flex;
   flex:1;
-  padding-top: 30px;
+  padding-top: 10px;
+  margin: 10px;
   button {
     margin-left: auto;
     background: #ed6707;
     color: #FFF;
     border-radius: 4px;
-    padding: 0 8px;
+    padding: 5px 10px;
     font-weight: 500;
+    border-style: none;  
   }
 `;

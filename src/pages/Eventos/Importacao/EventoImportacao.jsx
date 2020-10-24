@@ -4,6 +4,9 @@ import firebase from '../../../services/firebase';
 import { Container, Content } from './styles';
 import 'firebase/firestore';
 import BreadCrumb from '../../../components/BreadCrumb';
+import Button from '../../../components/Button';
+import BackupIcon from '@material-ui/icons/Backup';
+import Grid from "@material-ui/core/Grid";
 
 const db = firebase.firestore();
 const buttonRef = React.createRef()
@@ -46,9 +49,9 @@ export default class EventoImportacao extends Component {
         organizador.name = dado[22]
         organizador.email = dado[23]
         organizador.password = '123456'
-       
-        evento.organizadores[dado[21]]=organizador //adição do organizador por codigo para não duplicar
-        
+
+        evento.organizadores[dado[21]] = organizador //adição do organizador por codigo para não duplicar
+
 
         let subevento = {};
         subevento.dados = {};
@@ -82,6 +85,7 @@ export default class EventoImportacao extends Component {
       .catch((error) => {
         console.log(error)
       });
+
     });
     //FOREACH PARA PARTICIPANTES 
     linha = 0;
@@ -96,9 +100,9 @@ export default class EventoImportacao extends Component {
         participante.email = dado[4]
         participante.tipo = dado[3]
 
-        evento.subeventos[dado[8]].participantes.push(participante)  
+        evento.subeventos[dado[8]].participantes.push(participante)
         evento.participantes.push(participante)
-      }      
+      }
       linha++
     }
     );
@@ -110,8 +114,8 @@ export default class EventoImportacao extends Component {
     console.log(evento.dados)
     db.collection('Eventos').doc(evento.dados.codigo).set(evento.dados);
     //const retornoEvento = await eventosRef.set(evento.dados);
-    const subEventosRef =  db.collection('Eventos').doc(evento.dados.codigo).collection('Subeventos')
-    
+    const subEventosRef = db.collection('Eventos').doc(evento.dados.codigo).collection('Subeventos')
+
     //ADICIONAR TODOS OS PARTICIPANTES
     let participanteEventoRef = db.collection('Eventos').doc(evento.dados.codigo).collection('Participantes')
 
@@ -127,12 +131,12 @@ export default class EventoImportacao extends Component {
 
       subEventosRef.doc(subevento.dados.codigo).set(subevento.dados);
       const participantesRef = db.collection('Eventos').doc(evento.dados.codigo)
+
       .collection('Subeventos').doc(subevento.dados.codigo).collection('SubeventoParticipantes')
 
       console.log('Parcipantes do subevento')
-      subevento.participantes.forEach(participante => 
-        {
-        console.log(participante)        
+      subevento.participantes.forEach(participante => {
+        console.log(participante)
         participantesRef.doc(participante.codigo).set(participante)
       });
     });
@@ -186,36 +190,34 @@ export default class EventoImportacao extends Component {
                     marginBottom: 10
                   }}
                 >
-                  <button
-                    type='button'
-                    onClick={this.handleOpenDialog}
-                    style={{
-                      borderRadius: 0,
-                      marginLeft: 0,
-                      marginRight: 0,
-                      width: '40%',
-                      paddingLeft: 0,
-                      paddingRight: 0
-                    }}
-                  >
-                    Buscar CSV
-              </button>
-                  <div
-                    style={{
-                      borderWidth: 1,
-                      borderStyle: 'solid',
-                      borderColor: '#ccc',
-                      height: 45,
-                      lineHeight: 2.5,
-                      marginTop: 5,
-                      marginBottom: 5,
-                      paddingLeft: 13,
-                      paddingTop: 3,
-                      width: '60%'
-                    }}
-                  >
-                    {file && file.name}
-                  </div>
+
+                  <Grid container spacing={1}>
+                    <Grid item xs={6} >
+                      <Button className="primary" onClick={this.handleOpenDialog}>
+                        <BackupIcon />
+             &nbsp; Buscar Arquivo de Importação
+              </Button>
+                    </Grid>
+                    <Grid item xs={6} >
+                      <div
+                        style={{
+                          borderWidth: 1,
+                          borderStyle: 'solid',
+                          borderColor: '#ccc',
+                          height: 45,
+                          lineHeight: 2.5,
+                          marginTop: 14,
+                          marginBottom: 5,
+                          paddingLeft: 13,
+                          paddingTop: 3,
+                          width: '60%'
+                        }}
+                      >
+                        {file && file.name}
+                      </div>
+                    </Grid>
+                  </Grid>
+
                 </aside>
               )}
             </CSVReader>

@@ -1,4 +1,4 @@
-import { Button, IconButton, Tooltip } from '@material-ui/core';
+import {IconButton, Tooltip } from '@material-ui/core';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import EditIcon from '@material-ui/icons/Edit';
@@ -13,6 +13,8 @@ import { deleteOptions } from '../../../utils/confirmationOptions';
 import * as ParticipantesService from '../../../services/participantes';
 import * as SubeventosService from '../../../services/subeventos';
 import BreadCrumb from '../../../components/BreadCrumb';
+import Grid from "@material-ui/core/Grid";
+import Button from '../../../components/Button';
 
 function EventosList() {
   const [eventos, setEventos] = useState([]);
@@ -196,29 +198,30 @@ function EventosList() {
   return (
     <>
       <BreadCrumb crumbs={crumbs} />
-      <Button
-        type="button"
-        variant="outlined"
-        onClick={() => handleAdd()}
-        style={{ marginBottom: 10 }}
-      >
-        Cadastrar Evento
-      </Button>
-      <Button
-        type="button"
-        variant="outlined"
-        onClick={() => handleImport()}
-        style={{ marginBottom: 10 }}
-      >
-        Importar Evento
-      </Button>
-
-      <MUIDataTable
-        title="Eventos"
-        data={eventos}
-        columns={columns}
-        options={tableOptions}
-      />
+          <Grid container spacing={1}>
+            <Grid item xs={2} >
+              <Button className="primary" onClick={() => handleAdd()} style={{ height: 40}}>
+                Cadastrar Evento
+              </Button>
+            </Grid>
+            <Grid item xs={2} >
+              <Button
+                className="secondary"
+                onClick={() => handleImport()}
+                style={{ height: 40}}
+              >
+                Importar Evento
+          </Button>
+            </Grid>
+            <Grid item xs={12} >
+              <MUIDataTable
+                title="Eventos"
+                data={eventos}
+                columns={columns}
+                options={tableOptions}
+              />
+            </Grid>
+          </Grid>
     </>
   );
 }

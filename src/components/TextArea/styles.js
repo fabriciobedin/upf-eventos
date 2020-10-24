@@ -41,11 +41,14 @@ export const Container = styled.div`
     background: transparent;
     border: 0;
     color: #777;
-    height: 100px;
+    height: 100px;  
+    font-family: 'Roboto Slab',serif;
+    font-size: 16px;
+
 
     &::placeholder {
       color: #777;
-    }
+    }  
   }
 
   svg {

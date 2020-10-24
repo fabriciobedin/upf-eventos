@@ -57,6 +57,7 @@ function Participantes({ idEvento }) {
       }
       confirmation(deleteOptionsParticipante)
         .then(() => {
+
           ParticipantesService.remove(idEvento, idParticipante).then(() => {
             getSubEventos(idEvento).then(res => {
               let promises = [];
@@ -76,7 +77,7 @@ function Participantes({ idEvento }) {
             });
           });
         })
-        .catch(() => {});
+        .catch(() => { });
     },
     [
       addToast,
