@@ -6,6 +6,8 @@ const db = firebase.firestore();
 // const timestamp = firebase.firestore.FieldValue.serverTimestamp();
 const STATUS_CONFIRMADO = 'confirmado';
 const PARTICIPANTES = 'Participantes';
+const SUBEVENTOS = 'Subeventos';
+const SUBEVENTOS_PARTICIPANTES = 'SubeventoParticipantes';
 
 export const getParticipanteById = (idEvento, idParticipante) => {
   return eventosRef
@@ -15,7 +17,7 @@ export const getParticipanteById = (idEvento, idParticipante) => {
     .get();
 };
 
-export const getParticipantesByEvento = idEvento => {
+export const getParticipantesByEvento = (idEvento, idSubevento) => {
   return eventosRef.doc(idEvento).collection(PARTICIPANTES).orderBy('nome');
 };
 
@@ -66,3 +68,24 @@ export const remove = (idEvento, participanteId) => {
     .doc(participanteId)
     .delete();
 };
+
+export const getParticipantesSubevento = (idEvento, idSubevento) => {
+  return eventosRef
+    .doc(idEvento)
+    .collection(SUBEVENTOS)
+    .doc(idSubevento)
+    .collection(SUBEVENTOS_PARTICIPANTES)
+    .orderBy('nome')
+}
+
+export const atulizaInscricaoSubevento = (idEvento, idParticipante, idSubevento )=>{
+
+  return eventosRef
+    .doc(idEvento)
+    .collection(PARTICIPANTES)
+    .doc(idParticipante)
+    .update({
+      subeventos: firebase.firestore.FieldValue.arrayUnion(idSubevento)
+    });
+
+}

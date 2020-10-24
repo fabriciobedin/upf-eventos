@@ -150,7 +150,7 @@ function EventoForm() {
         <h1>Edição de Evento:</h1>
         <Content>
           <Form ref={formRef} onSubmit={handleSubmit}>
-            <Input name="codigo" placeholder="Código" type="number" />
+            <Input name="codigo" placeholder="Código" type="number" disabled={true}/>
             <Input name="titulo" placeholder="Título" />
             <TextArea name="descricao" placeholder="Descricao" />
             <p>Data Inicial:</p>

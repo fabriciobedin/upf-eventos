@@ -83,7 +83,7 @@ function SubeventosEdit() {
         <h2>Edição de Subevento:</h2>
         <Content>
           <Form ref={formRef} onSubmit={handleSubmit}>
-            <Input name="codigo" placeholder="Código" type="number" />
+            <Input name="codigo" placeholder="Código" type="number" disabled={true} />
             <TextArea name="descricao" placeholder="Descrição" />
             <Select name="tipo">
               {turnos.map(tipo => (

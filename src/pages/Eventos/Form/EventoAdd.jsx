@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Form } from '@unform/web';
 import * as Yup from 'yup';
@@ -51,6 +51,10 @@ function EventoAdd() {
 
     [addToast, redirect]
   );
+
+  useEffect(() => {
+    formRef.current.setData({ codigo: new Date().getTime() });
+  }, []);
 
   const crumbs = [
     {
