@@ -23,7 +23,8 @@ function EventosList() {
   const { addToast } = useToast();
   const tableOptions = {
     ...options,
-    selectableRows: 'none'
+    selectableRows: 'none',
+    tableBodyHeight: window.innerWidth > 1366 ? '650px' : '450px',
   };
 
   const deleteOptionsEventos = {

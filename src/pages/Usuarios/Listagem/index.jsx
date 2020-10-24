@@ -17,6 +17,7 @@ function Usuarios() {
   const { addToast } = useToast();
   const tableOptions = {
     ...options,
+    tableBodyHeight: window.innerWidth > 1366 ? '650px' : '450px',
     selectableRows: 'none'
   };
 
