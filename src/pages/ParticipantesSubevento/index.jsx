@@ -10,7 +10,7 @@ function ParticipantesSubevento({ idEvento, idSubevento }) {
   const [participantes, setParticipantes] = useState([]);
   const tableOptions = {
     ...options,
-    selectableRows: 'none'
+    selectableRows: 'none',
   };
 
   useEffect(() => {

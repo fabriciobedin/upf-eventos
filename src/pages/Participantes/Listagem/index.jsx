@@ -22,6 +22,7 @@ function Participantes({ idEvento }) {
   const { addToast } = useToast();
   const tableOptions = {
     ...options,
+    tableBodyHeight: window.innerWidth > 1366 ? '550px' : '450px',
     selectableRows: 'none'
   };
   const deleteOptionsParticipante = {
