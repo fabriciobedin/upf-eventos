@@ -57,7 +57,9 @@ const ResetPassword = () => {
           <Form ref={formRef} onSubmit={handleSubmit}>
             <h1>Redefinição de senha</h1>
             <Input name="email" icon={FiMail} placeholder="E-mail" />
-            <Button type="submit">Enviar</Button>
+            <Button type="submit" className="primary">
+              Enviar
+            </Button>
           </Form>
           <Link to="/">
             <FiArrowLeft />
