@@ -2,12 +2,16 @@
 
 ## Instruções para execução
 
+1. Primeiramente você vai precisar ter o [Node](https://nodejs.org/en/) e o [Yarn](https://yarnpkg.com/getting-started/install) instalados. </br>
+2. Você precisa também colocar as configurações do Firebase no arquivo `.env` conforme descrito no [item](https://github.com/fabriciobedin/upf-eventos#instru%C3%A7%C3%B5es-para-configura%C3%A7%C3%A3o-do-firebase). </br>
+3. Depois disso é só entrar na raiz do projeto pelo terminal e executar os seguintes comandos.
+
 ```sh
 yarn install  #instala as dependências
 yarn start    #inicia a aplicação
 ```
 
-O endereço para acesso é o http://localhost:3000
+Depois de iniciar a aplicação, ela estará disponível nesse endereço http://localhost:3000
 
 </br>
 
@@ -18,14 +22,21 @@ Passo a passo pode ser encontrado nessa [página](https://firebase.google.com/do
 
 <img src="./docs/Schema%20Firestore.png" width="100%" />
 
-</br>
 
-Segue abaixo documentações dos recursos utilizados do [Firebase](https://console.firebase.google.com/u/0/)
+### Recursos utilizados do [Firebase](https://console.firebase.google.com/u/0/)
 * [Cloud Firestore](https://firebase.google.com/docs/firestore?authuser=5)
 * [Cloud Functions](https://firebase.google.com/docs/functions?authuser=5)
 * [Authentication](https://firebase.google.com/docs/auth?authuser=5)
 * [Hosting](https://firebase.google.com/docs/hosting?authuser=5)
 * [Cloud Storage](https://firebase.google.com/docs/storage?authuser=5)
+
+### Instruções para deploy local
+
+```sh
+npm install -g firebase-tools     # dependencia necessária para utilização do Firebase CLI
+firebase login                    # faça login com a conta admin do seu projeto
+yarn build && firebase deploy     # gera um build da aplicação e faz o deploy completo incluindo (hosting, functions, regras do firestore e indices)
+```
 
 </br>
 
@@ -33,8 +44,7 @@ Segue abaixo documentações dos recursos utilizados do [Firebase](https://conso
 
 <img src="./docs/Arquitetura.png" width="100%" />
 
-### Recursos utilizados
-* [Yarn](https://yarnpkg.com/)
+### Recursos utilizados da aplicação
 * [React](https://pt-br.reactjs.org/)
 * [React Hooks](https://pt-br.reactjs.org/docs/hooks-intro.html)
 * [React Context](https://pt-br.reactjs.org/docs/context.html)
