@@ -60,3 +60,13 @@ yarn build && firebase deploy     # gera um build da aplicação e faz o deploy 
 * [Prettier](https://prettier.io/)
 * [EditorConfig](https://editorconfig.org/)
 * [Github Workflow](https://guides.github.com/introduction/flow/)
+
+
+## Responsabilidades
+
+* Arquitetura, Autenticação, Hooks -> [Fabricio Bedin](https://github.com/fabriciobedin)
+* Eventos, Participantes e Inscrições -> [Alexandre dos Reis](https://github.com/alexandre-reis)
+* Subeventos e Organizadores -> [Carlos Eduardo da Costa](https://github.com/caducostaa)
+* Importação/Exportação de arquivos e Geração do crachá ->  [Igor Vilneck](https://github.com/vilneck)
+* Documentação / Planejamento / Requisitos -> [Bruna Balbinot](https://github.com/bru95) / [Alini Lopes](https://github.com/alinilopes)
+
